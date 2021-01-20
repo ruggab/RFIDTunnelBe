@@ -57,18 +57,18 @@ public class TunnelJob implements Job {
 			PATH = propertiesRep.findByKey("CSV_DIRECTORY").getValue();
 
 			// Tunnel Wirama
-			/*GABRIELE
+			
 			wirama = new Wirama(TUNNEL_IP, TUNNEL_PORT, wiramaRep, PATH, logRep);
 						
 			// Scanner
-			scanner = new Scanner(SCANNER_IP, SCANNER_PORT, scannerRep, logRep);
+			//scanner = new Scanner(SCANNER_IP, SCANNER_PORT, scannerRep, logRep);
 
 			Thread tunnelThread = new Thread(wirama);
-			Thread scannerThread = new Thread(scanner);
+			//Thread scannerThread = new Thread(scanner);
 
 			tunnelThread.start();
-			scannerThread.start();
-*/
+			//scannerThread.start();
+
 //			checker = new ThreadChecker(new HashMap<Thread, Runnable>() {{ put(tunnelThread, wirama) ; put(scannerThread, scanner); }});
 //
 //			Thread threadChecker = new Thread(checker);
