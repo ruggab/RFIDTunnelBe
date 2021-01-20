@@ -19,7 +19,7 @@ public class ReaderRestAPIs {
 	@Autowired
 	private ReaderService readerService;
 
-	@GetMapping("/tipoReader")
+	@GetMapping("/tipoReaderList")
 	public List<TipoReader> getAllTipoReader() throws Exception {
 		List<TipoReader> listTipoReader = null;
 		try {
