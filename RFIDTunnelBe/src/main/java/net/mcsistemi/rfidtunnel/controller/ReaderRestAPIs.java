@@ -36,9 +36,9 @@ public class ReaderRestAPIs {
 	}
 	
 	@PostMapping("/creaReader")
-	public void creaReader(@RequestBody ReaderForm readerForm) throws Exception, ResourceNotFoundException {
+	public List<Reader> creaReader(@RequestBody ReaderForm readerForm) throws Exception, ResourceNotFoundException {
 		try {
-			readerService.createReader(readerForm);
+			return readerService.createReader(readerForm);
 		} catch (Exception e) {
 			throw e;
 		}

@@ -19,10 +19,10 @@ public class Reader {
 	protected Long idTipoReader;
 	
 	@Column(length = 15)
-	protected String ipadress;
+	protected String ipAdress;
 	
 	@Column(length = 4)
-	protected String port;
+	protected String porta;
 	
 	
 	
@@ -49,22 +49,22 @@ public class Reader {
 
 
 	public String getIpadress() {
-		return ipadress;
+		return ipAdress;
 	}
 
 
-	public void setIpadress(String ipadress) {
-		this.ipadress = ipadress;
+	public void setIpAdress(String ipAdress) {
+		this.ipAdress = ipAdress;
 	}
 
 
-	public String getPort() {
-		return port;
+	public String getPorta() {
+		return porta;
 	}
 
 
-	public void setPort(String port) {
-		this.port = port;
+	public void setPorta(String porta) {
+		this.porta = porta;
 	}
 
 	

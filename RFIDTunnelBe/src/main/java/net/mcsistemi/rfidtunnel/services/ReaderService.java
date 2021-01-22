@@ -28,8 +28,8 @@ public class ReaderService implements IReaderService {
 	public List<Reader> createReader(ReaderForm readerForm) {
 		 Reader reader = new Reader();
 		 reader.setIdTipoReader(new Long(readerForm.getTipoReaderSel()));
-		 reader.setIpadress(readerForm.getIpAdress());
-		 reader.setPort(readerForm.getPorta());
+		 reader.setIpAdress(readerForm.getIpAdress());
+		 reader.setPorta(readerForm.getPorta());
 		 readerRepository.save(reader);
 		 //
 		 List<Reader> readerList = readerRepository.findAll();
