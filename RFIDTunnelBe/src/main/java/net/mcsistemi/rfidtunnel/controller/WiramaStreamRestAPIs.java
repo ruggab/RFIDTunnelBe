@@ -84,7 +84,7 @@ public class WiramaStreamRestAPIs {
 			
 			List<WiramaStream> ws = new ArrayList<WiramaStream>();
 	        
-			String PATH = propertiesRep.findByKey("CSV_DIRECTORY").getValue();
+			String PATH = propertiesRep.findByChiave("CSV_DIRECTORY").getValore();
 
 			scanRep.deleteWiramaByPackId(packId);
 			scanRep.deleteScannerByPackId(packId);

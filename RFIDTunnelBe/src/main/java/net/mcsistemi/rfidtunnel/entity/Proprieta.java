@@ -1,5 +1,6 @@
 package net.mcsistemi.rfidtunnel.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -8,24 +9,23 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
 @Entity
-@Table(name = "properties")
-public class Properties {
+@Table(name = "proprieta")
+public class Proprieta {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-	
+	@Column(name = "id")
+	private Long id;
+
 	@NotBlank
-    private String key;
-	
+	private String chiave;
+
 	@NotBlank
-    private String value;
+	private String valore;
 	
-	public Properties(){}
-	
-	public Properties(String key, String value) {
-		this.key=key;
-		this.value=value;
+
+
+	public Proprieta() {
 	}
 
 	public Long getId() {
@@ -36,22 +36,20 @@ public class Properties {
 		this.id = id;
 	}
 
-	
-	public String getkey() {
-		return key;
+	public String getChiave() {
+		return chiave;
 	}
 
-	public void setkey(String key) {
-		this.key = key;
-	}
-	
-	public String getValue() {
-		return value;
+	public void setChiave(String chiave) {
+		this.chiave = chiave;
 	}
 
-	public void setValue(String value) {
-		this.value = value;
+	public String getValore() {
+		return valore;
 	}
 
-	
+	public void setValore(String valore) {
+		this.valore = valore;
+	}
+
 }

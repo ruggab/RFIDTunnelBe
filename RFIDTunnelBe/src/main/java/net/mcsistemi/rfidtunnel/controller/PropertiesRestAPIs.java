@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import net.mcsistemi.rfidtunnel.entity.Properties;
+import net.mcsistemi.rfidtunnel.entity.Proprieta;
 import net.mcsistemi.rfidtunnel.exception.ResourceNotFoundException;
 import net.mcsistemi.rfidtunnel.repository.PropertiesRepository;
 
@@ -27,20 +27,20 @@ public class PropertiesRestAPIs {
 	private PropertiesRepository repository;
 
 	@GetMapping("/properties")
-	public Page<Properties> getScannerStream(Pageable pageable) {
+	public Page<Proprieta> getScannerStream(Pageable pageable) {
 		return repository.findAll(pageable);
 	}
 
 	@PostMapping("/properties")
-	public Properties createProperties(@Valid @RequestBody Properties properties) {
+	public Proprieta createProperties(@Valid @RequestBody Proprieta properties) {
 		return repository.save(properties);
 	}
 
 	@PutMapping("/properties/{id}")
-	public Properties updateProperties(@PathVariable long id, @Valid @RequestBody Properties propertiesRequest) {
+	public Proprieta updateProperties(@PathVariable long id, @Valid @RequestBody Proprieta propertiesRequest) {
 		return repository.findById(id).map(properties -> {
-			properties.setkey(propertiesRequest.getkey());
-			properties.setValue(propertiesRequest.getValue());
+			properties.setChiave(propertiesRequest.getChiave());
+			properties.setValore(propertiesRequest.getValore());
 			return repository.save(properties);
 		}).orElseThrow(() -> new ResourceNotFoundException("Properties not found with id " + id));
 	}

@@ -1,5 +1,6 @@
 package net.mcsistemi.rfidtunnel.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -13,6 +14,7 @@ public class ProfiloUtente {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name="id")
 	private Long id;
 	
 	

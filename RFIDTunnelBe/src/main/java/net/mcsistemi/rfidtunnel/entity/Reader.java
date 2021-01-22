@@ -13,6 +13,7 @@ public class Reader {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name="id")
     protected Long id;
 	
 	protected Long idTipoReader;

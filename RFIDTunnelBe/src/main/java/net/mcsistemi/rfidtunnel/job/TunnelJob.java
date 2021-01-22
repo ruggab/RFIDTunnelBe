@@ -50,11 +50,11 @@ public class TunnelJob implements Job {
 		
 		try {
 			
-			TUNNEL_IP = propertiesRep.findByKey("TUNNEL_IP").getValue();
-			TUNNEL_PORT = Integer.parseInt(propertiesRep.findByKey("TUNNEL_PORT").getValue());
-			SCANNER_IP = propertiesRep.findByKey("SCANNER_IP").getValue();
-			SCANNER_PORT = Integer.parseInt(propertiesRep.findByKey("SCANNER_PORT").getValue());
-			PATH = propertiesRep.findByKey("CSV_DIRECTORY").getValue();
+			TUNNEL_IP = propertiesRep.findByChiave("TUNNEL_IP").getValore();
+			TUNNEL_PORT = Integer.parseInt(propertiesRep.findByChiave("TUNNEL_PORT").getValore());
+			SCANNER_IP = propertiesRep.findByChiave("SCANNER_IP").getValore();
+			SCANNER_PORT = Integer.parseInt(propertiesRep.findByChiave("SCANNER_PORT").getValore());
+			PATH = propertiesRep.findByChiave("CSV_DIRECTORY").getValore();
 
 			// Tunnel Wirama
 			
