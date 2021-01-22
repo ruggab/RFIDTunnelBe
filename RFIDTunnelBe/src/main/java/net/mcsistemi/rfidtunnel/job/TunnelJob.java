@@ -63,10 +63,10 @@ public class TunnelJob implements Job {
 			// Scanner
 			//scanner = new Scanner(SCANNER_IP, SCANNER_PORT, scannerRep, logRep);
 
-			Thread tunnelThread = new Thread(wirama);
+			//Thread tunnelThread = new Thread(wirama);
 			//Thread scannerThread = new Thread(scanner);
 
-			tunnelThread.start();
+			//tunnelThread.start();
 			//scannerThread.start();
 
 //			checker = new ThreadChecker(new HashMap<Thread, Runnable>() {{ put(tunnelThread, wirama) ; put(scannerThread, scanner); }});

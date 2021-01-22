@@ -1,17 +1,17 @@
 package net.mcsistemi.rfidtunnel.model;
 
-public class Login {
+public class LoginForm {
 
 
 	private String user;
 	private String password;
 	
 	
-	public Login() {
+	public LoginForm() {
 		
 	}
 	
-	public Login(String user, String password) {
+	public LoginForm(String user, String password) {
 		this.user = user;
 		this.password = password;
 	}
