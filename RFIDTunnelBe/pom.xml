@@ -9,7 +9,7 @@
 		<relativePath/> 
 	</parent>
 	<groupId>net.mcsistemi</groupId>
-	<artifactId>rfidtunnel</artifactId>
+	<artifactId>RFIDTunnelBe</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>rfidtunnel</name>
 	
