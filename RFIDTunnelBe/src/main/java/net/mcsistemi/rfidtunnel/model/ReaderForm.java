@@ -3,7 +3,7 @@ package net.mcsistemi.rfidtunnel.model;
 public class ReaderForm {
 
 
-	private String ipAddress;
+	private String ipAdress;
 	private String porta;
 	private String tipoReaderSel;
 	
@@ -12,8 +12,8 @@ public class ReaderForm {
 		
 	}
 	
-	public ReaderForm(String ipAddress, String porta, String tipoReaderSel) {
-		this.ipAddress = ipAddress;
+	public ReaderForm(String ipAdress, String porta, String tipoReaderSel) {
+		this.ipAdress = ipAdress;
 		this.porta = porta;
 		this.tipoReaderSel = tipoReaderSel;
 	}
@@ -27,12 +27,14 @@ public class ReaderForm {
 		this.porta = porta;
 	}
 
-	public String getIpAddress() {
-		return ipAddress;
+	
+
+	public String getIpAdress() {
+		return ipAdress;
 	}
 
-	public void setIpAddress(String ipAddress) {
-		this.ipAddress = ipAddress;
+	public void setIpAdress(String ipAdress) {
+		this.ipAdress = ipAdress;
 	}
 
 	public String getTipoReaderSel() {

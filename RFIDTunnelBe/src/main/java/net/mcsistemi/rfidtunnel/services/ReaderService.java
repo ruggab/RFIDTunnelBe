@@ -28,7 +28,7 @@ public class ReaderService implements IReaderService {
 	public List<Reader> createReader(ReaderForm readerForm) {
 		 Reader reader = new Reader();
 		 reader.setIdTipoReader(new Long(readerForm.getTipoReaderSel()));
-		 reader.setIpadress(readerForm.getIpAddress());
+		 reader.setIpadress(readerForm.getIpAdress());
 		 reader.setPort(readerForm.getPorta());
 		 readerRepository.save(reader);
 		 //
