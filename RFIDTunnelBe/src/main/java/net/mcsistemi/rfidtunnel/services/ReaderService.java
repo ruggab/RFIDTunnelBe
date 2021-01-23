@@ -25,12 +25,20 @@ public class ReaderService implements IReaderService {
 		return tipoReaderRepository.findAll();
 	}
 
-	public List<Reader> createReader(ReaderForm readerForm) {
+	public List<Reader> createReader(ReaderForm readerForm) throws Exception  {
+		
+		 List<Reader> list = readerRepository.findByIpAdressAndPorta(readerForm.getIpAdress(), readerForm.getPorta());
+		 if (list.size() > 1) {
+			 throw new Exception("Attenzione IP e Porta già in uso per altro Reader");
+		 }
+		 //
 		 Reader reader = new Reader();
 		 reader.setIdTipoReader(new Long(readerForm.getTipoReaderSel()));
 		 reader.setIpAdress(readerForm.getIpAdress());
 		 reader.setPorta(readerForm.getPorta());
 		 readerRepository.save(reader);
+		 
+		 
 		 //
 		 List<Reader> readerList = readerRepository.findAll();
 		 return readerList;

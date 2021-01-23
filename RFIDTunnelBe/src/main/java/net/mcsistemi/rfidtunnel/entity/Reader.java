@@ -48,7 +48,7 @@ public class Reader {
 	}
 
 
-	public String getIpadress() {
+	public String getIpAdress() {
 		return ipAdress;
 	}
 
