@@ -24,6 +24,9 @@ public class Reader {
 	@Column(length = 4)
 	protected String porta;
 	
+	@Column(length = 1)
+	protected String separatore;
+	
 	
 	
 	public Reader(){}

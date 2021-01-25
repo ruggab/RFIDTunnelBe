@@ -12,10 +12,26 @@ public class ReaderRfidWirama extends Reader {
 	private String antenna1;
 	@Column(length = 30)
 	private String antenna2;
-	@Column(length = 30)
-	private String antenna3;
-
+	
 	public ReaderRfidWirama() {
 	}
+
+	public String getAntenna1() {
+		return antenna1;
+	}
+
+	public void setAntenna1(String antenna1) {
+		this.antenna1 = antenna1;
+	}
+
+	public String getAntenna2() {
+		return antenna2;
+	}
+
+	public void setAntenna2(String antenna2) {
+		this.antenna2 = antenna2;
+	}
+	
+	
 
 }

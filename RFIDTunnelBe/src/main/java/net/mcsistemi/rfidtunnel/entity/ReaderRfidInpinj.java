@@ -18,4 +18,29 @@ public class ReaderRfidInpinj extends Reader {
 	public ReaderRfidInpinj() {
 	}
 
+	public String getAntenna3() {
+		return antenna3;
+	}
+
+	public void setAntenna3(String antenna3) {
+		this.antenna3 = antenna3;
+	}
+
+	public String getAntenna4() {
+		return antenna4;
+	}
+
+	public void setAntenna4(String antenna4) {
+		this.antenna4 = antenna4;
+	}
+
+	public String getAntenna5() {
+		return antenna5;
+	}
+
+	public void setAntenna5(String antenna5) {
+		this.antenna5 = antenna5;
+	}
+	
+
 }
