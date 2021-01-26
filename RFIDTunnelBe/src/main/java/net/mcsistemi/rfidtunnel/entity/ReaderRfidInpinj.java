@@ -4,6 +4,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import net.mcsistemi.rfidtunnel.model.ReaderForm;
+
 @Entity
 @Table(name = "reader_rfid_inpinj")
 public class ReaderRfidInpinj extends Reader {
@@ -16,6 +18,15 @@ public class ReaderRfidInpinj extends Reader {
 	private String antenna5;
 
 	public ReaderRfidInpinj() {
+	}
+	
+	public ReaderRfidInpinj(ReaderForm form) {
+		this.ipAdress = form.getIpAdress();
+		this.porta = form.getPorta();
+		this.separatore = form.getSeparatore();
+		this.antenna3 = form.getAntenna3();
+		this.antenna4 = form.getAntenna4();
+		this.antenna5 = form.getAntenna5();
 	}
 
 	public String getAntenna3() {

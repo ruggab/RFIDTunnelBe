@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import net.mcsistemi.rfidtunnel.entity.Reader;
+import net.mcsistemi.rfidtunnel.entity.ReaderFactory;
+import net.mcsistemi.rfidtunnel.entity.ReaderRfidInpinj;
 import net.mcsistemi.rfidtunnel.entity.TipoReader;
 import net.mcsistemi.rfidtunnel.model.ReaderForm;
 import net.mcsistemi.rfidtunnel.repository.ReaderRepository;
@@ -35,12 +37,8 @@ public class ReaderService implements IReaderService {
 			 throw new Exception("Attenzione IP e Porta già in uso per altro Reader");
 		 }
 		 //
-		 Reader reader = new Reader();
-		 reader.setIdTipoReader(new Long(readerForm.getTipoReaderSel()));
-		 reader.setIpAdress(readerForm.getIpAdress());
-		 reader.setPorta(readerForm.getPorta());
+		 Reader reader = ReaderFactory.getReader(readerForm);
 		 readerRepository.save(reader);
-		 
 		 
 		 //
 		 List<Reader> readerList = readerRepository.findAll();
@@ -61,6 +59,17 @@ public class ReaderService implements IReaderService {
 		return readerList;
 	}
 	
-	
+	public void updateReader(ReaderForm readerForm) throws Exception  {
+		
+		 List<Reader> list = readerRepository.findByIpAdressAndPorta(readerForm.getIpAdress(), readerForm.getPorta());
+		 if (list.size() > 0) {
+			 Reader reader = list.get(0);
+			 readerRepository.deleteById(reader.getId());
+		 }
+		 //
+		 Reader reader = ReaderFactory.getReader(readerForm);
+		 readerRepository.save(reader);
+		 
+	}
 	
 }
