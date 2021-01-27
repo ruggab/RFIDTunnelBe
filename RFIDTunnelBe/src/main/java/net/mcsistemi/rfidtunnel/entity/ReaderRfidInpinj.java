@@ -21,9 +21,9 @@ public class ReaderRfidInpinj extends Reader {
 	}
 	
 	public ReaderRfidInpinj(ReaderForm form) {
-		this.ipAdress = form.getIpAdress();
-		this.porta = form.getPorta();
-		this.separatore = form.getSeparatore();
+		
+		super(form);
+		
 		this.antenna3 = form.getAntenna3();
 		this.antenna4 = form.getAntenna4();
 		this.antenna5 = form.getAntenna5();

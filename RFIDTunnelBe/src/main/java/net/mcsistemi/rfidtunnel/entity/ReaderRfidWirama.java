@@ -19,12 +19,9 @@ public class ReaderRfidWirama extends Reader {
 	}
 	
 	public ReaderRfidWirama(ReaderForm form) {
-		this.ipAdress = form.getIpAdress();
-		this.porta = form.getPorta();
-		this.separatore = form.getSeparatore();
+		super(form);
 		this.antenna1 = form.getAntenna1();
 		this.antenna2 = form.getAntenna2();
-		
 	}
 
 	public String getAntenna1() {

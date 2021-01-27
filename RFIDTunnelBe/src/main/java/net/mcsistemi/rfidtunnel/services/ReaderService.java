@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import net.mcsistemi.rfidtunnel.entity.Reader;
 import net.mcsistemi.rfidtunnel.entity.ReaderFactory;
 import net.mcsistemi.rfidtunnel.entity.ReaderRfidInpinj;
+import net.mcsistemi.rfidtunnel.entity.ReaderRfidWirama;
 import net.mcsistemi.rfidtunnel.entity.TipoReader;
 import net.mcsistemi.rfidtunnel.model.ReaderForm;
 import net.mcsistemi.rfidtunnel.repository.ReaderRepository;
@@ -70,6 +71,30 @@ public class ReaderService implements IReaderService {
 		 Reader reader = ReaderFactory.getReader(readerForm);
 		 readerRepository.save(reader);
 		 
+	}
+	
+	public String startReader(ReaderForm readerForm) throws Exception  {
+		 String ret  = "OK";
+		 try {
+			
+		
+		 List<Reader> list = readerRepository.findByIpAdressAndPorta(readerForm.getIpAdress(), readerForm.getPorta());
+		 if (list.size() > 0) {
+			 throw new Exception("Attenzione Reader Ambiguo");
+		 }
+		 //
+		 Reader reader = list.get(0);
+		 if (reader instanceof ReaderRfidWirama) {
+			 reader.get
+		 }
+		 if (reader instanceof ReaderRfidInpinj) {
+			 reader.get
+		 }
+		 
+		 } catch (Exception e) {
+			 ret  = "KO";
+		 }
+		 return ret;
 	}
 	
 }

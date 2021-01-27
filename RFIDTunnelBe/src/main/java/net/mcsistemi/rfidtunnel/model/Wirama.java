@@ -14,6 +14,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.mcsistemi.rfidtunnel.entity.TunnelLog;
 import net.mcsistemi.rfidtunnel.entity.WiramaStream;
 import net.mcsistemi.rfidtunnel.job.TunnelJob;
 import net.mcsistemi.rfidtunnel.repository.TunnelLogRepository;

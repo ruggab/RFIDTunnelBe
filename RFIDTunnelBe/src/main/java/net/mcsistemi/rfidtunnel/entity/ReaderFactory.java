@@ -7,8 +7,8 @@ public class ReaderFactory {
 
 	public static Reader getReader(ReaderForm form) {
 		Reader retval = null;
-		
-		switch (form.getTipoReaderSel()) {
+		String tipoReader = form.getTipoReaderSel() == null ? "" : form.getTipoReaderSel();
+		switch (tipoReader) {
 		case "":
 			retval = new Reader(form);
 			break;

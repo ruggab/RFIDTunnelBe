@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import net.mcsistemi.rfidtunnel.model.TunnelLog;
+import net.mcsistemi.rfidtunnel.entity.TunnelLog;
 
 public interface TunnelLogRepository extends JpaRepository<TunnelLog, Long> {
 

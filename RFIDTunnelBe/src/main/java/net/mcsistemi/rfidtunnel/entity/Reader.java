@@ -40,6 +40,7 @@ public class Reader {
 		this.ipAdress = form.getIpAdress();
 		this.porta = form.getPorta();
 		this.separatore = form.getSeparatore();
+		this.idTipoReader = new Long(form.getTipoReaderSel());
 	}
 
 	public Long getId() {

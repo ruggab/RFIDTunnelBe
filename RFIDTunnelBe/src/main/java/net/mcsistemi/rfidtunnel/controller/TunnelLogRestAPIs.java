@@ -8,7 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import net.mcsistemi.rfidtunnel.model.TunnelLog;
+
+import net.mcsistemi.rfidtunnel.entity.TunnelLog;
 import net.mcsistemi.rfidtunnel.repository.TunnelLogRepository;
 
 @RestController

@@ -1,4 +1,4 @@
-package net.mcsistemi.rfidtunnel.model;
+package net.mcsistemi.rfidtunnel.entity;
 
 import java.util.Date;
 
