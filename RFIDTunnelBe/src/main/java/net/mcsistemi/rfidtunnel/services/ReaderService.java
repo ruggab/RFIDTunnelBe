@@ -85,10 +85,10 @@ public class ReaderService implements IReaderService {
 		 //
 		 Reader reader = list.get(0);
 		 if (reader instanceof ReaderRfidWirama) {
-			 reader.get
+			 //reader.get
 		 }
 		 if (reader instanceof ReaderRfidInpinj) {
-			 reader.get
+			 //reader.get
 		 }
 		 
 		 } catch (Exception e) {
