@@ -42,9 +42,9 @@ public class ReaderRestAPIs {
 	}
 	
 	@PostMapping("/creaReader")
-	public List<Reader> creaReader(@RequestBody ReaderForm readerForm) throws Exception, ResourceNotFoundException {
+	public void creaReader(@RequestBody ReaderForm readerForm) throws Exception, ResourceNotFoundException {
 		try {
-			return readerService.createReader(readerForm);
+			readerService.createReader(readerForm);
 		} catch (Exception e) {
 			throw e;
 		}
@@ -63,9 +63,9 @@ public class ReaderRestAPIs {
 	
 	
 	@DeleteMapping("/deleteReader/{id}")
-	public List<Reader> deleteReader(@PathVariable(value = "id") Long readerId) throws Exception {
+	public void deleteReader(@PathVariable(value = "id") Long readerId) throws Exception {
 		try {
-			return readerService.deleteReader(readerId);
+			readerService.deleteReader(readerId);
 		} catch (Exception e) {
 			throw e;
 		}
