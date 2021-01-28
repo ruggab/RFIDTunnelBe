@@ -4,7 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import net.mcsistemi.rfidtunnel.model.ReaderForm;
+import net.mcsistemi.rfidtunnel.form.ReaderForm;
 
 @Entity
 @Table(name = "reader_rfid_wirama")

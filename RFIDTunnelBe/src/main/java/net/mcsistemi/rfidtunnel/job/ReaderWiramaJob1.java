@@ -1,4 +1,4 @@
-package net.mcsistemi.rfidtunnel.model;
+package net.mcsistemi.rfidtunnel.job;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,11 +16,10 @@ import org.slf4j.LoggerFactory;
 
 import net.mcsistemi.rfidtunnel.entity.TunnelLog;
 import net.mcsistemi.rfidtunnel.entity.WiramaStream;
-import net.mcsistemi.rfidtunnel.job.TunnelJob;
 import net.mcsistemi.rfidtunnel.repository.TunnelLogRepository;
 import net.mcsistemi.rfidtunnel.repository.WiramaStreamRepository;
 
-public class Wirama implements Runnable {
+public class ReaderWiramaJob1 implements Runnable {
 
 	private String ip;
 	private int port;
@@ -31,11 +30,13 @@ public class Wirama implements Runnable {
 	Socket echoSocket = null;
 	boolean running = true;
 
-	Logger logger = LoggerFactory.getLogger(Wirama.class);
+	Logger logger = LoggerFactory.getLogger(ReaderWiramaJob1.class);
 
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+	
 
-	public Wirama(String ip, int port, WiramaStreamRepository repository, String path, TunnelLogRepository logRep) {
+
+	public ReaderWiramaJob1(String ip, int port, WiramaStreamRepository repository, String path, TunnelLogRepository logRep) {
 		this.ip = ip;
 		this.port = port;
 		this.repository = repository;
@@ -84,44 +85,44 @@ public class Wirama implements Runnable {
 					if (xx.equalsIgnoreCase("LOT_stop"))
 						op = "LOT_stop";
 
-					switch (op) {
-					case "LOT_start":
-
-						logger.info("packId (Wirama): " + TunnelJob.packId);
-						if (TunnelJob.packId == null)
-							TunnelJob.packId = "???????????????";
-						ws.clear();
-
-						break;
-					case "LOT":
-
-						// logger.info(readed[3]);
-						ws.add(new WiramaStream(TunnelJob.packId, readed[3], new Date()));
-
-						break;
-					case "LOT_stop":
-
-						logger.info("Pack Count " + ws.size());
-
-						repository.saveAll(ws);
-
-						String fileName = path + TunnelJob.packId + ".txt";
-						// Write CSV File
-						if (TunnelJob.packId == null) {
-							fileName = path + "No_Barcode_" + sdf.format(new Date()) + ".txt";
-						}
-
-						PrintWriter writer = new PrintWriter(fileName, "UTF-8");
-						for (WiramaStream s : ws) {
-							writer.println(s.getEpc());
-						}
-						writer.close();
-
-						TunnelJob.packId = null;
-						ws.clear();
-
-						break;
-					}
+//					switch (op) {
+//					case "LOT_start":
+//
+//						logger.info("packId (Wirama): " + TunnelJob.packId);
+////						if (TunnelJob.packId == null)
+////							TunnelJob.packId = "???????????????";
+//						ws.clear();
+//
+//						break;
+//					case "LOT":
+//
+//						// logger.info(readed[3]);
+//						ws.add(new WiramaStream(TunnelJob.packId, readed[3], new Date()));
+//
+//						break;
+//					case "LOT_stop":
+//
+//						logger.info("Pack Count " + ws.size());
+//
+//						repository.saveAll(ws);
+//
+//						String fileName = path + TunnelJob.packId + ".txt";
+//						// Write CSV File
+//						if (TunnelJob.packId == null) {
+//							fileName = path + "No_Barcode_" + sdf.format(new Date()) + ".txt";
+//						}
+//
+//						PrintWriter writer = new PrintWriter(fileName, "UTF-8");
+//						for (WiramaStream s : ws) {
+//							writer.println(s.getEpc());
+//						}
+//						writer.close();
+//
+//						TunnelJob.packId = null;
+//						ws.clear();
+//
+//						break;
+//					}
 
 				} catch (Exception e) {
 					// e.printStackTrace();

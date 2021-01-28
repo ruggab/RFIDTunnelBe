@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import net.mcsistemi.rfidtunnel.entity.ScannerStream;
 import net.mcsistemi.rfidtunnel.entity.WiramaStream;
-import net.mcsistemi.rfidtunnel.job.TunnelJob;
+//import net.mcsistemi.rfidtunnel.job.TunnelJob;
 import net.mcsistemi.rfidtunnel.model.SimpleMessage;
 import net.mcsistemi.rfidtunnel.repository.PropertiesRepository;
 import net.mcsistemi.rfidtunnel.repository.ScannerStreamRepository;
@@ -98,9 +98,9 @@ public class WiramaStreamRestAPIs {
     		
     		String fileName = PATH+packId+".txt";
         	// Write CSV File
-        	if(TunnelJob.packId==null) {
-        		fileName = PATH+"No_Barcode_"+sdf.format(new Date())+".txt";
-        	}
+//        	if(TunnelJob.packId==null) {
+//        		fileName = PATH+"No_Barcode_"+sdf.format(new Date())+".txt";
+//        	}
         	
         	PrintWriter writer = new PrintWriter(fileName, "UTF-8");
         	for(WiramaStream s : ws) {

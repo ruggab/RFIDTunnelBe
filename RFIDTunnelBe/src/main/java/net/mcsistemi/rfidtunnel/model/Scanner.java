@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 
 import net.mcsistemi.rfidtunnel.entity.ScannerStream;
 import net.mcsistemi.rfidtunnel.entity.TunnelLog;
-import net.mcsistemi.rfidtunnel.job.TunnelJob;
 import net.mcsistemi.rfidtunnel.repository.ScannerStreamRepository;
 import net.mcsistemi.rfidtunnel.repository.TunnelLogRepository;
 
@@ -69,7 +68,7 @@ public class Scanner implements Runnable {
             	try {
             		
             		if(!packId.equals("000000000000000")) {
-	            		TunnelJob.packId = packId;
+	            		//TunnelJob.packId = packId;
 	            		
 	            		// delete old wirama / scanner
 	            		repository.deleteWiramaByPackId(packId);

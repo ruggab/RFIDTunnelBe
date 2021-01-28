@@ -1,4 +1,4 @@
-package net.mcsistemi.rfidtunnel.model;
+package net.mcsistemi.rfidtunnel.form;
 
 public class LoginForm {
 

@@ -7,7 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import net.mcsistemi.rfidtunnel.model.ReaderForm;
+import net.mcsistemi.rfidtunnel.form.ReaderForm;
 
 /**
  * @author Gabriele

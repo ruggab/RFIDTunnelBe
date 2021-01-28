@@ -1,19 +1,18 @@
 package net.mcsistemi.rfidtunnel.services;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+
 import net.mcsistemi.rfidtunnel.entity.Reader;
 import net.mcsistemi.rfidtunnel.entity.ReaderFactory;
 import net.mcsistemi.rfidtunnel.entity.ReaderRfidInpinj;
 import net.mcsistemi.rfidtunnel.entity.ReaderRfidWirama;
 import net.mcsistemi.rfidtunnel.entity.TipoReader;
-import net.mcsistemi.rfidtunnel.model.ReaderForm;
+import net.mcsistemi.rfidtunnel.form.ReaderForm;
+import net.mcsistemi.rfidtunnel.job.ControlSubThread;
+import net.mcsistemi.rfidtunnel.job.ReaderWiramaJob;
 import net.mcsistemi.rfidtunnel.repository.ReaderRepository;
 import net.mcsistemi.rfidtunnel.repository.TipoReaderRepository;
 
@@ -53,7 +52,7 @@ public class ReaderService implements IReaderService {
 	}
 	
 	
-	public List<Reader> deleteEmployee(Long readerId) throws Exception {
+	public List<Reader> deleteReader(Long readerId) throws Exception {
 		
 		readerRepository.deleteById(readerId);
 		List<Reader> readerList = readerRepository.findAll();
@@ -77,15 +76,17 @@ public class ReaderService implements IReaderService {
 		 String ret  = "OK";
 		 try {
 			
-		
+	     Reader reader = null;
 		 List<Reader> list = readerRepository.findByIpAdressAndPorta(readerForm.getIpAdress(), readerForm.getPorta());
 		 if (list.size() > 0) {
-			 throw new Exception("Attenzione Reader Ambiguo");
+			 reader = list.get(0);
 		 }
-		 //
-		 Reader reader = list.get(0);
+		 
 		 if (reader instanceof ReaderRfidWirama) {
-			 //reader.get
+			 
+			 ReaderWiramaJob readerWiramaJob = new  ReaderWiramaJob((ReaderRfidWirama)reader);
+			 ControlSubThread.addThread(reader.getId(), readerWiramaJob);
+			 readerWiramaJob.start();
 		 }
 		 if (reader instanceof ReaderRfidInpinj) {
 			 //reader.get
@@ -96,5 +97,34 @@ public class ReaderService implements IReaderService {
 		 }
 		 return ret;
 	}
+
+	public String stopReader(ReaderForm readerForm) throws Exception  {
+		 String ret  = "OK";
+		 try {
+			
+		
+		 List<Reader> list = readerRepository.findByIpAdressAndPorta(readerForm.getIpAdress(), readerForm.getPorta());
+//		 if (list.size() > 0) {
+//			 throw new Exception("Attenzione Reader Ambiguo");
+//		 }
+		 //
+		 
+		 Reader reader = list.get(0);
+		 if (reader instanceof ReaderRfidWirama) {
+			
+			 ReaderWiramaJob readerWiramaJob = (ReaderWiramaJob)ControlSubThread.getThread(reader.getId());
+			 readerWiramaJob.stop();
+
+		 }
+		 if (reader instanceof ReaderRfidInpinj) {
+			 //reader.get
+		 }
+		 
+		 } catch (Exception e) {
+			 ret  = "KO";
+		 }
+		 return ret;
+	}
+
 	
 }

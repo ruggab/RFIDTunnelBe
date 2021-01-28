@@ -1,6 +1,6 @@
 package net.mcsistemi.rfidtunnel.entity;
 
-import net.mcsistemi.rfidtunnel.model.ReaderForm;
+import net.mcsistemi.rfidtunnel.form.ReaderForm;
 
 public class ReaderFactory {
 	

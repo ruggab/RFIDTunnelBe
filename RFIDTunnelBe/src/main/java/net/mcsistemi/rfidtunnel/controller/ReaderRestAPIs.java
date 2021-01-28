@@ -1,7 +1,10 @@
 package net.mcsistemi.rfidtunnel.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import net.mcsistemi.rfidtunnel.entity.Reader;
 import net.mcsistemi.rfidtunnel.entity.TipoReader;
 import net.mcsistemi.rfidtunnel.exception.ResourceNotFoundException;
-import net.mcsistemi.rfidtunnel.model.ReaderForm;
+import net.mcsistemi.rfidtunnel.form.ReaderForm;
 import net.mcsistemi.rfidtunnel.services.ReaderService;
 
 @RestController
@@ -47,7 +50,7 @@ public class ReaderRestAPIs {
 		}
 
 	}
-	
+	 
   
 	@GetMapping("/allreader")
 	public List<Reader> getAllReader() throws Exception, ResourceNotFoundException {
@@ -60,9 +63,9 @@ public class ReaderRestAPIs {
 	
 	
 	@DeleteMapping("/deleteReader/{id}")
-	public List<Reader> deleteEmployee(@PathVariable(value = "id") Long readerId) throws Exception {
+	public List<Reader> deleteReader(@PathVariable(value = "id") Long readerId) throws Exception {
 		try {
-			return readerService.deleteEmployee(readerId);
+			return readerService.deleteReader(readerId);
 		} catch (Exception e) {
 			throw e;
 		}
@@ -78,10 +81,28 @@ public class ReaderRestAPIs {
 
 	}
 	
-	@PostMapping("/creaReader")
-	public String startReader(@RequestBody ReaderForm readerForm) throws Exception, ResourceNotFoundException {
+	@PostMapping("/startReader")
+	public Map<String, String>  startReader(@RequestBody ReaderForm readerForm) throws Exception, ResourceNotFoundException {
 		try {
-			return readerService.startReader(readerForm);
+			readerService.startReader(readerForm);
+			Map<String, String> response = new HashMap<>();
+			response.put("stato", "ok");
+			response.put("msg", "Reader started");
+			return response;
+		} catch (Exception e) {
+			throw e;
+		}
+
+	}
+	
+	@PostMapping("/stopReader")
+	public Map<String, String> stopReader(@RequestBody ReaderForm readerForm) throws Exception, ResourceNotFoundException {
+		try {
+			readerService.stopReader(readerForm);
+			Map<String, String> response = new HashMap<>();
+			response.put("stato", "ok");
+			response.put("msg", "Reader stopped");
+			return response;
 		} catch (Exception e) {
 			throw e;
 		}
