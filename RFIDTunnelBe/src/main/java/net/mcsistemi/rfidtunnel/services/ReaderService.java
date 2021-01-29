@@ -1,5 +1,7 @@
 package net.mcsistemi.rfidtunnel.services;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +12,13 @@ import net.mcsistemi.rfidtunnel.entity.ReaderFactory;
 import net.mcsistemi.rfidtunnel.entity.ReaderRfidInpinj;
 import net.mcsistemi.rfidtunnel.entity.ReaderRfidWirama;
 import net.mcsistemi.rfidtunnel.entity.TipoReader;
+import net.mcsistemi.rfidtunnel.entity.TunnelLog;
 import net.mcsistemi.rfidtunnel.form.ReaderForm;
 import net.mcsistemi.rfidtunnel.job.ControlSubThread;
 import net.mcsistemi.rfidtunnel.job.ReaderWiramaJob;
 import net.mcsistemi.rfidtunnel.repository.ReaderRepository;
 import net.mcsistemi.rfidtunnel.repository.TipoReaderRepository;
+import net.mcsistemi.rfidtunnel.repository.TunnelLogRepository;
 
 @Service
 public class ReaderService implements IReaderService {
@@ -25,6 +29,9 @@ public class ReaderService implements IReaderService {
 	@Autowired
 	private ReaderRepository readerRepository;
 
+	@Autowired
+	private TunnelLogRepository tunnelLogRepository;
+	
 	public List<TipoReader> findAllTipoReader() {
 		return tipoReaderRepository.findAll();
 	}
@@ -81,7 +88,7 @@ public class ReaderService implements IReaderService {
 
 			if (reader instanceof ReaderRfidWirama) {
 
-				ReaderWiramaJob readerWiramaJob = new ReaderWiramaJob((ReaderRfidWirama) reader);
+				ReaderWiramaJob readerWiramaJob = new ReaderWiramaJob((ReaderRfidWirama) reader, this);
 				ControlSubThread.addThread(reader.getId(), readerWiramaJob);
 				readerWiramaJob.start();
 			}
@@ -120,6 +127,14 @@ public class ReaderService implements IReaderService {
 			ret = "KO";
 		}
 		return ret;
+	}
+	
+	public void createReaderlog(String ipAdress, String port, Date time, String msg) throws Exception {
+		TunnelLog tunnelLog = new TunnelLog();
+		tunnelLog.setTimeStamp(time);
+		tunnelLog.setMessage(msg);
+		
+		tunnelLogRepository.save(tunnelLog);
 	}
 
 }
