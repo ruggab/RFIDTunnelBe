@@ -32,6 +32,8 @@ public class Reader {
 
 	@Column(length = 1)
 	protected String separatore;
+	
+	
 
 	public Reader() {
 	}

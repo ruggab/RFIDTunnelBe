@@ -3,6 +3,7 @@ package net.mcsistemi.rfidtunnel.services;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,15 +36,28 @@ public class ReaderService implements IReaderService {
 	public List<TipoReader> findAllTipoReader() {
 		return tipoReaderRepository.findAll();
 	}
+	
+	public Reader getReaderById(Long readerId) throws Exception {
 
-	public void createReader(ReaderForm readerForm) throws Exception {
+		Optional<Reader> reader = readerRepository.findById(readerId);
+		
+		return reader.get();
 
-		List<Reader> list = readerRepository.findByIpAdressAndPorta(readerForm.getIpAdress(), readerForm.getPorta());
+	}
+
+	public void createReader(Reader reader) throws Exception {
+		Reader rr = null;
+		if (reader.getIdTipoReader() == 1) {
+			 rr = (ReaderRfidInpinj)reader;
+		} else {
+			rr = (ReaderRfidWirama)reader;
+		}
+		List<Reader> list = readerRepository.findByIpAdressAndPorta(reader.getIpAdress(), reader.getPorta());
 		if (list.size() > 0) {
 			throw new Exception("Attenzione IP e Porta già in uso per altro Reader");
 		}
 		//
-		Reader reader = ReaderFactory.getReader(readerForm);
+		//Reader reader = ReaderFactory.getReader(readerForm);
 		readerRepository.save(reader);
 
 		//
@@ -63,16 +77,20 @@ public class ReaderService implements IReaderService {
 
 	}
 
-	public void updateReader(ReaderForm readerForm) throws Exception {
-
-		List<Reader> list = readerRepository.findByIpAdressAndPorta(readerForm.getIpAdress(), readerForm.getPorta());
-		if (list.size() > 0) {
-			Reader reader = list.get(0);
-			readerRepository.deleteById(reader.getId());
+	public void updateReader(Reader reader) throws Exception {
+		
+		readerRepository.deleteById(reader.getId());
+		
+		Reader rr = null;
+		if (reader.getIdTipoReader() == 1) {
+			 rr = (ReaderRfidInpinj)reader;
+		} else {
+			rr = (ReaderRfidWirama)reader;
 		}
+		
 		//
-		Reader reader = ReaderFactory.getReader(readerForm);
-		readerRepository.save(reader);
+		//Reader reader = ReaderFactory.getReader(readerForm);
+		readerRepository.save(rr);
 
 	}
 

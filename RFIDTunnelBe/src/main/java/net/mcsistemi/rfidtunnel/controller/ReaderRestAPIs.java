@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import net.mcsistemi.rfidtunnel.entity.Reader;
+import net.mcsistemi.rfidtunnel.entity.ReaderRfidInpinj;
+import net.mcsistemi.rfidtunnel.entity.ReaderRfidWirama;
 import net.mcsistemi.rfidtunnel.entity.TipoReader;
 import net.mcsistemi.rfidtunnel.exception.ResourceNotFoundException;
 import net.mcsistemi.rfidtunnel.form.ReaderForm;
@@ -41,16 +43,32 @@ public class ReaderRestAPIs {
 		return listTipoReader;
 	}
 	
-	@PostMapping("/creaReader")
-	public void creaReader(@RequestBody ReaderForm readerForm) throws Exception, ResourceNotFoundException {
+	@GetMapping("/reader/{id}")
+	public Reader getReaderById(@PathVariable(value = "id") Long readerId) throws Exception {
 		try {
-			readerService.createReader(readerForm);
+			return readerService.getReaderById(readerId);
 		} catch (Exception e) {
 			throw e;
 		}
-
+	}
+	
+	@PostMapping("/creaReaderInpinj")
+	public void creaReaderInpinj(@RequestBody ReaderRfidInpinj reader) throws Exception, ResourceNotFoundException {
+		try {
+			readerService.createReader(reader);
+		} catch (Exception e) {
+			throw e;
+		}
 	}
 	 
+	@PostMapping("/creaReaderWirama")
+	public void creaReaderWirama(@RequestBody ReaderRfidWirama reader) throws Exception, ResourceNotFoundException {
+		try {
+			readerService.createReader(reader);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
   
 	@GetMapping("/allreader")
 	public List<Reader> getAllReader() throws Exception, ResourceNotFoundException {
@@ -72,13 +90,30 @@ public class ReaderRestAPIs {
 	}
 	
 	@PutMapping("/updateReader")
-	public void updateReader(@RequestBody ReaderForm readerForm) throws Exception, ResourceNotFoundException {
+	public void updateReader(@RequestBody Reader reader) throws Exception, ResourceNotFoundException {
 		try {
-			readerService.updateReader(readerForm);
+			readerService.updateReader(reader);
 		} catch (Exception e) {
 			throw e;
 		}
-
+	}
+	
+	@PutMapping("/updateReaderInpinj")
+	public void updateReaderInpinj(@RequestBody ReaderRfidInpinj reader) throws Exception, ResourceNotFoundException {
+		try {
+			readerService.updateReader(reader);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	@PutMapping("/updateReaderWirama")
+	public void updateReaderWirama(@RequestBody ReaderRfidWirama reader) throws Exception, ResourceNotFoundException {
+		try {
+			readerService.updateReader(reader);
+		} catch (Exception e) {
+			throw e;
+		}
 	}
 	
 	@PostMapping("/startReader")
