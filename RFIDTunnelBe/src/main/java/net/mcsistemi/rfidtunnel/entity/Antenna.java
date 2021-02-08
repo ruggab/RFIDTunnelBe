@@ -16,6 +16,7 @@ public class Antenna {
 	@Column(name="id")
     private Long id;
 	
+	private Long position;
 	
     private Long idReader;
 	
@@ -87,6 +88,16 @@ public class Antenna {
 
 	public void setSensitivityinDbm(float sensitivityinDbm) {
 		this.sensitivityinDbm = sensitivityinDbm;
+	}
+
+
+	public Long getPosition() {
+		return position;
+	}
+
+
+	public void setPosition(Long position) {
+		this.position = position;
 	}
 
 	

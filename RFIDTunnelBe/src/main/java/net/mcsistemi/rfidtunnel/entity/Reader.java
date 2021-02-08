@@ -1,13 +1,15 @@
 package net.mcsistemi.rfidtunnel.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-import net.mcsistemi.rfidtunnel.form.ReaderForm;
+import javax.persistence.Transient;
 
 /**
  * @author Gabriele
@@ -33,17 +35,18 @@ public class Reader {
 	@Column(length = 1)
 	protected String separatore;
 	
-	
+	@Transient
+	protected List<Antenna> listAntenna = new ArrayList<Antenna>();
 
 	public Reader() {
 	}
 
-	public Reader(ReaderForm form) {
-		this.ipAdress = form.getIpAdress();
-		this.porta = form.getPorta();
-		this.separatore = form.getSeparatore();
-		this.idTipoReader = new Long(form.getTipoReaderSel());
-	}
+//	public Reader(ReaderForm form) {
+//		this.ipAdress = form.getIpAdress();
+//		this.porta = form.getPorta();
+//		this.separatore = form.getSeparatore();
+//		this.idTipoReader = new Long(form.getTipoReaderSel());
+//	}
 
 	public Long getId() {
 		return id;
@@ -84,5 +87,15 @@ public class Reader {
 	public void setSeparatore(String separatore) {
 		this.separatore = separatore;
 	}
+
+	public List<Antenna> getListAntenna() {
+		return listAntenna;
+	}
+
+	public void setListAntenna(List<Antenna> listAntenna) {
+		this.listAntenna = listAntenna;
+	}
+	
+	
 
 }

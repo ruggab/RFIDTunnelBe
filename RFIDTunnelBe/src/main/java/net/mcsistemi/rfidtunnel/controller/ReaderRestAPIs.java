@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import net.mcsistemi.rfidtunnel.entity.Antenna;
 import net.mcsistemi.rfidtunnel.entity.Reader;
 import net.mcsistemi.rfidtunnel.entity.ReaderRfidInpinj;
 import net.mcsistemi.rfidtunnel.entity.ReaderRfidWirama;
@@ -74,6 +75,15 @@ public class ReaderRestAPIs {
 	public List<Reader> getAllReader() throws Exception, ResourceNotFoundException {
 		try {
 			return readerService.getAllReader();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	@GetMapping("/allAntenna/{id}")
+	public List<Antenna> getAllAntenna(@PathVariable(value = "id") Long readerId) throws Exception, ResourceNotFoundException {
+		try {
+			return readerService.getAllAntenna(readerId);
 		} catch (Exception e) {
 			throw e;
 		}
