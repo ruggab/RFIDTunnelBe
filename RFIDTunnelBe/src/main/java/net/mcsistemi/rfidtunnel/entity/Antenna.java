@@ -19,6 +19,8 @@ public class Antenna {
 	private Long position;
 	
     private Long idReader;
+    
+    private boolean enable;
 	
 	private boolean maxRxSensitivity;
 	
@@ -98,6 +100,16 @@ public class Antenna {
 
 	public void setPosition(Long position) {
 		this.position = position;
+	}
+
+
+	public boolean isEnable() {
+		return enable;
+	}
+
+
+	public void setEnable(boolean enable) {
+		this.enable = enable;
 	}
 
 	
