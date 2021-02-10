@@ -35,6 +35,9 @@ public class Reader {
 	@Column(length = 1)
 	protected String separatore;
 	
+
+	protected Boolean stato;
+	
 	@Transient
 	protected List<Antenna> listAntenna = new ArrayList<Antenna>();
 
@@ -94,6 +97,14 @@ public class Reader {
 
 	public void setListAntenna(List<Antenna> listAntenna) {
 		this.listAntenna = listAntenna;
+	}
+
+	public Boolean getStato() {
+		return stato;
+	}
+
+	public void setStato(Boolean stato) {
+		this.stato = stato;
 	}
 	
 	

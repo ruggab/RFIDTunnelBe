@@ -112,8 +112,9 @@ public class ReaderService implements IReaderService {
 
 	}
 
-	public String startReader(ReaderForm readerForm) throws Exception {
-		String ret = "OK";
+	public List<Reader> startReader(ReaderForm readerForm) throws Exception {
+		
+		List<Reader> listReader = null;
 		try {
 
 			Reader reader = null;
@@ -131,24 +132,27 @@ public class ReaderService implements IReaderService {
 			if (reader instanceof ReaderRfidInpinj) {
 				// reader.get
 			}
-
+			reader.setStato(true);
+			readerRepository.save(reader);
+			listReader = readerRepository.findAll();
 		} catch (Exception e) {
-			ret = "KO";
+			throw e;
 		}
-		return ret;
+		return listReader;
 	}
 
-	public String stopReader(ReaderForm readerForm) throws Exception {
-		String ret = "OK";
+	public List<Reader> stopReader(ReaderForm readerForm) throws Exception {
+		List<Reader> listReader = null;
+		
 		try {
-
+			Reader reader = null;
 			List<Reader> list = readerRepository.findByIpAdressAndPorta(readerForm.getIpAdress(), readerForm.getPorta());
 			// if (list.size() > 0) {
 			// throw new Exception("Attenzione Reader Ambiguo");
 			// }
 			//
 
-			Reader reader = list.get(0);
+			reader = list.get(0);
 			if (reader instanceof ReaderRfidWirama) {
 
 				ReaderWiramaJob readerWiramaJob = (ReaderWiramaJob) ControlSubThread.getThread(reader.getId());
@@ -158,11 +162,13 @@ public class ReaderService implements IReaderService {
 			if (reader instanceof ReaderRfidInpinj) {
 				// reader.get
 			}
-
+			reader.setStato(false);
+			readerRepository.save(reader);
+			listReader = readerRepository.findAll();
 		} catch (Exception e) {
-			ret = "KO";
+			throw e;
 		}
-		return ret;
+		return listReader;
 	}
 	
 	public void createReaderlog(String ipAdress, String port, Date time, String msg) throws Exception {
