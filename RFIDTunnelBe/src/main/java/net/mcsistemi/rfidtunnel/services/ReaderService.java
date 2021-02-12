@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
+import com.impinj.octane.ImpinjReader;
+
 import net.mcsistemi.rfidtunnel.entity.Antenna;
 import net.mcsistemi.rfidtunnel.entity.Reader;
 import net.mcsistemi.rfidtunnel.entity.ReaderRfidInpinj;
@@ -18,7 +20,9 @@ import net.mcsistemi.rfidtunnel.entity.ReaderRfidWirama;
 import net.mcsistemi.rfidtunnel.entity.TipoReader;
 import net.mcsistemi.rfidtunnel.entity.TunnelLog;
 import net.mcsistemi.rfidtunnel.form.ReaderForm;
-import net.mcsistemi.rfidtunnel.job.ControlSubThread;
+import net.mcsistemi.rfidtunnel.job.WiramaPoolReader;
+import net.mcsistemi.rfidtunnel.job.ImpinjPoolReader;
+import net.mcsistemi.rfidtunnel.job.ReaderImpinjJob;
 import net.mcsistemi.rfidtunnel.job.ReaderWiramaJob;
 import net.mcsistemi.rfidtunnel.repository.AntennaRepository;
 import net.mcsistemi.rfidtunnel.repository.ReaderRepository;
@@ -62,7 +66,7 @@ public class ReaderService implements IReaderService {
 		} else {
 			rr = (ReaderRfidWirama)reader;
 		}
-		List<Reader> list = readerRepository.findByIpAdressAndPorta(reader.getIpAdress(), reader.getPorta());
+		List<Reader> list = readerRepository.findByIpAdressAndPortaOrderByIdTipoReader(reader.getIpAdress(), reader.getPorta());
 		if (list.size() > 0) {
 			throw new Exception("Attenzione IP e Porta già in uso per altro Reader");
 		}
@@ -118,7 +122,7 @@ public class ReaderService implements IReaderService {
 		try {
 
 			Reader reader = null;
-			List<Reader> list = readerRepository.findByIpAdressAndPorta(readerForm.getIpAdress(), readerForm.getPorta());
+			List<Reader> list = readerRepository.findByIpAdressAndPortaOrderByIdTipoReader(readerForm.getIpAdress(), readerForm.getPorta());
 			if (list.size() > 0) {
 				reader = list.get(0);
 			}
@@ -126,11 +130,13 @@ public class ReaderService implements IReaderService {
 			if (reader instanceof ReaderRfidWirama) {
 
 				ReaderWiramaJob readerWiramaJob = new ReaderWiramaJob((ReaderRfidWirama) reader, this);
-				ControlSubThread.addThread(reader.getId(), readerWiramaJob);
+				WiramaPoolReader.addThread(reader.getId(), readerWiramaJob);
 				readerWiramaJob.start();
 			}
 			if (reader instanceof ReaderRfidInpinj) {
-				// reader.get
+				ReaderImpinjJob readerImpinjJob = new ReaderImpinjJob((ReaderRfidInpinj) reader, this);
+				ImpinjPoolReader.addJob(reader.getId(), readerImpinjJob);
+				//readerImpinjJob.start();
 			}
 			reader.setStato(true);
 			readerRepository.save(reader);
@@ -146,7 +152,7 @@ public class ReaderService implements IReaderService {
 		
 		try {
 			Reader reader = null;
-			List<Reader> list = readerRepository.findByIpAdressAndPorta(readerForm.getIpAdress(), readerForm.getPorta());
+			List<Reader> list = readerRepository.findByIpAdressAndPortaOrderByIdTipoReader(readerForm.getIpAdress(), readerForm.getPorta());
 			// if (list.size() > 0) {
 			// throw new Exception("Attenzione Reader Ambiguo");
 			// }
@@ -155,7 +161,7 @@ public class ReaderService implements IReaderService {
 			reader = list.get(0);
 			if (reader instanceof ReaderRfidWirama) {
 
-				ReaderWiramaJob readerWiramaJob = (ReaderWiramaJob) ControlSubThread.getThread(reader.getId());
+				ReaderWiramaJob readerWiramaJob = (ReaderWiramaJob) WiramaPoolReader.getThread(reader.getId());
 				readerWiramaJob.stop();
 
 			}

@@ -59,15 +59,15 @@ public class ReaderRfidInpinj extends Reader {
 	
 //	--------- LOG FILE PARAMETERS -----------
 
-	@Column(length = 10)
-	private String createOutFile;	//S/N	
+	
+	private boolean createOutFile;	//S/N	
 	@Column(length = 10)
 	private String nameOutLog;	//Z-OUT_	
 	@Column(length = 10)
 	private String extentionOutLog;	//.log_	
 	
-	@Column(length = 1)
-	private String createErrFile;	//S/N	
+	
+	private boolean createErrFile;	//S/N	
 	@Column(length = 10)
 	private String nameErrLog;	//Z-ERR_	
 	@Column(length = 10)
@@ -253,16 +253,7 @@ public class ReaderRfidInpinj extends Reader {
 	}
 
 
-	public String getCreateOutFile() {
-		return createOutFile;
-	}
-
-
-	public void setCreateOutFile(String createOutFile) {
-		this.createOutFile = createOutFile;
-	}
-
-
+	
 	public String getNameOutLog() {
 		return nameOutLog;
 	}
@@ -280,16 +271,6 @@ public class ReaderRfidInpinj extends Reader {
 
 	public void setExtentionOutLog(String extentionOutLog) {
 		this.extentionOutLog = extentionOutLog;
-	}
-
-
-	public String getCreateErrFile() {
-		return createErrFile;
-	}
-
-
-	public void setCreateErrFile(String createErrFile) {
-		this.createErrFile = createErrFile;
 	}
 
 
@@ -320,6 +301,26 @@ public class ReaderRfidInpinj extends Reader {
 
 	public void setPrintDetails(String printDetails) {
 		this.printDetails = printDetails;
+	}
+
+
+	public boolean isCreateOutFile() {
+		return createOutFile;
+	}
+
+
+	public void setCreateOutFile(boolean createOutFile) {
+		this.createOutFile = createOutFile;
+	}
+
+
+	public boolean isCreateErrFile() {
+		return createErrFile;
+	}
+
+
+	public void setCreateErrFile(boolean createErrFile) {
+		this.createErrFile = createErrFile;
 	}
 	
 	

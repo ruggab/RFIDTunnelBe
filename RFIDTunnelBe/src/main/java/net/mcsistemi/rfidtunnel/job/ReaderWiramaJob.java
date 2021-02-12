@@ -31,9 +31,9 @@ public class ReaderWiramaJob implements Runnable {
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
 	ReaderService readerService = null;
 
-	public ReaderWiramaJob(ReaderRfidWirama confReaderWiramaJob, ReaderService readerService) {
-		this.ip = confReaderWiramaJob.getIpAdress();
-		this.port = new Integer(confReaderWiramaJob.getPorta());
+	public ReaderWiramaJob(ReaderRfidWirama readerRfidWirama, ReaderService readerService) {
+		this.ip = readerRfidWirama.getIpAdress();
+		this.port = new Integer(readerRfidWirama.getPorta());
 		this.readerService = readerService;
 	}
 
