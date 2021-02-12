@@ -18,7 +18,7 @@ public class Antenna {
 	
 	private Long position;
 	
-    private Long idReader;
+    private Long idReader; 
     
     private boolean enable;
 	
