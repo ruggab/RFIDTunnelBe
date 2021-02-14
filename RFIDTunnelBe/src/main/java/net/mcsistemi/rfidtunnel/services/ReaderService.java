@@ -175,7 +175,7 @@ public class ReaderService implements IReaderService {
 				JobImpinj jobImpinj = (JobImpinj) PoolImpinjReader.getJob(reader.getId());
 				jobImpinj.stop();
 			} catch (Exception e) {
-				throw e;
+				e.printStackTrace();
 			} finally {
 				PoolImpinjReader.removeJob(reader.getId());
 				reader.setStato(false);

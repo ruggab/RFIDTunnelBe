@@ -45,7 +45,7 @@ public class UtenteService implements IUtenteService {
 		
 		Utente utente =  null;
 		List<Utente> userList = utenteRepository.findByUsrAndPsw(usr, psw);
-		if (userList.size() == 1) {
+		if (userList.size() > 0) {
 			utente = userList.get(0);
 			utente.setListFunzioni(new ArrayList<Funzione>());
 			List<ProfiloUtente> listProfiloUtente = profiloUtenteRepository.findByIdUtente(utente.getId());
@@ -60,7 +60,7 @@ public class UtenteService implements IUtenteService {
 			}
 		
 		} else {
-			throw new Exception("Attenzione due utenti con stessa user");
+			throw new Exception("User o password errati");
 		}
 		
 		return utente;

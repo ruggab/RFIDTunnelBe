@@ -5,11 +5,15 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import net.mcsistemi.rfidtunnel.entity.ReaderRfidInpinj;
 import net.mcsistemi.rfidtunnel.entity.Utente;
+import net.mcsistemi.rfidtunnel.exception.ResourceNotFoundException;
 import net.mcsistemi.rfidtunnel.services.UtenteService;
 
 @RestController
@@ -25,6 +29,16 @@ public class UserProfileRestAPIs {
 		Utente utente = null;
 		try {
 			utente =  utenteService.getUsersByUsrAndPsw(user, password);
+		} catch (Exception e) {
+			throw e;
+		}
+		return utente;
+	}
+	
+	@PostMapping("/login")
+	public Utente login(@RequestBody Utente utente) throws Exception {
+		try {
+			utente =  utenteService.getUsersByUsrAndPsw(utente.getUsr(), utente.getPsw());
 		} catch (Exception e) {
 			throw e;
 		}
