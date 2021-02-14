@@ -127,9 +127,9 @@ public class ReaderRestAPIs {
 	}
 	
 	@PostMapping("/startReader")
-	public List<Reader>  startReader(@RequestBody ReaderForm readerForm) throws Exception, ResourceNotFoundException {
+	public List<Reader>  startReader(@RequestBody Reader reader) throws Exception, ResourceNotFoundException {
 		try {
-			List<Reader> listReader = readerService.startReader(readerForm);
+			List<Reader> listReader = readerService.startReader(reader);
 			Map<String, String> response = new HashMap<>();
 			response.put("stato", "ok");
 			response.put("msg", "Reader started");
@@ -141,9 +141,9 @@ public class ReaderRestAPIs {
 	}
 	
 	@PostMapping("/stopReader")
-	public List<Reader> stopReader(@RequestBody ReaderForm readerForm) throws Exception, ResourceNotFoundException {
+	public List<Reader> stopReader(@RequestBody Reader reader) throws Exception, ResourceNotFoundException {
 		try {
-			List<Reader> listReader =  readerService.stopReader(readerForm);
+			List<Reader> listReader =  readerService.stopReader(reader);
 			Map<String, String> response = new HashMap<>();
 			response.put("stato", "ok");
 			response.put("msg", "Reader stopped");

@@ -17,7 +17,7 @@ import net.mcsistemi.rfidtunnel.entity.TunnelLog;
 import net.mcsistemi.rfidtunnel.repository.TunnelLogRepository;
 import net.mcsistemi.rfidtunnel.services.ReaderService;
 
-public class ReaderWiramaJob implements Runnable {
+public class JobWirama implements Runnable {
 
 	private Thread worker;
 	private String ip;
@@ -26,12 +26,12 @@ public class ReaderWiramaJob implements Runnable {
 	Socket echoSocket = null;
 	boolean running = true;
 
-	Logger logger = LoggerFactory.getLogger(ReaderWiramaJob.class);
+	Logger logger = LoggerFactory.getLogger(JobWirama.class);
 
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
 	ReaderService readerService = null;
 
-	public ReaderWiramaJob(ReaderRfidWirama readerRfidWirama, ReaderService readerService) {
+	public JobWirama(ReaderRfidWirama readerRfidWirama, ReaderService readerService) {
 		this.ip = readerRfidWirama.getIpAdress();
 		this.port = new Integer(readerRfidWirama.getPorta());
 		this.readerService = readerService;

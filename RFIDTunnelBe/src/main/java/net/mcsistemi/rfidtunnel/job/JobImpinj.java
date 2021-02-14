@@ -2,11 +2,8 @@ package net.mcsistemi.rfidtunnel.job;
 
 import java.io.FileOutputStream;
 import java.io.PrintStream;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Scanner;
 
 import org.springframework.util.StringUtils;
 
@@ -14,6 +11,7 @@ import com.impinj.octane.AntennaConfigGroup;
 import com.impinj.octane.AutoStartMode;
 import com.impinj.octane.AutoStopMode;
 import com.impinj.octane.ImpinjReader;
+import com.impinj.octane.OctaneSdkException;
 import com.impinj.octane.ReaderMode;
 import com.impinj.octane.ReportConfig;
 import com.impinj.octane.ReportMode;
@@ -21,11 +19,9 @@ import com.impinj.octane.Settings;
 
 import net.mcsistemi.rfidtunnel.entity.Antenna;
 import net.mcsistemi.rfidtunnel.entity.ReaderRfidInpinj;
-import net.mcsistemi.rfidtunnel.entity.ReaderRfidWirama;
+import net.mcsistemi.rfidtunnel.listneroctane.TagReportListenerImplementation;
 import net.mcsistemi.rfidtunnel.services.ReaderService;
 import net.mcsistemi.rfidtunnel.util.DateFunction;
-
-
 
 /**
  * 
@@ -36,21 +32,23 @@ import net.mcsistemi.rfidtunnel.util.DateFunction;
  * 
  */
 
-public class ReaderImpinjJob {
-	static DateFunction myDate;
+public class JobImpinj implements JobImpinjInterface {
+
+	static DateFunction myDate = new DateFunction();
 	public static String PACKAGE_BARCODE = "";
-
-	//public static Packages pack = null;
-	//public static Impinj scan = null;
 	private ImpinjReader reader = null;
+	private Settings settings = null;
+	private String hostname = "";
+	private ReaderRfidInpinj readerRfidInpinj =  null;
+	private ReaderService readerService = null;
 
-	public ReaderImpinjJob(ReaderRfidInpinj readerRfidInpinj, ReaderService readerService) {
-	
+	public JobImpinj(ReaderRfidInpinj readerRfidInpinj, ReaderService readerService) throws Exception {
+
 		// Istanzia l'oggetto Reader
-		reader = new ImpinjReader();
-
-		myDate = new DateFunction();
-
+		this.reader = new ImpinjReader();
+		this.readerRfidInpinj = readerRfidInpinj;
+		this.readerService = readerService;
+	
 		try {
 			// Redirect Standard Out
 			if (readerRfidInpinj.isCreateOutFile()) {
@@ -81,14 +79,13 @@ public class ReaderImpinjJob {
 			int portActivate = Integer.parseInt(readerRfidInpinj.getActivatePort());
 
 			// DA SOSTITUIRE CON OPPORTUNA PARAMETRIZZAZIONE IN VISTA DEI THREAD
-			String hostname = readerRfidInpinj.getIpAdress(); // Indirizzo IP Reader
+			this.hostname = readerRfidInpinj.getIpAdress(); // Indirizzo IP Reader
 
-			
 			// Connessione ed Attivazione LED su Tunnel
-			reader.connect(hostname);
+			this.reader.connect(hostname);
 
 			// Caricamento della Configurazione del Reader
-			Settings settings = reader.queryDefaultSettings();
+			this.settings = reader.queryDefaultSettings();
 
 			// Configurazione Reportistica TAG
 			ReportConfig report = settings.getReport();
@@ -118,9 +115,9 @@ public class ReaderImpinjJob {
 					antennas.getAntenna(antenna.getPosition()).setRxSensitivityinDbm(Double.valueOf(antenna.getSensitivityinDbm()));
 				}
 			}
-			
+
 			// Configurazione Listener Lettura TAG
-			//reader.setTagReportListener(new TagReportListenerImplementation(prop));
+			reader.setTagReportListener(new TagReportListenerImplementation(this.readerService));
 
 			// Configurazione Listener Reader
 			// reader.setReaderStartListener(new ReaderStartListenerImplementation());
@@ -128,7 +125,7 @@ public class ReaderImpinjJob {
 
 			// Configurazione GPIO-INPUT
 			// turn on these listeners to see how the GPI triggers work.
-			//reader.setGpiChangeListener(new GpiChangeListenerImplementation());
+			// reader.setGpiChangeListener(new GpiChangeListenerImplementation());
 
 			// enable this GPI and set some debounce
 			settings.getGpis().get(1).setIsEnabled(true);
@@ -160,145 +157,152 @@ public class ReaderImpinjJob {
 
 			if (reader.isConnected()) {
 				if (!StringUtils.isEmpty(readerRfidInpinj.getOnlinePort()))
-					reader.setGpo(Integer.parseInt(readerRfidInpinj.getOnlinePort()), true);
+					reader.setGpo(readerRfidInpinj.getOnlinePort().intValue(), true);
 			}
 
 			myDate.RefreshDate();
 			System.out.println(myDate.getFullDate() + " READER STARTING ........");
-			// reader.start();
-
-			// ====================================================
-			// CONNECTION
-			//conn = Utility.getConn();
-
-			// ====================================================
-			// PACKAGES & SCANNER
-			//pack = new Packages();
-			//scan = new Impinj();
-
-			// ====================================================
-			// BARCODE SERVER
-			//barcodeServer = new Thread(new BarcodeServer());
-			//barcodeServer.start();
-
-			// wms = new Thread(new WMS());
-			// wms.start();
-
-		}
-		
-		public void start() {
-				
-		}
 			
-			String in = "";
-			Scanner key = new Scanner(System.in);
-
-			System.out.println("Avviato Servizio Tunnel .........");
-
-			while (!in.equals("quit")) {
-				System.out.println("Enter a command <h> for help.......");
-				in = key.nextLine();
-				switch (in) {
-				case "h":
-					System.out.println("Command List available for CheckBox Tunnel ver. 1.1");
-					System.out.println(" h       for help");
-					System.out.println(" stop    disconnect tunnel RFID");
-					System.out.println(" start   connect tunnel RFID");
-					System.out.println(" status  tunnel RFID status");
-					System.out.println(" stats   extracts statistics data");
-					System.out.println(" quit       exit program");
-					break;
-				case "start":
-					if (!reader.isConnected()) {
-
-						reader.connect(hostname);
-						reader.applySettings(settings);
-
-						if (reader.isConnected()) {
-							// Switch Off all LED
-							reader.setGpo(Integer.parseInt(prop.getKey("online_port")), false);
-							reader.setGpo(Integer.parseInt(prop.getKey("green_port")), false);
-							reader.setGpo(Integer.parseInt(prop.getKey("yellow_port")), false);
-							reader.setGpo(Integer.parseInt(prop.getKey("red_port")), false);
-
-							reader.setGpo(Integer.parseInt(prop.getKey("online_port")), true);
-							System.out.println(myDate.getFullDate() + " Reader Re-Start Success..........");
-						} else
-							System.out.println(myDate.getFullDate() + " Reader Re-Start Failed...........");
-					} else
-						System.out.println(" Reader Already Started...........");
-					break;
-				case "stop":
-					if (reader.isConnected()) {
-						reader.setGpo(Integer.parseInt(prop.getKey("online_port")), false);
-						reader.setGpo(Integer.parseInt(prop.getKey("green_port")), false);
-						reader.setGpo(Integer.parseInt(prop.getKey("yellow_port")), false);
-						reader.setGpo(Integer.parseInt(prop.getKey("red_port")), false);
-
-						reader.disconnect();
-						System.out.println("TUNNEL DISCONNECTED, NO OPERATION AVAILABLE !");
-					}
-					break;
-				case "status":
-					if (reader.isConnected())
-						System.out.println("TUNNEL READY, OPERATIONS AVAILABLE !");
-					else
-						System.out.println("TUNNEL NOT READY, NO OPERATIONS AVAILABLE !");
-
-					break;
-				case "stats":
-					int anno = 0;
-					int mese = 0;
-					boolean check = true;
-					Scanner stat = new Scanner(System.in);
-					try {
-						System.out.println("Inserire Anno: ");
-						anno = stat.nextInt();
-					} catch (Exception ex) {
-						check = false;
-					}
-
-					if (check) {
-						try {
-							System.out.println("Inserire Mese: ");
-							mese = stat.nextInt();
-						} catch (Exception ex) {
-							check = false;
-						}
-					}
-
-					if (check) {
-						System.out.println("Anno: " + anno + " Mese: " + mese);
-						// Estrazione dati Statistici
-						System.out.println("Estrazione in esecuzione........");
-						WriterDB scriviSA = new WriterDB();
-						scriviSA.Statistics(anno, mese);
-						System.out.println("Estrazione effettuata.");
-					} else
-						System.out.println("Errore nella richiesta..........");
-					break;
-
-				case "quit":
-					break;
-
-				default:
-					System.out.println("comando <" + in + "> sconosciuto.....");
-					break;
-				}
-			}
-
-			key.close();
-
-			myDate.RefreshDate();
-			System.out.println(myDate.getFullDate() + " READER ENDING ........");
-
-			// reader.stop();
+		} catch (Exception e) {
+			this.reader.stop();
 			reader.disconnect();
-
-		} catch (Exception ex) {
-			System.err.println(ex.getMessage());
-			conn.close();
+			e.printStackTrace();
 		}
-		System.exit(0);
+
 	}
+
+	public void start() throws OctaneSdkException {
+		if (!reader.isConnected()) {
+			reader.connect(hostname);
+			reader.applySettings(settings);
+			
+
+			if (reader.isConnected()) {
+				// Switch Off all LED
+				reader.setGpo(readerRfidInpinj.getOnlinePort().intValue(), false);
+				reader.setGpo(readerRfidInpinj.getGreenPort().intValue(), false);
+				reader.setGpo(readerRfidInpinj.getYellowPort().intValue(), false);
+				reader.setGpo(readerRfidInpinj.getRedPort().intValue(), false);
+				reader.setGpo(readerRfidInpinj.getOnlinePort().intValue(), true);
+				//reader.setTagReportListener(new TagReportListenerImplementation2());
+				//reader.setTagReportListener(new TagReportListenerImplementation());
+
+
+				reader.start();
+				System.out.println(myDate.getFullDate() + " Reader Re-Start Success..........");
+			} else
+				System.out.println(myDate.getFullDate() + " Reader Re-Start Failed...........");
+		} else {
+			System.out.println(" Reader Already Started...........");
+		}
+	}
+
+	public void stop() throws OctaneSdkException {
+		reader.setGpo(readerRfidInpinj.getOnlinePort().intValue(), false);
+		reader.setGpo(readerRfidInpinj.getGreenPort().intValue(), false);
+		reader.setGpo(readerRfidInpinj.getYellowPort().intValue(), false);
+		reader.setGpo(readerRfidInpinj.getRedPort().intValue(), false);
+		reader.stop();
+		reader.disconnect();
+		System.out.println("TUNNEL DISCONNECTED, NO OPERATION AVAILABLE !");
+		
+	}
+	
+	public boolean status() throws OctaneSdkException {
+		if (reader.isConnected()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+
+//	while(!in.equals("quit"))
+//	{
+//		System.out.println("Enter a command <h> for help.......");
+//		in = key.nextLine();
+//		switch (in) {
+//		case "h":
+//			System.out.println("Command List available for CheckBox Tunnel ver. 1.1");
+//			System.out.println(" h       for help");
+//			System.out.println(" stop    disconnect tunnel RFID");
+//			System.out.println(" start   connect tunnel RFID");
+//			System.out.println(" status  tunnel RFID status");
+//			System.out.println(" stats   extracts statistics data");
+//			System.out.println(" quit       exit program");
+//			break;
+//		case "start":
+//
+//			break;
+//		case "stop":
+//			if (reader.isConnected()) {
+//				reader.setGpo(Integer.parseInt(prop.getKey("online_port")), false);
+//				reader.setGpo(Integer.parseInt(prop.getKey("green_port")), false);
+//				reader.setGpo(Integer.parseInt(prop.getKey("yellow_port")), false);
+//				reader.setGpo(Integer.parseInt(prop.getKey("red_port")), false);
+//
+//				reader.disconnect();
+//				System.out.println("TUNNEL DISCONNECTED, NO OPERATION AVAILABLE !");
+//			}
+//			break;
+//		case "status":
+//			if (reader.isConnected())
+//				System.out.println("TUNNEL READY, OPERATIONS AVAILABLE !");
+//			else
+//				System.out.println("TUNNEL NOT READY, NO OPERATIONS AVAILABLE !");
+//
+//			break;
+//		case "stats":
+//			int anno = 0;
+//			int mese = 0;
+//			boolean check = true;
+//			Scanner stat = new Scanner(System.in);
+//			try {
+//				System.out.println("Inserire Anno: ");
+//				anno = stat.nextInt();
+//			} catch (Exception ex) {
+//				check = false;
+//			}
+//
+//			if (check) {
+//				try {
+//					System.out.println("Inserire Mese: ");
+//					mese = stat.nextInt();
+//				} catch (Exception ex) {
+//					check = false;
+//				}
+//			}
+//
+//			if (check) {
+//				System.out.println("Anno: " + anno + " Mese: " + mese);
+//				// Estrazione dati Statistici
+//				System.out.println("Estrazione in esecuzione........");
+//				WriterDB scriviSA = new WriterDB();
+//				scriviSA.Statistics(anno, mese);
+//				System.out.println("Estrazione effettuata.");
+//			} else
+//				System.out.println("Errore nella richiesta..........");
+//			break;
+//
+//		case "quit":
+//			break;
+//
+//		default:
+//			System.out.println("comando <" + in + "> sconosciuto.....");
+//			break;
+//		}
+//	}
+//
+//	key.close();
+//
+//	myDate.RefreshDate();System.out.println(myDate.getFullDate()+" READER ENDING ........");
+//
+//	// reader.stop();
+//	reader.disconnect();
+//
+//	}catch(Exception ex)
+//	{
+//			System.err.println(ex.getMessage());
+//			conn.close();
+//		}System.exit(0);
 }

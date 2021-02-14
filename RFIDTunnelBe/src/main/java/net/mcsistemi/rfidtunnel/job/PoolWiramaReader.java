@@ -2,7 +2,7 @@ package net.mcsistemi.rfidtunnel.job;
 
 import java.util.Hashtable;
 
-public class WiramaPoolReader {
+public class PoolWiramaReader {
 
 	private static Hashtable<Long, Runnable> mapThread = new Hashtable<Long, Runnable>();
 

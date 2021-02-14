@@ -17,49 +17,17 @@ public class ReaderRfidInpinj extends Reader {
 // ---------- GPIO PORT CONFIGURATION --
 	@Column(length = 2)
 	private String activatePort;
-	@Column(length = 2)
-	private String onlinePort;
-	@Column(length = 2)
+	
+	private Integer onlinePort;
+
 	private Integer greenPort;
-	@Column(length = 2)
-	private String redPort;
-	@Column(length = 2)
-	private String yellowPort;
 	
-//# --------- INPUT / OUTPUT FILE PARAMETERS --	
-	@Column(length = 2)
-	private String inputMode;
-	@Column(length = 100)
-	private String inPathFile;
-	@Column(length = 10)
-	private String extensionInFile;
-			
-	@Column(length = 2)
-	private String outputMode;
-	@Column(length = 100)
-	private String outPathFile;
-	@Column(length = 10)
-	private String extensionOutFile;
+	private Integer redPort;
 	
-	@Column(length = 10)
-	private String prefixPackage;		
-	@Column(length = 10)
-	private String postfixPackage;		
-	
-	private String lineLenght;		
-	
-	private String fieldsNumber;
-		
-//# --------- TAG ID PARAMETERS --------------------------------------------
-	@Column(length = 10)
-	private String tagPackageID;		
-	@Column(length = 10)
-	private String tagItemID;		
+	private Integer yellowPort;	
 		
 	
 //	--------- LOG FILE PARAMETERS -----------
-
-	
 	private boolean createOutFile;	//S/N	
 	@Column(length = 10)
 	private String nameOutLog;	//Z-OUT_	
@@ -87,171 +55,19 @@ public class ReaderRfidInpinj extends Reader {
 		return activatePort;
 	}
 
-
 	public void setActivatePort(String activatePort) {
 		this.activatePort = activatePort;
 	}
-
-
-	public String getOnlinePort() {
-		return onlinePort;
-	}
-
-
-	public void setOnlinePort(String onlinePort) {
-		this.onlinePort = onlinePort;
-	}
-
 
 	public Integer getGreenPort() {
 		return greenPort;
 	}
 
-
 	public void setGreenPort(Integer greenPort) {
 		this.greenPort = greenPort;
 	}
 
-
-	public String getRedPort() {
-		return redPort;
-	}
-
-
-	public void setRedPort(String redPort) {
-		this.redPort = redPort;
-	}
-
-
-	public String getYellowPort() {
-		return yellowPort;
-	}
-
-
-	public void setYellowPort(String yellowPort) {
-		this.yellowPort = yellowPort;
-	}
-
-
-	public String getInputMode() {
-		return inputMode;
-	}
-
-
-	public void setInputMode(String inputMode) {
-		this.inputMode = inputMode;
-	}
-
-
-	public String getInPathFile() {
-		return inPathFile;
-	}
-
-
-	public void setInPathFile(String inPathFile) {
-		this.inPathFile = inPathFile;
-	}
-
-
-	public String getExtensionInFile() {
-		return extensionInFile;
-	}
-
-
-	public void setExtensionInFile(String extensionInFile) {
-		this.extensionInFile = extensionInFile;
-	}
-
-
-	public String getOutputMode() {
-		return outputMode;
-	}
-
-
-	public void setOutputMode(String outputMode) {
-		this.outputMode = outputMode;
-	}
-
-
-	public String getOutPathFile() {
-		return outPathFile;
-	}
-
-
-	public void setOutPathFile(String outPathFile) {
-		this.outPathFile = outPathFile;
-	}
-
-
-	public String getExtensionOutFile() {
-		return extensionOutFile;
-	}
-
-
-	public void setExtensionOutFile(String extensionOutFile) {
-		this.extensionOutFile = extensionOutFile;
-	}
-
-
-	public String getPrefixPackage() {
-		return prefixPackage;
-	}
-
-
-	public void setPrefixPackage(String prefixPackage) {
-		this.prefixPackage = prefixPackage;
-	}
-
-
-	public String getPostfixPackage() {
-		return postfixPackage;
-	}
-
-
-	public void setPostfixPackage(String postfixPackage) {
-		this.postfixPackage = postfixPackage;
-	}
-
-
-	public String getLineLenght() {
-		return lineLenght;
-	}
-
-
-	public void setLineLenght(String lineLenght) {
-		this.lineLenght = lineLenght;
-	}
-
-
-	public String getFieldsNumber() {
-		return fieldsNumber;
-	}
-
-
-	public void setFieldsNumber(String fieldsNumber) {
-		this.fieldsNumber = fieldsNumber;
-	}
-
-
-	public String getTagPackageID() {
-		return tagPackageID;
-	}
-
-
-	public void setTagPackageID(String tagPackageID) {
-		this.tagPackageID = tagPackageID;
-	}
-
-
-	public String getTagItemID() {
-		return tagItemID;
-	}
-
-
-	public void setTagItemID(String tagItemID) {
-		this.tagItemID = tagItemID;
-	}
-
+	
 
 	
 	public String getNameOutLog() {
@@ -321,6 +137,36 @@ public class ReaderRfidInpinj extends Reader {
 
 	public void setCreateErrFile(boolean createErrFile) {
 		this.createErrFile = createErrFile;
+	}
+
+
+	public Integer getOnlinePort() {
+		return onlinePort;
+	}
+
+
+	public void setOnlinePort(Integer onlinePort) {
+		this.onlinePort = onlinePort;
+	}
+
+
+	public Integer getRedPort() {
+		return redPort;
+	}
+
+
+	public void setRedPort(Integer redPort) {
+		this.redPort = redPort;
+	}
+
+
+	public Integer getYellowPort() {
+		return yellowPort;
+	}
+
+
+	public void setYellowPort(Integer yellowPort) {
+		this.yellowPort = yellowPort;
 	}
 	
 	
