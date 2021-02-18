@@ -20,8 +20,6 @@ public class Antenna {
 	
     private Long idReader; 
     
-    private boolean enable;
-	
 	private boolean maxRxSensitivity;
 	
 	private boolean maxTxPower;
