@@ -20,8 +20,8 @@ import net.mcsistemi.rfidtunnel.services.ReaderService;
 public class JobWirama implements Runnable {
 
 	private Thread worker;
-	private String ip;
-	private int port;
+	
+	private ReaderRfidWirama readerRfidWirama;
 
 	Socket echoSocket = null;
 	boolean running = true;
@@ -32,8 +32,8 @@ public class JobWirama implements Runnable {
 	ReaderService readerService = null;
 
 	public JobWirama(ReaderRfidWirama readerRfidWirama, ReaderService readerService) {
-		this.ip = readerRfidWirama.getIpAdress();
-		this.port = new Integer(readerRfidWirama.getPorta());
+		
+		this.readerRfidWirama = readerRfidWirama;
 		this.readerService = readerService;
 	}
 
@@ -44,71 +44,54 @@ public class JobWirama implements Runnable {
 
 	// @Override
 	public void run() {
-
 		BufferedReader in = null;
 		running = true;
-
 		try {
 			in = connect();
 			while (running) {
-				try {
-					String line = null;
-
-					try {
-						line = in.readLine().toString();
-
-						readerService.createReaderlog(ip, this.port+"", new Date(), line);
-						logger.info("WIRAMA ---->>>>:"+ line);
-					} catch (NullPointerException ex) {
-						logger.info("Waiting for Wirama streams ... ");
-						
-						Thread.sleep(1000);
-						in = connect();
-						continue;
-					}
-				} catch (Exception e) {
-					// e.printStackTrace();
-				}
+					String line = in.readLine().toString();
+					readerService.createReaderlog(readerRfidWirama.getIpAdress(), readerRfidWirama.getPorta(), new Date(), line);
+					logger.info("WIRAMA ---->>>>:" + line);
 			}
 		} catch (Exception e) {
 			running = false;
 			// e.printStackTrace();
 		} finally {
 			try {
-				if (in != null)
+				if (in != null) {
 					in.close();
-				System.out.println("disconnecting from: " + ip + ":" + port);
-
-				try {
-					echoSocket.close();
-				} catch (Exception e) {
-					// e.printStackTrace();
 				}
-			} catch (IOException e) {
+				System.out.println("disconnecting from: " + readerRfidWirama.getIpAdress() + ":" + readerRfidWirama.getPorta());
+				echoSocket.close();
+				readerRfidWirama.setStato(false);
+				readerService.save(readerRfidWirama);
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 	}
 
-	public BufferedReader connect() {
+	public BufferedReader connect() throws Exception {
 		BufferedReader in = null;
 		// connect
-		logger.info("Connecting to Reader Wirama: " + ip + ":" + port);
+		logger.info("Connecting to Reader Wirama: " + readerRfidWirama.getIpAdress() + ":" + readerRfidWirama.getPorta());
 		try {
-			echoSocket = new Socket(ip, port);
+			echoSocket = new Socket(readerRfidWirama.getIpAdress(), new Integer(readerRfidWirama.getPorta()));
 			in = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
 		} catch (UnknownHostException e) {
-			logger.error("Unknown host: " + ip);
+			logger.error("Unknown host: " + readerRfidWirama.getIpAdress());
+			throw e;
 		} catch (IOException e) {
 			logger.error("Unable to get streams from Wirama");
+			throw e;
 		}
 		return in;
 	}
 
 	public void stop() {
 
-		System.out.println("stop thread ip " + ip);
+		System.out.println("Stop thread ip: " + readerRfidWirama.getIpAdress());
 		try {
 			running = false;
 		} catch (Exception e) {

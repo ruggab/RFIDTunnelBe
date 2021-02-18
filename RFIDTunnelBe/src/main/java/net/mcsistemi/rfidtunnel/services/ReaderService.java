@@ -158,7 +158,7 @@ public class ReaderService implements IReaderService {
 				JobWirama jobWirama = (JobWirama) PoolWiramaReader.getThread(reader.getId());
 				jobWirama.stop();
 			} catch (Exception e) {
-				throw e;
+				e.printStackTrace();
 			} finally {
 				PoolWiramaReader.removeThread(reader.getId());
 				reader.setStato(false);
