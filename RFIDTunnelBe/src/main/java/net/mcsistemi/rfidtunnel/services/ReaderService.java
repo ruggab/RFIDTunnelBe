@@ -8,10 +8,8 @@ import java.util.Optional;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
-import com.impinj.octane.ImpinjReader;
 import com.impinj.octane.OctaneSdkException;
 
 import net.mcsistemi.rfidtunnel.entity.Antenna;
@@ -20,12 +18,10 @@ import net.mcsistemi.rfidtunnel.entity.ReaderRfidInpinj;
 import net.mcsistemi.rfidtunnel.entity.ReaderRfidWirama;
 import net.mcsistemi.rfidtunnel.entity.TipoReader;
 import net.mcsistemi.rfidtunnel.entity.TunnelLog;
-import net.mcsistemi.rfidtunnel.form.ReaderForm;
-import net.mcsistemi.rfidtunnel.job.PoolWiramaReader;
-import net.mcsistemi.rfidtunnel.job.PoolImpinjReader;
 import net.mcsistemi.rfidtunnel.job.JobImpinj;
-import net.mcsistemi.rfidtunnel.job.JobImpinj2;
 import net.mcsistemi.rfidtunnel.job.JobWirama;
+import net.mcsistemi.rfidtunnel.job.PoolImpinjReader;
+import net.mcsistemi.rfidtunnel.job.PoolWiramaReader;
 import net.mcsistemi.rfidtunnel.repository.AntennaRepository;
 import net.mcsistemi.rfidtunnel.repository.ReaderRepository;
 import net.mcsistemi.rfidtunnel.repository.TipoReaderRepository;
@@ -195,7 +191,12 @@ public class ReaderService implements IReaderService {
 
 		tunnelLogRepository.save(tunnelLog);
 	}
-
+	
+	public void save(Reader reader) throws Exception {
+		
+		readerRepository.save(reader);
+	}
+	
 	public List<Antenna> getAllAntenna(Long readerId) throws Exception {
 		List<Antenna> listAntenna = antennaRepository.findByIdReader(readerId);
 		return listAntenna;

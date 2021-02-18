@@ -19,6 +19,9 @@ import com.impinj.octane.Settings;
 
 import net.mcsistemi.rfidtunnel.entity.Antenna;
 import net.mcsistemi.rfidtunnel.entity.ReaderRfidInpinj;
+import net.mcsistemi.rfidtunnel.listneroctane.ConnectionLostListenerImplement;
+import net.mcsistemi.rfidtunnel.listneroctane.KeepAliveListenerImplementation;
+import net.mcsistemi.rfidtunnel.listneroctane.ReaderStopListenerImplementation;
 import net.mcsistemi.rfidtunnel.listneroctane.TagReportListenerImplementation;
 import net.mcsistemi.rfidtunnel.services.ReaderService;
 import net.mcsistemi.rfidtunnel.util.DateFunction;
@@ -118,6 +121,9 @@ public class JobImpinj implements JobImpinjInterface {
 
 			// Configurazione Listener Lettura TAG
 			reader.setTagReportListener(new TagReportListenerImplementation(this.readerService));
+			reader.setReaderStopListener(new ReaderStopListenerImplementation(this.readerService));
+			reader.setKeepaliveListener(new KeepAliveListenerImplementation(readerRfidInpinj, this.readerService));
+			reader.setConnectionLostListener(new ConnectionLostListenerImplement(readerRfidInpinj, this.readerService));
 
 			// Configurazione Listener Reader
 			// reader.setReaderStartListener(new ReaderStartListenerImplementation());
@@ -202,10 +208,9 @@ public class JobImpinj implements JobImpinjInterface {
 		reader.setGpo(readerRfidInpinj.getGreenPort().intValue(), false);
 		reader.setGpo(readerRfidInpinj.getYellowPort().intValue(), false);
 		reader.setGpo(readerRfidInpinj.getRedPort().intValue(), false);
-		reader.stop();
 		reader.disconnect();
+		reader.stop();
 		System.out.println("TUNNEL DISCONNECTED, NO OPERATION AVAILABLE !");
-		
 	}
 	
 	public boolean status() throws OctaneSdkException {

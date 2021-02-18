@@ -57,10 +57,11 @@ public class JobWirama implements Runnable {
 					try {
 						line = in.readLine().toString();
 
-						readerService.createReaderlog("", "", new Date(), line);
-						logger.info(line);
+						readerService.createReaderlog(ip, this.port+"", new Date(), line);
+						logger.info("WIRAMA ---->>>>:"+ line);
 					} catch (NullPointerException ex) {
 						logger.info("Waiting for Wirama streams ... ");
+						
 						Thread.sleep(1000);
 						in = connect();
 						continue;
