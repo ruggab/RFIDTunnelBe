@@ -30,6 +30,8 @@ public class Antenna {
 	
 	private float sensitivityinDbm;
 	
+	private boolean enable;
+	
 	
 	public Antenna(){}
 	
