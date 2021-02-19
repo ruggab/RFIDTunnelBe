@@ -19,7 +19,7 @@ import net.mcsistemi.rfidtunnel.entity.ReaderRfidWirama;
 import net.mcsistemi.rfidtunnel.entity.TipoReader;
 import net.mcsistemi.rfidtunnel.entity.TunnelLog;
 import net.mcsistemi.rfidtunnel.job.JobImpinj;
-import net.mcsistemi.rfidtunnel.job.JobWirama;
+import net.mcsistemi.rfidtunnel.job.JobWiramaReader;
 import net.mcsistemi.rfidtunnel.job.PoolImpinjReader;
 import net.mcsistemi.rfidtunnel.job.PoolWiramaReader;
 import net.mcsistemi.rfidtunnel.repository.AntennaRepository;
@@ -124,7 +124,7 @@ public class ReaderService implements IReaderService {
 
 			if (reader instanceof ReaderRfidWirama) {
 
-				JobWirama readerWiramaJob = new JobWirama((ReaderRfidWirama) reader, this);
+				JobWiramaReader readerWiramaJob = new JobWiramaReader((ReaderRfidWirama) reader, this);
 				PoolWiramaReader.addThread(reader.getId(), readerWiramaJob);
 				readerWiramaJob.start();
 			}
@@ -155,7 +155,7 @@ public class ReaderService implements IReaderService {
 
 		if (reader instanceof ReaderRfidWirama) {
 			try {
-				JobWirama jobWirama = (JobWirama) PoolWiramaReader.getThread(reader.getId());
+				JobWiramaReader jobWirama = (JobWiramaReader) PoolWiramaReader.getThread(reader.getId());
 				jobWirama.stop();
 			} catch (Exception e) {
 				e.printStackTrace();
