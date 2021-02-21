@@ -1,5 +1,6 @@
 package net.mcsistemi.rfidtunnel.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -11,13 +12,16 @@ public class ReaderRfidWirama extends Reader {
 	public ReaderRfidWirama() {
 	}
 	
-//	public ReaderRfidWirama(ReaderForm form) {
-//		super(form);
-//		
-//	}
+	@Column(length = 4)
+	protected String portaComandi;
 
-	
+	public String getPortaComandi() {
+		return portaComandi;
+	}
 
+	public void setPortaComandi(String portaComandi) {
+		this.portaComandi = portaComandi;
+	}
 	
 
 }

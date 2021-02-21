@@ -19,6 +19,7 @@ import net.mcsistemi.rfidtunnel.entity.ReaderRfidWirama;
 import net.mcsistemi.rfidtunnel.entity.TipoReader;
 import net.mcsistemi.rfidtunnel.entity.TunnelLog;
 import net.mcsistemi.rfidtunnel.job.JobImpinj;
+import net.mcsistemi.rfidtunnel.job.JobWiramaCommand;
 import net.mcsistemi.rfidtunnel.job.JobWiramaReader;
 import net.mcsistemi.rfidtunnel.job.PoolImpinjReader;
 import net.mcsistemi.rfidtunnel.job.PoolWiramaReader;
@@ -123,10 +124,13 @@ public class ReaderService implements IReaderService {
 			// }
 
 			if (reader instanceof ReaderRfidWirama) {
-
-				JobWiramaReader readerWiramaJob = new JobWiramaReader((ReaderRfidWirama) reader, this);
-				PoolWiramaReader.addThread(reader.getId(), readerWiramaJob);
-				readerWiramaJob.start();
+				ReaderRfidWirama readerRfidWirama = (ReaderRfidWirama)reader;
+				//JobWiramaReader JobWiramaReader = new JobWiramaReader((ReaderRfidWirama) reader, this);
+				JobWiramaCommand jobWiramaCommand = new JobWiramaCommand((ReaderRfidWirama) reader, this);
+				//PoolWiramaReader.addThread(reader.getIpAdress()+reader.getPorta(), JobWiramaReader);
+				PoolWiramaReader.addThread(reader.getIpAdress()+readerRfidWirama.getPortaComandi(), jobWiramaCommand);
+				//JobWiramaReader.start();
+				jobWiramaCommand.start();
 			}
 			if (reader instanceof ReaderRfidInpinj) {
 				JobImpinj jobImpinj = new JobImpinj((ReaderRfidInpinj) reader, this);
@@ -155,12 +159,15 @@ public class ReaderService implements IReaderService {
 
 		if (reader instanceof ReaderRfidWirama) {
 			try {
-				JobWiramaReader jobWirama = (JobWiramaReader) PoolWiramaReader.getThread(reader.getId());
+				ReaderRfidWirama readerRfidWirama = (ReaderRfidWirama)reader;
+				JobWiramaReader jobWirama = (JobWiramaReader) PoolWiramaReader.getThread(reader.getIpAdress()+readerRfidWirama.getPorta());
+				JobWiramaCommand jobWiramaCommand = (JobWiramaCommand) PoolWiramaReader.getThread(reader.getIpAdress()+readerRfidWirama.getPorta());
 				jobWirama.stop();
+				jobWiramaCommand.stop();
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
-				PoolWiramaReader.removeThread(reader.getId());
+				PoolWiramaReader.removeThread(reader.getIpAdress());
 				reader.setStato(false);
 				readerRepository.save(reader);
 				list = readerRepository.findAll();
