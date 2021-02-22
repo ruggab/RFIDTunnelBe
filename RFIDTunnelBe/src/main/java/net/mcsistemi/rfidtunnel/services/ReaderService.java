@@ -8,6 +8,7 @@ import java.util.Optional;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.impinj.octane.OctaneSdkException;
@@ -65,9 +66,9 @@ public class ReaderService implements IReaderService {
 		} else {
 			rr = (ReaderRfidWirama) reader;
 		}
-		List<Reader> list = readerRepository.findByIpAdressAndPortaOrderByIdTipoReader(reader.getIpAdress(), reader.getPorta());
+		List<Reader> list = readerRepository.findByIpAdressOrderByIdTipoReader(reader.getIpAdress());
 		if (list.size() > 0) {
-			throw new Exception("Attenzione IP e Porta già in uso per altro Reader");
+			throw new Exception("Attenzione IP già in uso per altro Reader");
 		}
 		//
 		// Reader reader = ReaderFactory.getReader(readerForm);
@@ -80,7 +81,7 @@ public class ReaderService implements IReaderService {
 
 	public List<Reader> getAllReader() throws Exception {
 		//
-		List<Reader> readerList = readerRepository.findAll();
+		List<Reader> readerList = readerRepository.findAll(Sort.by(Sort.Direction.ASC, "ipAdress"));
 		return readerList;
 	}
 
@@ -139,7 +140,7 @@ public class ReaderService implements IReaderService {
 			}
 			reader.setStato(true);
 			readerRepository.save(reader);
-			listReader = readerRepository.findAll();
+			listReader = readerRepository.findAll(Sort.by(Sort.Direction.ASC, "ipAdress"));
 		} catch (OctaneSdkException ex) {
 			System.out.println(ex.getMessage());
 			throw ex;
@@ -170,7 +171,7 @@ public class ReaderService implements IReaderService {
 				PoolWiramaReader.removeThread(reader.getIpAdress());
 				reader.setStato(false);
 				readerRepository.save(reader);
-				list = readerRepository.findAll();
+				list = readerRepository.findAll(Sort.by(Sort.Direction.ASC, "ipAdress"));
 			}
 		}
 		if (reader instanceof ReaderRfidInpinj) {
@@ -183,7 +184,7 @@ public class ReaderService implements IReaderService {
 				PoolImpinjReader.removeJob(reader.getId());
 				reader.setStato(false);
 				readerRepository.save(reader);
-				list = readerRepository.findAll();
+				list = readerRepository.findAll(Sort.by(Sort.Direction.ASC, "ipAdress"));
 			}
 
 		}

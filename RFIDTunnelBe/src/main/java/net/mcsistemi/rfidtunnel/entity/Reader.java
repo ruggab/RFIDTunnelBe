@@ -29,9 +29,6 @@ public class Reader {
 	@Column(length = 15)
 	protected String ipAdress;
 
-	@Column(length = 4)
-	protected String porta;
-
 	@Column(length = 1)
 	protected String separatore;
 	
@@ -75,13 +72,7 @@ public class Reader {
 		this.ipAdress = ipAdress;
 	}
 
-	public String getPorta() {
-		return porta;
-	}
-
-	public void setPorta(String porta) {
-		this.porta = porta;
-	}
+	
 
 	public String getSeparatore() {
 		return separatore;

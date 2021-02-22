@@ -11,6 +11,8 @@ public class ReaderRfidWirama extends Reader {
 	
 	public ReaderRfidWirama() {
 	}
+	@Column(length = 4)
+	protected String porta;
 	
 	@Column(length = 4)
 	protected String portaComandi;
@@ -23,5 +25,12 @@ public class ReaderRfidWirama extends Reader {
 		this.portaComandi = portaComandi;
 	}
 	
+	public String getPorta() {
+		return porta;
+	}
+
+	public void setPorta(String porta) {
+		this.porta = porta;
+	}
 
 }

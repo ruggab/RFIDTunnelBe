@@ -11,7 +11,7 @@ import net.mcsistemi.rfidtunnel.entity.Reader;
 @Repository
 public interface ReaderRepository extends JpaSpecificationExecutor<Reader>, JpaRepository<Reader, Long> {
 
-	List<Reader> findByIpAdressAndPortaOrderByIdTipoReader(String ipAdress, String porta);
+	List<Reader> findByIpAdressOrderByIdTipoReader(String ipAdress);
 	
 
 }
