@@ -42,7 +42,7 @@ public class JobImpinj implements JobImpinjInterface {
 	private ImpinjReader reader = null;
 	private Settings settings = null;
 	private String hostname = "";
-	private ReaderRfidInpinj readerRfidInpinj =  null;
+	private ReaderRfidInpinj readerRfidInpinj = null;
 	private ReaderService readerService = null;
 
 	public JobImpinj(ReaderRfidInpinj readerRfidInpinj, ReaderService readerService) throws Exception {
@@ -51,7 +51,7 @@ public class JobImpinj implements JobImpinjInterface {
 		this.reader = new ImpinjReader();
 		this.readerRfidInpinj = readerRfidInpinj;
 		this.readerService = readerService;
-	
+
 		try {
 			// Redirect Standard Out
 			if (readerRfidInpinj.isCreateOutFile()) {
@@ -79,7 +79,7 @@ public class JobImpinj implements JobImpinjInterface {
 				System.setErr(err);
 				myDate.setDefaul();
 			}
-			int portActivate = Integer.parseInt(readerRfidInpinj.getActivatePort());
+			// int portActivate = Integer.parseInt(readerRfidInpinj.getActivatePort());
 
 			// DA SOSTITUIRE CON OPPORTUNA PARAMETRIZZAZIONE IN VISTA DEI THREAD
 			this.hostname = readerRfidInpinj.getIpAdress(); // Indirizzo IP Reader
@@ -101,7 +101,26 @@ public class JobImpinj implements JobImpinjInterface {
 			// The following mode, AutoSetDenseReader, monitors RF noise and interference and then automatically
 			// and continuously optimizes the reader configuration
 
-			settings.setReaderMode(ReaderMode.AutoSetDenseReader);
+			switch (readerRfidInpinj.getReaderMode()) {
+			case 1:
+				settings.setReaderMode(ReaderMode.AutoSetDenseReader);
+				break;
+			case 2:
+				settings.setReaderMode(ReaderMode.AutoSetCustom);
+				break;
+			case 3:
+				settings.setReaderMode(ReaderMode.AutoSetDenseReaderDeepScan);
+				break;
+			case 4:
+				settings.setReaderMode(ReaderMode.AutoSetStaticDRM);
+				break;
+			case 5:
+				settings.setReaderMode(ReaderMode.AutoSetStaticFast);
+				break;
+			default:
+				settings.setReaderMode(ReaderMode.AutoSetDenseReader);
+				break;
+			}
 
 			// set some special settings for antenna 1
 
@@ -120,6 +139,10 @@ public class JobImpinj implements JobImpinjInterface {
 			}
 
 			// Configurazione Listener Lettura TAG
+			// Configurazione controllo KEEP ALIVE
+			settings.getKeepalives().setPeriodInMs(5000); // Tempo di Attesa prima di attivare evento di
+			// disconnessione
+			settings.getKeepalives().setEnabled(true); // Abilita il Controllo Disconnessione
 			reader.setTagReportListener(new TagReportListenerImplementation(this.readerService));
 			reader.setReaderStopListener(new ReaderStopListenerImplementation(this.readerService));
 			reader.setKeepaliveListener(new KeepAliveListenerImplementation(readerRfidInpinj, this.readerService));
@@ -134,41 +157,56 @@ public class JobImpinj implements JobImpinjInterface {
 			// reader.setGpiChangeListener(new GpiChangeListenerImplementation());
 
 			// enable this GPI and set some debounce
-			settings.getGpis().get(1).setIsEnabled(true);
-			settings.getGpis().get(1).setPortNumber(portActivate);
+			settings.getGpis().get(1).setIsEnabled(readerRfidInpinj.isPortaIn1());
+			settings.getGpis().get(1).setPortNumber(1);
 			settings.getGpis().get(1).setDebounceInMs(50); // Gestione debounce in millisecondi
+			//
+			settings.getGpis().get(2).setIsEnabled(readerRfidInpinj.isPortaIn2());
+			settings.getGpis().get(2).setPortNumber(2);
+			settings.getGpis().get(2).setDebounceInMs(50);
+			//
+			settings.getGpis().get(3).setIsEnabled(readerRfidInpinj.isPortaIn3());
+			settings.getGpis().get(3).setPortNumber(3);
+			settings.getGpis().get(3).setDebounceInMs(50);
+			//
+			settings.getGpis().get(4).setIsEnabled(readerRfidInpinj.isPortaIn4());
+			settings.getGpis().get(4).setPortNumber(4);
+			settings.getGpis().get(4).setDebounceInMs(50);
+			//
+			reader.setGpo(1, readerRfidInpinj.isPortaOut1());
+			reader.setGpo(2, readerRfidInpinj.isPortaOut2());
+			reader.setGpo(3, readerRfidInpinj.isPortaOut3());
+			reader.setGpo(4, readerRfidInpinj.isPortaOut4());
 
 			// set autostart to go on GPI level
-			settings.getAutoStart().setGpiPortNumber(portActivate);
+			switch (readerRfidInpinj.getAutostartMode()) {
+			case 1:
+				settings.getAutoStart().setMode(AutoStartMode.GpiTrigger);
+				break;
+			case 2:
+				settings.getAutoStart().setMode(AutoStartMode.Immediate);
+				break;
+			case 3:
+				settings.getAutoStart().setMode(AutoStartMode.Periodic);
+				break;
+			default:
+				settings.getAutoStart().setMode(AutoStartMode.GpiTrigger);
+				break;
+			}
+
+			settings.getAutoStart().setGpiPortNumber(readerRfidInpinj.getNumPortaAutostart());
 			settings.getAutoStart().setMode(AutoStartMode.GpiTrigger);
-			settings.getAutoStart().setGpiLevel(true);
+			settings.getAutoStart().setGpiLevel(readerRfidInpinj.isAutoStartActive());
 
 			// if you set start, you have to set stop
+			settings.getAutoStop().setGpiPortNumber(readerRfidInpinj.getNumPortaAutostart());
 			settings.getAutoStop().setMode(AutoStopMode.GpiTrigger);
-			settings.getAutoStop().setGpiPortNumber(portActivate);
-			settings.getAutoStop().setGpiLevel(false);
-
-			// settings.getAutoStop().setTimeout(6000);
-
-			// Configurazione controllo KEEP ALIVE
-			// settings.getKeepalives().setPeriodInMs(5000); // Tempo di Attesa prima di attivare evento di
-			// disconnessione
-			// settings.getKeepalives().setEnabled(true); // Abilita il Controllo Disconnessione
-
-			// Configurazione controllo ON CONNECTION LOST
-			// reader.setConnectionLostListener(new ConnectionLostListenerImplement(prop));
-			// reader.setKeepaliveListener(new KeepAliveListenerImplementation(prop));
-
-			reader.applySettings(settings);
-
-			if (reader.isConnected()) {
-				if (!StringUtils.isEmpty(readerRfidInpinj.getOnlinePort()))
-					reader.setGpo(readerRfidInpinj.getOnlinePort().intValue(), true);
-			}
+			settings.getAutoStop().setGpiLevel(!readerRfidInpinj.isAutoStartActive());
+			//
 
 			myDate.RefreshDate();
 			System.out.println(myDate.getFullDate() + " READER STARTING ........");
-			
+
 		} catch (Exception e) {
 			this.reader.stop();
 			reader.disconnect();
@@ -180,39 +218,33 @@ public class JobImpinj implements JobImpinjInterface {
 	public void start() throws OctaneSdkException {
 		if (!reader.isConnected()) {
 			reader.connect(hostname);
-			reader.applySettings(settings);
-			
-
-			if (reader.isConnected()) {
-				// Switch Off all LED
-				reader.setGpo(readerRfidInpinj.getOnlinePort().intValue(), false);
-				reader.setGpo(readerRfidInpinj.getGreenPort().intValue(), false);
-				reader.setGpo(readerRfidInpinj.getYellowPort().intValue(), false);
-				reader.setGpo(readerRfidInpinj.getRedPort().intValue(), false);
-				reader.setGpo(readerRfidInpinj.getOnlinePort().intValue(), true);
-				//reader.setTagReportListener(new TagReportListenerImplementation2());
-				//reader.setTagReportListener(new TagReportListenerImplementation());
-
-
-				reader.start();
-				System.out.println(myDate.getFullDate() + " Reader Re-Start Success..........");
-			} else
-				System.out.println(myDate.getFullDate() + " Reader Re-Start Failed...........");
 		} else {
 			System.out.println(" Reader Already Started...........");
 		}
+		if (reader.isConnected()) {
+			reader.applySettings(settings);
+			// Switch Off all LED
+
+			// reader.setGpo(readerRfidInpinj.getOnlinePort().intValue(), true);
+
+			reader.start();
+			System.out.println(myDate.getFullDate() + " Reader Re-Start Success..........");
+		} else {
+			System.out.println(myDate.getFullDate() + " Reader Re-Start Failed...........");
+		}
+
 	}
 
 	public void stop() throws OctaneSdkException {
-		reader.setGpo(readerRfidInpinj.getOnlinePort().intValue(), false);
-		reader.setGpo(readerRfidInpinj.getGreenPort().intValue(), false);
-		reader.setGpo(readerRfidInpinj.getYellowPort().intValue(), false);
-		reader.setGpo(readerRfidInpinj.getRedPort().intValue(), false);
-		reader.disconnect();
+		reader.setGpo(1, false);
+		reader.setGpo(2, false);
+		reader.setGpo(3, false);
+		reader.setGpo(4, false);
 		reader.stop();
+		reader.disconnect();
 		System.out.println("TUNNEL DISCONNECTED, NO OPERATION AVAILABLE !");
 	}
-	
+
 	public boolean status() throws OctaneSdkException {
 		if (reader.isConnected()) {
 			return true;
@@ -220,94 +252,5 @@ public class JobImpinj implements JobImpinjInterface {
 			return false;
 		}
 	}
-	
 
-//	while(!in.equals("quit"))
-//	{
-//		System.out.println("Enter a command <h> for help.......");
-//		in = key.nextLine();
-//		switch (in) {
-//		case "h":
-//			System.out.println("Command List available for CheckBox Tunnel ver. 1.1");
-//			System.out.println(" h       for help");
-//			System.out.println(" stop    disconnect tunnel RFID");
-//			System.out.println(" start   connect tunnel RFID");
-//			System.out.println(" status  tunnel RFID status");
-//			System.out.println(" stats   extracts statistics data");
-//			System.out.println(" quit       exit program");
-//			break;
-//		case "start":
-//
-//			break;
-//		case "stop":
-//			if (reader.isConnected()) {
-//				reader.setGpo(Integer.parseInt(prop.getKey("online_port")), false);
-//				reader.setGpo(Integer.parseInt(prop.getKey("green_port")), false);
-//				reader.setGpo(Integer.parseInt(prop.getKey("yellow_port")), false);
-//				reader.setGpo(Integer.parseInt(prop.getKey("red_port")), false);
-//
-//				reader.disconnect();
-//				System.out.println("TUNNEL DISCONNECTED, NO OPERATION AVAILABLE !");
-//			}
-//			break;
-//		case "status":
-//			if (reader.isConnected())
-//				System.out.println("TUNNEL READY, OPERATIONS AVAILABLE !");
-//			else
-//				System.out.println("TUNNEL NOT READY, NO OPERATIONS AVAILABLE !");
-//
-//			break;
-//		case "stats":
-//			int anno = 0;
-//			int mese = 0;
-//			boolean check = true;
-//			Scanner stat = new Scanner(System.in);
-//			try {
-//				System.out.println("Inserire Anno: ");
-//				anno = stat.nextInt();
-//			} catch (Exception ex) {
-//				check = false;
-//			}
-//
-//			if (check) {
-//				try {
-//					System.out.println("Inserire Mese: ");
-//					mese = stat.nextInt();
-//				} catch (Exception ex) {
-//					check = false;
-//				}
-//			}
-//
-//			if (check) {
-//				System.out.println("Anno: " + anno + " Mese: " + mese);
-//				// Estrazione dati Statistici
-//				System.out.println("Estrazione in esecuzione........");
-//				WriterDB scriviSA = new WriterDB();
-//				scriviSA.Statistics(anno, mese);
-//				System.out.println("Estrazione effettuata.");
-//			} else
-//				System.out.println("Errore nella richiesta..........");
-//			break;
-//
-//		case "quit":
-//			break;
-//
-//		default:
-//			System.out.println("comando <" + in + "> sconosciuto.....");
-//			break;
-//		}
-//	}
-//
-//	key.close();
-//
-//	myDate.RefreshDate();System.out.println(myDate.getFullDate()+" READER ENDING ........");
-//
-//	// reader.stop();
-//	reader.disconnect();
-//
-//	}catch(Exception ex)
-//	{
-//			System.err.println(ex.getMessage());
-//			conn.close();
-//		}System.exit(0);
 }
