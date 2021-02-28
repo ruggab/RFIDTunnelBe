@@ -179,7 +179,7 @@ public class JobImpinj implements JobImpinjInterface {
 			reader.setGpo(4, readerRfidInpinj.isPortaOut4());
 
 			// set autostart to go on GPI level
-			switch (readerRfidInpinj.getAutostartMode()) {
+			switch (readerRfidInpinj.getAutoStartMode()) {
 			case 1:
 				settings.getAutoStart().setMode(AutoStartMode.GpiTrigger);
 				break;
@@ -198,9 +198,24 @@ public class JobImpinj implements JobImpinjInterface {
 			settings.getAutoStart().setMode(AutoStartMode.GpiTrigger);
 			settings.getAutoStart().setGpiLevel(readerRfidInpinj.isAutoStartActive());
 
+			
+			
+			switch (readerRfidInpinj.getAutoStopMode()) {
+			case 1:
+				settings.getAutoStop().setMode(AutoStopMode.GpiTrigger);
+				break;
+			case 2:
+				settings.getAutoStop().setMode(AutoStopMode.Duration);
+				break;
+			case 3:
+				settings.getAutoStop().setMode(AutoStopMode.None);
+				break;
+			default:
+				settings.getAutoStop().setMode(AutoStopMode.GpiTrigger);
+				break;
+			}
 			// if you set start, you have to set stop
 			settings.getAutoStop().setGpiPortNumber(readerRfidInpinj.getNumPortaAutostart());
-			settings.getAutoStop().setMode(AutoStopMode.GpiTrigger);
 			settings.getAutoStop().setGpiLevel(!readerRfidInpinj.isAutoStartActive());
 			//
 

@@ -38,7 +38,7 @@ public class ConnectionLostListenerImplement implements ConnectionLostListener {
         		// Connessione ed Attivazione LED su Tunnel
                 reader.connect(readerRfidInpinj.getIpAdress());
                 if(reader.isConnected()) {
-                	reader.setGpo(readerRfidInpinj.getOnlinePort(), true);
+                	reader.setGpo(1, true);
                 	System.out.println(myDate.getFullDate()+" Reader Re-Connected");
                 }else
                 	System.out.println(myDate.getFullDate()+" Reader Re-Connection attempt :"+tries+" Failed");

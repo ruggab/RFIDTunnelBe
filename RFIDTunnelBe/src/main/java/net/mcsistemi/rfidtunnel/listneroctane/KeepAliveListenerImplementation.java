@@ -34,7 +34,7 @@ public class KeepAliveListenerImplementation implements KeepaliveListener {
         		// Connessione ed Attivazione LED su Tunnel
                 reader.connect(readerRfidInpinj.getIpAdress());
                 if(reader.isConnected()) {
-                	reader.setGpo(readerRfidInpinj.getOnlinePort(), true);
+                	reader.setGpo(1, true);
                 	System.out.println(myDate.getFullDate()+" Reader Re-Connected");
                 }else
                 	System.out.println(myDate.getFullDate()+" Reader Re-Connection Failed");

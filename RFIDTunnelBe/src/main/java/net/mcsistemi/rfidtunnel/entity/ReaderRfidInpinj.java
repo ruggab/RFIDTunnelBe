@@ -12,28 +12,41 @@ public class ReaderRfidInpinj extends Reader {
 
 	//
 	private Integer readerMode;
-	
-	
-	
-// ---------- GPIO PORT CONFIGURATION --
-	
+
+	// --------- LOG FILE PARAMETERS -----------
+	private boolean createOutFile; // S/N
+	@Column(length = 10)
+	private String nameOutLog; // Z-OUT_
+	@Column(length = 10)
+	private String extentionOutLog; // .log_
+
+	private boolean createErrFile; // S/N
+	@Column(length = 10)
+	private String nameErrLog; // Z-ERR_
+	@Column(length = 10)
+	private String extentionErrLog; // .log_
+
+	// ---------- GPIO PORT CONFIGURATION --
+
 	private boolean portaIn1;
 	private boolean portaIn2;
 	private boolean portaIn3;
 	private boolean portaIn4;
-	
+
 	private boolean portaOut1;
 	private boolean portaOut2;
 	private boolean portaOut3;
 	private boolean portaOut4;
-	
+
 	private boolean autoStartActive;
 	private Integer numPortaAutostart;
-	private Integer autostartMode;
-	
-		
-	
-public boolean isAutoStartActive() {
+	private Integer autoStartMode;
+	private Integer autoStopMode;
+
+	public ReaderRfidInpinj() {
+	}
+
+	public boolean isAutoStartActive() {
 		return autoStartActive;
 	}
 
@@ -49,93 +62,65 @@ public boolean isAutoStartActive() {
 		this.numPortaAutostart = numPortaAutostart;
 	}
 
-	public Integer getAutostartMode() {
-		return autostartMode;
+	public Integer getAutoStartMode() {
+		return autoStartMode;
 	}
 
-	public void setAutostartMode(Integer autostartMode) {
-		this.autostartMode = autostartMode;
+	public void setAutoStartMode(Integer autoStartMode) {
+		this.autoStartMode = autoStartMode;
 	}
 
-	//	--------- LOG FILE PARAMETERS -----------
-	private boolean createOutFile;	//S/N	
-	@Column(length = 10)
-	private String nameOutLog;	//Z-OUT_	
-	@Column(length = 10)
-	private String extentionOutLog;	//.log_	
-	
-	
-	private boolean createErrFile;	//S/N	
-	@Column(length = 10)
-	private String nameErrLog;	//Z-ERR_	
-	@Column(length = 10)
-	private String extentionErrLog;	//.log_	
-	
-/*  # --------- PRINT PARAMETERS ------------*/
-	
-	
-	
-	
-	public ReaderRfidInpinj() {
+	public Integer getAutoStopMode() {
+		return autoStopMode;
 	}
-	
+
+	public void setAutoStopMode(Integer autoStopMode) {
+		this.autoStopMode = autoStopMode;
+	}
+
 	public String getNameOutLog() {
 		return nameOutLog;
 	}
-
 
 	public void setNameOutLog(String nameOutLog) {
 		this.nameOutLog = nameOutLog;
 	}
 
-
 	public String getExtentionOutLog() {
 		return extentionOutLog;
 	}
-
 
 	public void setExtentionOutLog(String extentionOutLog) {
 		this.extentionOutLog = extentionOutLog;
 	}
 
-
 	public String getNameErrLog() {
 		return nameErrLog;
 	}
-
 
 	public void setNameErrLog(String nameErrLog) {
 		this.nameErrLog = nameErrLog;
 	}
 
-
 	public String getExtentionErrLog() {
 		return extentionErrLog;
 	}
-
 
 	public void setExtentionErrLog(String extentionErrLog) {
 		this.extentionErrLog = extentionErrLog;
 	}
 
-
-
-
-
 	public boolean isCreateOutFile() {
 		return createOutFile;
 	}
-
 
 	public void setCreateOutFile(boolean createOutFile) {
 		this.createOutFile = createOutFile;
 	}
 
-
 	public boolean isCreateErrFile() {
 		return createErrFile;
 	}
-
 
 	public void setCreateErrFile(boolean createErrFile) {
 		this.createErrFile = createErrFile;
@@ -213,9 +198,4 @@ public boolean isAutoStartActive() {
 		this.portaOut4 = portaOut4;
 	}
 
-
-	
-	
-
-		
 }
