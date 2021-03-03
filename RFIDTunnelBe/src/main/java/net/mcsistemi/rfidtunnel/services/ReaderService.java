@@ -125,12 +125,12 @@ public class ReaderService implements IReaderService {
 			// }
 
 			if (reader instanceof ReaderRfidWirama) {
-				ReaderRfidWirama readerRfidWirama = (ReaderRfidWirama)reader;
-				//JobWiramaReader JobWiramaReader = new JobWiramaReader((ReaderRfidWirama) reader, this);
+				ReaderRfidWirama readerRfidWirama = (ReaderRfidWirama) reader;
+				// JobWiramaReader JobWiramaReader = new JobWiramaReader((ReaderRfidWirama) reader, this);
 				JobWiramaCommand jobWiramaCommand = new JobWiramaCommand((ReaderRfidWirama) reader, this);
-				//PoolWiramaReader.addThread(reader.getIpAdress()+reader.getPorta(), JobWiramaReader);
-				PoolWiramaReader.addThread(reader.getIpAdress()+readerRfidWirama.getPortaComandi(), jobWiramaCommand);
-				//JobWiramaReader.start();
+				// PoolWiramaReader.addThread(reader.getIpAdress()+reader.getPorta(), JobWiramaReader);
+				PoolWiramaReader.addThread(reader.getIpAdress() + readerRfidWirama.getPortaComandi(), jobWiramaCommand);
+				// JobWiramaReader.start();
 				jobWiramaCommand.start();
 			}
 			if (reader instanceof ReaderRfidInpinj) {
@@ -160,9 +160,9 @@ public class ReaderService implements IReaderService {
 
 		if (reader instanceof ReaderRfidWirama) {
 			try {
-				ReaderRfidWirama readerRfidWirama = (ReaderRfidWirama)reader;
-				JobWiramaReader jobWirama = (JobWiramaReader) PoolWiramaReader.getThread(reader.getIpAdress()+readerRfidWirama.getPorta());
-				JobWiramaCommand jobWiramaCommand = (JobWiramaCommand) PoolWiramaReader.getThread(reader.getIpAdress()+readerRfidWirama.getPorta());
+				ReaderRfidWirama readerRfidWirama = (ReaderRfidWirama) reader;
+				JobWiramaReader jobWirama = (JobWiramaReader) PoolWiramaReader.getThread(reader.getIpAdress() + readerRfidWirama.getPorta());
+				JobWiramaCommand jobWiramaCommand = (JobWiramaCommand) PoolWiramaReader.getThread(reader.getIpAdress() + readerRfidWirama.getPorta());
 				jobWirama.stop();
 				jobWiramaCommand.stop();
 			} catch (Exception e) {
@@ -177,11 +177,13 @@ public class ReaderService implements IReaderService {
 		if (reader instanceof ReaderRfidInpinj) {
 			try {
 				JobImpinj jobImpinj = (JobImpinj) PoolImpinjReader.getJob(reader.getId());
-				jobImpinj.stop();
+				if (jobImpinj != null) {
+					jobImpinj.stop();
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
-				PoolImpinjReader.removeJob(reader.getId());
+				// PoolImpinjReader.removeJob(reader.getId());
 				reader.setStato(false);
 				readerRepository.save(reader);
 				list = readerRepository.findAll(Sort.by(Sort.Direction.ASC, "ipAdress"));
@@ -199,12 +201,12 @@ public class ReaderService implements IReaderService {
 
 		tunnelLogRepository.save(tunnelLog);
 	}
-	
+
 	public void save(Reader reader) throws Exception {
-		
+
 		readerRepository.save(reader);
 	}
-	
+
 	public List<Antenna> getAllAntenna(Long readerId) throws Exception {
 		List<Antenna> listAntenna = antennaRepository.findByIdReader(readerId);
 		return listAntenna;

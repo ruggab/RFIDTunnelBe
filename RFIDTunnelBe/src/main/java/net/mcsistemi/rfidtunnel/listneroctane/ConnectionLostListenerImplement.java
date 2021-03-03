@@ -24,29 +24,29 @@ public class ConnectionLostListenerImplement implements ConnectionLostListener {
     	System.out.println("-Entrata onConnectionLost------->");
     	myDate=new DateFunction();
     	
-    	try {
-	        System.out.println("Connection to the Reader is Lost...........");      
-	        
-	        int tries=0;
-	        boolean forEver=true;
-	        
-	        while(forEver) {
-	        	forEver=!reader.isConnected();
-	        	Thread.sleep(2000); // Attesa di 2 sec.
-        		
-	        	System.out.println(myDate.getFullDate()+" Reader try to Re-Connecting...........");
-        		// Connessione ed Attivazione LED su Tunnel
-                reader.connect(readerRfidInpinj.getIpAdress());
-                if(reader.isConnected()) {
-                	reader.setGpo(1, true);
-                	System.out.println(myDate.getFullDate()+" Reader Re-Connected");
-                }else
-                	System.out.println(myDate.getFullDate()+" Reader Re-Connection attempt :"+tries+" Failed");
-        	}
-    
-    	}catch(Exception ex) {
-    		System.err.println(ex.getMessage());
-    	}
+//    	try {
+//	        System.out.println("Connection to the Reader is Lost...........");      
+//	        
+//	        int tries=0;
+//	        boolean forEver=true;
+//	        
+//	        while(forEver) {
+//	        	forEver=!reader.isConnected();
+//	        	Thread.sleep(2000); // Attesa di 2 sec.
+//        		
+//	        	System.out.println(myDate.getFullDate()+" Reader try to Re-Connecting...........");
+//        		// Connessione ed Attivazione LED su Tunnel
+//                reader.connect(readerRfidInpinj.getIpAdress());
+//                if(reader.isConnected()) {
+//                	reader.setGpo(1, true);
+//                	System.out.println(myDate.getFullDate()+" Reader Re-Connected");
+//                }else
+//                	System.out.println(myDate.getFullDate()+" Reader Re-Connection attempt :"+tries+" Failed");
+//        	}
+//    
+//    	}catch(Exception ex) {
+//    		System.err.println(ex.getMessage());
+//    	}
     	System.out.println("-Uscita onConnectionLost------->");
     }
 }

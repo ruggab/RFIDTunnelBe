@@ -26,7 +26,8 @@ public class TagReportListenerImplementation implements TagReportListener {
 			for (Tag t : tags) {
 				logger.debug("IMPINJ ---->>>> EPC: " + t.getEpc().toString());
 				readerService.createReaderlog(reader.getAddress(), "", new Date(), t.getEpc().toString());
-				
+				System.out.print(" EPC: " + t.getEpc().toString());
+				System.out.print(" TID: " + t.getTid().toString());
 				if (reader.getName() != null) {
 					System.out.print(" Reader_name: " + reader.getName());
 				} else {
