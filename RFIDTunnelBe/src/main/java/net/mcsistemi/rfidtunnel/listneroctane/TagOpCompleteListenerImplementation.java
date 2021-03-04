@@ -69,21 +69,7 @@ public class TagOpCompleteListenerImplementation implements
                 System.out.print(" result: " + tqt.getResult().toString());
             }
 
-            System.out.println("TID:" + t.getTag().getTid());
-//            if (t instanceof  TagImpinjAuthenticateOpResult) {
-//                TagImpinjAuthenticateOpResult tia = (TagImpinjAuthenticateOpResult)t;
-//                System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-//                System.out.println("OpId: " +  tia.getOpId());
-//                System.out.println("EPC: " +  tia.getTag().getEpc());
-//                System.out.println("Result: " +  tia.getResult());
-//                System.out.println("*---------------------------------------------*");
-//                System.out.println("* -----   RESULTS BELOW ONLY ON SUCCESS  -----*");
-//                System.out.println("*---------------------------------------------*");
-//                System.out.println("Tag TID: " +  tia.getResponseTid());
-//                System.out.println("Original challenge message: " +  tia.getChallengeMessage());
-//                System.out.println("Result of tag encryption: " + tia.getResponseCypherMessage());
-//                System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-//            }
+           
 
             System.out.println("");
         }
