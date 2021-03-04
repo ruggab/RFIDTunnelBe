@@ -143,11 +143,11 @@ public class ReaderService implements IReaderService {
 			listReader = readerRepository.findAll(Sort.by(Sort.Direction.ASC, "ipAdress"));
 		} catch (OctaneSdkException ex) {
 			System.out.println(ex.getMessage());
-			throw ex;
+			listReader = this.stopReader(reader);
 		} catch (Exception ex) {
+			listReader = this.stopReader(reader);
 			System.out.println(ex.getMessage());
 			ex.printStackTrace(System.out);
-			throw ex;
 		}
 		return listReader;
 	}

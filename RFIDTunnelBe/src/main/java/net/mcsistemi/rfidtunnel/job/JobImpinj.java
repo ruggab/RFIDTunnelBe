@@ -91,10 +91,8 @@ public class JobImpinj implements JobImpinjInterface {
 
 			// DA SOSTITUIRE CON OPPORTUNA PARAMETRIZZAZIONE IN VISTA DEI THREAD
 			this.hostname = readerRfidInpinj.getIpAdress(); // Indirizzo IP Reader
-
 			// Connessione ed Attivazione LED su Tunnel
 			this.reader.connect(hostname);
-
 			// Caricamento della Configurazione del Reader
 			this.settings = reader.queryDefaultSettings();
 
@@ -146,8 +144,6 @@ public class JobImpinj implements JobImpinjInterface {
 				}
 			}
 
-			
-
 			// Configurazione Listener Reader
 			// reader.setReaderStartListener(new ReaderStartListenerImplementation());
 			// reader.setReaderStopListener(new ReaderStopListenerImplementation());
@@ -173,7 +169,6 @@ public class JobImpinj implements JobImpinjInterface {
 			settings.getGpis().get(3).setPortNumber(4);
 			settings.getGpis().get(3).setDebounceInMs(50);
 			//
-			
 
 			// set autostart to go on GPI level
 			switch (readerRfidInpinj.getAutoStartMode()) {
@@ -194,8 +189,6 @@ public class JobImpinj implements JobImpinjInterface {
 			settings.getAutoStart().setGpiPortNumber(readerRfidInpinj.getNumPortaAutostart());
 			settings.getAutoStart().setGpiLevel(readerRfidInpinj.isAutoStartActive());
 
-			
-			
 			switch (readerRfidInpinj.getAutoStopMode()) {
 			case 1:
 				settings.getAutoStop().setMode(AutoStopMode.GpiTrigger);
@@ -218,46 +211,43 @@ public class JobImpinj implements JobImpinjInterface {
 			reader.setGpo(2, readerRfidInpinj.isPortaOut2());
 			reader.setGpo(3, readerRfidInpinj.isPortaOut3());
 			reader.setGpo(4, readerRfidInpinj.isPortaOut4());
-			//reader.applySettings(settings);
-			
+			// reader.applySettings(settings);
+
 			TagReadOp readUser = new TagReadOp();
-            readUser.setMemoryBank(MemoryBank.User);
-            readUser.setWordCount((short) 2);
-            readUser.setWordPointer((short) 0);
-            readUser.Id = 222;
+			readUser.setMemoryBank(MemoryBank.User);
+			readUser.setWordCount((short) 2);
+			readUser.setWordPointer((short) 0);
+			readUser.Id = 444;
 
-            // reader the non-serialzed part of the TID (first 2 words)
-            TagReadOp readTid = new TagReadOp();
-            readTid.setMemoryBank(MemoryBank.Tid);
-            readTid.setWordPointer((short) 0);
-            readTid.setWordCount((short) 6);
-            readTid.Id = 333;
+			// reader the non-serialzed part of the TID (first 2 words)
+			TagReadOp readTid = new TagReadOp();
+			readTid.setMemoryBank(MemoryBank.Tid);
+			readTid.setWordPointer((short) 0);
+			readTid.setWordCount((short) 6);
+			readTid.Id = 555;
 
-            // add to the optimized read operations
-            settings.getReport().getOptimizedReadOps().add(readUser);
-            settings.getReport().getOptimizedReadOps().add(readTid);
+			// add to the optimized read operations
+			settings.getReport().getOptimizedReadOps().add(readUser);
+			settings.getReport().getOptimizedReadOps().add(readTid);
 
-            // set up listeners to hear stuff back from SDK
-           
-            
+			// set up listeners to hear stuff back from SDK
 
-            // Apply the new settings
-            reader.applySettings(settings);
+			// Apply the new settings
+			// reader.applySettings(settings);
 
-            
-			
-             // Configurazione Listener Lettura TAG
-    			// Configurazione controllo KEEP ALIVE
-    			settings.getKeepalives().setPeriodInMs(5000); // Tempo di Attesa prima di attivare evento di
-    			// disconnessione
-    			settings.getKeepalives().setEnabled(true); // Abilita il Controllo Disconnessione
-    			reader.setTagReportListener(new TagReportListenerImplementation(this.readerService));
-    			reader.setTagOpCompleteListener(new TagOpCompleteListenerImplementation());
-    			//reader.setReaderStartListener(new ReaderStartListenerImplementation(this.readerService));
-    			//reader.setReaderStopListener(new ReaderStopListenerImplementation(this.readerService));
-    			reader.setKeepaliveListener(new KeepAliveListenerImplementation(readerRfidInpinj, this.readerService));
-    			//reader.setConnectionLostListener(new ConnectionLostListenerImplement(readerRfidInpinj, this.readerService));  
-    			reader.applySettings(settings);
+			// Configurazione Listener Lettura TAG
+			// Configurazione controllo KEEP ALIVE
+			settings.getKeepalives().setPeriodInMs(5000); // Tempo di Attesa prima di attivare evento di
+			// disconnessione
+			settings.getKeepalives().setEnabled(true); // Abilita il Controllo Disconnessione
+			// reader.setTagReportListener(new TagReportListenerImplementation(this.readerService));
+			reader.setTagOpCompleteListener(new TagOpCompleteListenerImplementation(this.readerService));
+			// reader.setReaderStartListener(new ReaderStartListenerImplementation(this.readerService));
+			// reader.setReaderStopListener(new ReaderStopListenerImplementation(this.readerService));
+			reader.setKeepaliveListener(new KeepAliveListenerImplementation(readerRfidInpinj, this.readerService));
+			// reader.setConnectionLostListener(new ConnectionLostListenerImplement(readerRfidInpinj,
+			// this.readerService));
+
 			myDate.RefreshDate();
 			System.out.println(myDate.getFullDate() + " READER STARTING ........");
 
@@ -271,25 +261,26 @@ public class JobImpinj implements JobImpinjInterface {
 
 	public void start() throws OctaneSdkException {
 		if (!reader.isConnected()) {
-			reader.connect(hostname);
-			reader.setGpo(1, false);
-			reader.setGpo(2, false);
-			reader.setGpo(3, false);
-			reader.setGpo(4, false);
-			
+			this.reader.connect(hostname);
+			System.out.println(" Reader Already RE - Connected");
 		} else {
-			System.out.println(" Reader Already Started...........");
+			System.out.println(" Reader Already Connected");
 		}
 		if (reader.isConnected()) {
-			
+			this.reader.applySettings(settings);
+			// Switch all led 0
+			this.reader.setGpo(1, false);
+			this.reader.setGpo(2, false);
+			this.reader.setGpo(3, false);
+			this.reader.setGpo(4, false);
 			// Switch ON led 1
 			if (readerRfidInpinj.isPortaOut1()) {
 				reader.setGpo(1, true);
 			}
 			reader.start();
-			System.out.println(myDate.getFullDate() + " Reader Re-Start Success..........");
+			System.out.println(myDate.getFullDate() + " Reader Start Success");
 		} else {
-			System.out.println(myDate.getFullDate() + " Reader Re-Start Failed...........");
+			System.out.println(myDate.getFullDate() + " Reader Start Failed");
 		}
 
 	}
