@@ -42,6 +42,12 @@ public class ReaderRfidInpinj extends Reader {
 	private Integer numPortaAutostart;
 	private Integer autoStartMode;
 	private Integer autoStopMode;
+	
+	private boolean enableUserTid;
+	private Integer idUser;
+	private Integer idTid;
+	
+	
 
 	public ReaderRfidInpinj() {
 	}
@@ -198,4 +204,30 @@ public class ReaderRfidInpinj extends Reader {
 		this.portaOut4 = portaOut4;
 	}
 
+	public boolean isEnableUserTid() {
+		return enableUserTid;
+	}
+
+	public void setEnableUserTid(boolean enableUserTid) {
+		this.enableUserTid = enableUserTid;
+	}
+
+	public Integer getIdUser() {
+		return idUser;
+	}
+
+	public void setIdUser(Integer idUser) {
+		this.idUser = idUser;
+	}
+
+	public Integer getIdTid() {
+		return idTid;
+	}
+
+	public void setIdTid(Integer idTid) {
+		this.idTid = idTid;
+	}
+
+	
+	
 }
