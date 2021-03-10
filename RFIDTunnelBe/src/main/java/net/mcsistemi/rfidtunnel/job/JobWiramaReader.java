@@ -53,15 +53,16 @@ public class JobWiramaReader implements Runnable {
 			}
 		} catch (Exception e) {
 			running = false;
-			// e.printStackTrace();
 		} finally {
 			try {
 				if (inBufferReader != null) {
 					inBufferReader.close();
 				}
 				System.out.println("disconnecting from: " + readerRfidWirama.getIpAdress() + ":" + readerRfidWirama.getPorta());
-				socketReader.close();
-				readerRfidWirama.setStato(false);
+				if (socketReader != null) {
+					socketReader.close();
+				}
+				readerRfidWirama.setStato(running);
 				readerService.save(readerRfidWirama);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block

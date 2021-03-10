@@ -126,12 +126,12 @@ public class ReaderService implements IReaderService {
 
 			if (reader instanceof ReaderRfidWirama) {
 				ReaderRfidWirama readerRfidWirama = (ReaderRfidWirama) reader;
-				// JobWiramaReader JobWiramaReader = new JobWiramaReader((ReaderRfidWirama) reader, this);
-				JobWiramaCommand jobWiramaCommand = new JobWiramaCommand((ReaderRfidWirama) reader, this);
-				// PoolWiramaReader.addThread(reader.getIpAdress()+reader.getPorta(), JobWiramaReader);
-				PoolWiramaReader.addThread(reader.getIpAdress() + readerRfidWirama.getPortaComandi(), jobWiramaCommand);
-				// JobWiramaReader.start();
-				jobWiramaCommand.start();
+				JobWiramaReader jobWiramaReader = new JobWiramaReader((ReaderRfidWirama) reader, this);
+				//JobWiramaCommand jobWiramaCommand = new JobWiramaCommand((ReaderRfidWirama) reader, this);
+				PoolWiramaReader.addThread(readerRfidWirama.getIpAdress()+readerRfidWirama.getPorta(), jobWiramaReader);
+				//PoolWiramaReader.addThread(reader.getIpAdress() + readerRfidWirama.getPortaComandi(), jobWiramaCommand);
+				jobWiramaReader.start();
+				//jobWiramaCommand.start();
 			}
 			if (reader instanceof ReaderRfidInpinj) {
 				JobImpinj jobImpinj = new JobImpinj((ReaderRfidInpinj) reader, this);
@@ -144,10 +144,11 @@ public class ReaderService implements IReaderService {
 		} catch (OctaneSdkException ex) {
 			System.out.println(ex.getMessage());
 			listReader = this.stopReader(reader);
+			throw ex;
 		} catch (Exception ex) {
 			listReader = this.stopReader(reader);
 			System.out.println(ex.getMessage());
-			ex.printStackTrace(System.out);
+			throw ex;
 		}
 		return listReader;
 	}
@@ -162,9 +163,9 @@ public class ReaderService implements IReaderService {
 			try {
 				ReaderRfidWirama readerRfidWirama = (ReaderRfidWirama) reader;
 				JobWiramaReader jobWirama = (JobWiramaReader) PoolWiramaReader.getThread(reader.getIpAdress() + readerRfidWirama.getPorta());
-				JobWiramaCommand jobWiramaCommand = (JobWiramaCommand) PoolWiramaReader.getThread(reader.getIpAdress() + readerRfidWirama.getPorta());
+				//JobWiramaCommand jobWiramaCommand = (JobWiramaCommand) PoolWiramaReader.getThread(reader.getIpAdress() + readerRfidWirama.getPorta());
 				jobWirama.stop();
-				jobWiramaCommand.stop();
+				//jobWiramaCommand.stop();
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {

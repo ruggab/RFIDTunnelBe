@@ -249,7 +249,7 @@ public class JobImpinj implements JobImpinjInterface {
 		} catch (Exception e) {
 			this.reader.stop();
 			reader.disconnect();
-			e.printStackTrace();
+			throw e;
 		}
 
 	}
