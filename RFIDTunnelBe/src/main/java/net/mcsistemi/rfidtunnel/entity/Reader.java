@@ -32,6 +32,15 @@ public class Reader {
 	@Column(length = 1)
 	protected String separatore;
 	
+	protected Boolean keepAlive;
+
+	public Boolean getKeepAlive() {
+		return keepAlive;
+	}
+
+	public void setKeepAlive(Boolean keepAlive) {
+		this.keepAlive = keepAlive;
+	}
 
 	protected Boolean stato;
 	
