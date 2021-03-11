@@ -1,5 +1,6 @@
 package net.mcsistemi.rfidtunnel.listneroctane;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 import org.slf4j.Logger;
@@ -23,12 +24,14 @@ public class TagOpCompleteListenerImplementation implements TagOpCompleteListene
 
 	public void onTagOpComplete(ImpinjReader reader, TagOpReport results) {
 		System.out.println("onTagOpComplete");
-		String message = "";
+		String epc = "";
+		String tid = "";
+		String user = "";
 		try {
 			for (TagOpResult t : results.getResults()) {
 				System.out.println("IMPINJ ---->>>> EPC: " + t.getTag().getEpc().toHexString());
 				logger.debug("IMPINJ ---->>>> EPC: " + t.getTag().getEpc().toHexString());
-				message = "EPC: " + t.getTag().getEpc().toHexString();
+				epc = t.getTag().getEpc().toHexString();
 				if (t instanceof TagReadOpResult) {
 					TagReadOpResult tr = (TagReadOpResult) t;
 					System.out.print(" READ: id: " + tr.getOpId());
@@ -36,12 +39,12 @@ public class TagOpCompleteListenerImplementation implements TagOpCompleteListene
 					System.out.print(" result: " + tr.getResult().toString());
 					if (tr.getResult() == ReadResultStatus.Success && tr.getOpId() == new Short(readerRfidInpinj.getIdUser()+"")) {
 						System.out.print(" USER: " + tr.getData().toHexWordString());
-						message = message + " USER: " + tr.getData().toHexWordString();
+						user = tr.getData().toHexWordString();
 					}
 					if (tr.getResult() == ReadResultStatus.Success && tr.getOpId() == new Short(readerRfidInpinj.getIdTid()+"")) {
 						System.out.print(" TID: " + tr.getData().toHexWordString());
-						message = message + " TID: " + tr.getData().toHexWordString();
-						readerService.createReaderlog(reader.getAddress(), "", new Date(), message);
+						tid = tr.getData().toHexWordString();
+						readerService.createReaderStream(reader.getAddress(), "", epc, tid, "", new Timestamp(System.currentTimeMillis()));
 					}
 				}
 			}

@@ -218,30 +218,32 @@ public class JobImpinj implements JobImpinjInterface {
 				readUser.setMemoryBank(MemoryBank.User);
 				readUser.setWordCount((short) 2);
 				readUser.setWordPointer((short) 0);
-				readUser.Id = new Short(readerRfidInpinj.getIdUser()+"");
+				readUser.Id = new Short(readerRfidInpinj.getIdUser() + "");
 
 				// reader the non-serialzed part of the TID (first 2 words)
 				TagReadOp readTid = new TagReadOp();
 				readTid.setMemoryBank(MemoryBank.Tid);
 				readTid.setWordPointer((short) 0);
 				readTid.setWordCount((short) 6);
-				readTid.Id = new Short(readerRfidInpinj.getIdTid()+"");
+				readTid.Id = new Short(readerRfidInpinj.getIdTid() + "");
 
 				// add to the optimized read operations
 				settings.getReport().getOptimizedReadOps().add(readUser);
 				settings.getReport().getOptimizedReadOps().add(readTid);
-				//set up listeners for user and TID also
-				reader.setTagOpCompleteListener(new TagOpCompleteListenerImplementation(readerRfidInpinj,this.readerService));
+				// set up listeners for user and TID also
+				reader.setTagOpCompleteListener(new TagOpCompleteListenerImplementation(readerRfidInpinj, this.readerService));
 			} else {
-				//set up listeners just for EPC
+				// set up listeners just for EPC
 				reader.setTagReportListener(new TagReportListenerImplementation(this.readerService));
 			}
 
-			// Configurazione controllo KEEP ALIVE
-			settings.getKeepalives().setPeriodInMs(5000); // Tempo di Attesa prima di attivare evento di
-			settings.getKeepalives().setEnabled(true); // Abilita il Controllo Disconnessione
-			reader.setKeepaliveListener(new KeepAliveListenerImplementation(readerRfidInpinj, this.readerService));
-			reader.setConnectionLostListener(new ConnectionLostListenerImplement(readerRfidInpinj,this.readerService));
+			if (readerRfidInpinj.getKeepAlive()) {
+				// Configurazione controllo KEEP ALIVE
+				settings.getKeepalives().setPeriodInMs(5000); // Tempo di Attesa prima di attivare evento di
+				settings.getKeepalives().setEnabled(true); // Abilita il Controllo Disconnessione
+				reader.setKeepaliveListener(new KeepAliveListenerImplementation(readerRfidInpinj, this.readerService));
+			}
+			reader.setConnectionLostListener(new ConnectionLostListenerImplement(readerRfidInpinj, this.readerService));
 
 			myDate.RefreshDate();
 			System.out.println(myDate.getFullDate() + " READER STARTING ........");
@@ -289,7 +291,5 @@ public class JobImpinj implements JobImpinjInterface {
 		reader.disconnect();
 		System.out.println("TUNNEL DISCONNECTED, NO OPERATION AVAILABLE !");
 	}
-
-	
 
 }

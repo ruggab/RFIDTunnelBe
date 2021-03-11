@@ -1,5 +1,6 @@
 package net.mcsistemi.rfidtunnel.services;
 
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -17,6 +18,7 @@ import net.mcsistemi.rfidtunnel.entity.Antenna;
 import net.mcsistemi.rfidtunnel.entity.Reader;
 import net.mcsistemi.rfidtunnel.entity.ReaderRfidInpinj;
 import net.mcsistemi.rfidtunnel.entity.ReaderRfidWirama;
+import net.mcsistemi.rfidtunnel.entity.ReaderStream;
 import net.mcsistemi.rfidtunnel.entity.TipoReader;
 import net.mcsistemi.rfidtunnel.entity.TunnelLog;
 import net.mcsistemi.rfidtunnel.job.JobImpinj;
@@ -26,6 +28,7 @@ import net.mcsistemi.rfidtunnel.job.PoolImpinjReader;
 import net.mcsistemi.rfidtunnel.job.PoolWiramaReader;
 import net.mcsistemi.rfidtunnel.repository.AntennaRepository;
 import net.mcsistemi.rfidtunnel.repository.ReaderRepository;
+import net.mcsistemi.rfidtunnel.repository.ReaderStreamRepository;
 import net.mcsistemi.rfidtunnel.repository.TipoReaderRepository;
 import net.mcsistemi.rfidtunnel.repository.TunnelLogRepository;
 
@@ -39,7 +42,7 @@ public class ReaderService implements IReaderService {
 	private ReaderRepository readerRepository;
 
 	@Autowired
-	private TunnelLogRepository tunnelLogRepository;
+	private ReaderStreamRepository readerStreamRepository;
 
 	@Autowired
 	private AntennaRepository antennaRepository;
@@ -195,12 +198,17 @@ public class ReaderService implements IReaderService {
 		return list;
 	}
 
-	public void createReaderlog(String ipAdress, String port, Date time, String msg) throws Exception {
-		TunnelLog tunnelLog = new TunnelLog();
-		tunnelLog.setTimeStamp(time);
-		tunnelLog.setMessage(msg);
+	public void createReaderStream(String ipAdress, String port, String epc, String tid, String packId, Timestamp time) throws Exception {
+		ReaderStream readerStream = new ReaderStream();
+		
+		readerStream.setEpc(epc);
+		readerStream.setTimeStamp(time);
+		readerStream.setTid(tid);
+		readerStream.setIpAdress(ipAdress);
+		readerStream.setPort(port);
+		readerStream.setPackId(packId);
 
-		tunnelLogRepository.save(tunnelLog);
+		readerStreamRepository.save(readerStream);
 	}
 
 	public void save(Reader reader) throws Exception {

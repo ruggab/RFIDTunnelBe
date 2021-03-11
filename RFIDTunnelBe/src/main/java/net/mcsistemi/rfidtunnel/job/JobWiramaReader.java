@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -48,7 +49,7 @@ public class JobWiramaReader implements Runnable {
 			inBufferReader = connectReader();
 			while (running) {
 					String line = inBufferReader.readLine().toString();
-					readerService.createReaderlog(readerRfidWirama.getIpAdress(), readerRfidWirama.getPorta(), new Date(), line);
+					readerService.createReaderStream(readerRfidWirama.getIpAdress(), readerRfidWirama.getPorta(), line, "", "", new Timestamp(System.currentTimeMillis()));
 					logger.info("WIRAMA ---->>>>:" + line);
 			}
 		} catch (Exception e) {

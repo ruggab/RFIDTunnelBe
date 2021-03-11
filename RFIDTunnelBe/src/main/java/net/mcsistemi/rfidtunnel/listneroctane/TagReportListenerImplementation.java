@@ -5,6 +5,8 @@ import com.impinj.octane.Tag;
 import com.impinj.octane.TagReport;
 import com.impinj.octane.TagReportListener;
 import net.mcsistemi.rfidtunnel.services.ReaderService;
+
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 import org.slf4j.Logger;
@@ -25,7 +27,7 @@ public class TagReportListenerImplementation implements TagReportListener {
 		try {
 			for (Tag t : tags) {
 				logger.debug("IMPINJ ---->>>> EPC: " + t.getEpc().toString());
-				readerService.createReaderlog(reader.getAddress(), "", new Date(), t.getEpc().toString());
+				readerService.createReaderStream(reader.getAddress(), "", t.getEpc().toString(), "", "", new Timestamp(System.currentTimeMillis()));
 				System.out.print(" EPC: " + t.getEpc().toString());
 				
 			}
