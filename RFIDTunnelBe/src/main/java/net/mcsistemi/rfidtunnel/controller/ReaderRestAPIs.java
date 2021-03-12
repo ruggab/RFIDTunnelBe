@@ -20,6 +20,7 @@ import net.mcsistemi.rfidtunnel.entity.Antenna;
 import net.mcsistemi.rfidtunnel.entity.Reader;
 import net.mcsistemi.rfidtunnel.entity.ReaderRfidInpinj;
 import net.mcsistemi.rfidtunnel.entity.ReaderRfidWirama;
+import net.mcsistemi.rfidtunnel.entity.ReaderStream;
 import net.mcsistemi.rfidtunnel.entity.TipoReader;
 import net.mcsistemi.rfidtunnel.exception.ResourceNotFoundException;
 import net.mcsistemi.rfidtunnel.form.ReaderForm;
@@ -152,6 +153,16 @@ public class ReaderRestAPIs {
 			throw e;
 		}
 
+	}
+	
+	
+	@GetMapping("/allDataReader")
+	public List<ReaderStream> getAllDataReader() throws Exception, ResourceNotFoundException {
+		try {
+			return readerService.getAllDataReader();
+		} catch (Exception e) {
+			throw e;
+		}
 	}
 
 

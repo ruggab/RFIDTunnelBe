@@ -220,5 +220,11 @@ public class ReaderService implements IReaderService {
 		List<Antenna> listAntenna = antennaRepository.findByIdReader(readerId);
 		return listAntenna;
 	}
+	
+	public List<ReaderStream> getAllDataReader() throws Exception {
+		//
+		List<ReaderStream> readerDataList = readerStreamRepository.findAll(Sort.by(Sort.Direction.ASC, "ipAdress"));
+		return readerDataList;
+	}
 
 }
