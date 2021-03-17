@@ -123,6 +123,24 @@ public class JobImpinj implements JobImpinjInterface {
 			case 5:
 				settings.setReaderMode(ReaderMode.AutoSetStaticFast);
 				break;
+			case 6:
+				settings.setReaderMode(ReaderMode.DenseReaderM4);
+				break;
+			case 7:
+				settings.setReaderMode(ReaderMode.DenseReaderM4Two);
+				break;
+			case 8:
+				settings.setReaderMode(ReaderMode.DenseReaderM8);
+				break;
+			case 9:
+				settings.setReaderMode(ReaderMode.Hybrid);
+				break;
+			case 10:
+				settings.setReaderMode(ReaderMode.MaxMiller);
+				break;
+			case 11:
+				settings.setReaderMode(ReaderMode.MaxThroughput);
+				break;
 			default:
 				settings.setReaderMode(ReaderMode.AutoSetDenseReader);
 				break;
