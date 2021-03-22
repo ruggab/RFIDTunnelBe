@@ -21,13 +21,13 @@ public class ReaderStream {
 	@Column(name="id")
     private Long id;
 	
-	@NotBlank
+	
     private String packId;
 	
-	@NotBlank
+	
     private String epc;
 	
-	@NotBlank
+	
     private String tid;
 	
 	private String ipAdress; 
