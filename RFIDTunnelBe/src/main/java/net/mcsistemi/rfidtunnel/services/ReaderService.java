@@ -198,7 +198,7 @@ public class ReaderService implements IReaderService {
 		return list;
 	}
 
-	public void createReaderStream(String ipAdress, String port, String epc, String tid, String packId, Timestamp time) throws Exception {
+	public void createReaderStream(String ipAdress, String port, String epc, String tid, String user, String packId,Timestamp time) throws Exception {
 		ReaderStream readerStream = new ReaderStream();
 		
 		readerStream.setEpc(epc);
@@ -207,7 +207,7 @@ public class ReaderService implements IReaderService {
 		readerStream.setIpAdress(ipAdress);
 		readerStream.setPort(port);
 		readerStream.setPackId(packId);
-
+		readerStream.setUser(user);
 		readerStreamRepository.save(readerStream);
 	}
 

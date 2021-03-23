@@ -44,7 +44,11 @@ public class TagOpCompleteListenerImplementation implements TagOpCompleteListene
 					if (tr.getResult() == ReadResultStatus.Success && tr.getOpId() == new Short(readerRfidInpinj.getIdTid()+"")) {
 						System.out.print(" TID: " + tr.getData().toHexWordString());
 						tid = tr.getData().toHexWordString();
-						readerService.createReaderStream(reader.getAddress(), "", epc, tid, "", new Timestamp(System.currentTimeMillis()));
+						//
+						epc = readerRfidInpinj.isEnableEpc() ?  epc : "";
+						tid = readerRfidInpinj.isEnableTid() ? tid : "";
+						user = readerRfidInpinj.isEnableUser() ? user : "";
+						readerService.createReaderStream(reader.getAddress(), "", epc, tid, user, "",new Timestamp(System.currentTimeMillis()));
 					}
 				}
 			}

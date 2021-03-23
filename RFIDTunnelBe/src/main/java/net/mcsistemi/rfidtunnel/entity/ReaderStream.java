@@ -27,6 +27,7 @@ public class ReaderStream {
 	
     private String epc;
 	
+    private String user;
 	
     private String tid;
 	
@@ -102,6 +103,14 @@ public class ReaderStream {
 
 	public void setPort(String port) {
 		this.port = port;
+	}
+
+	public String getUser() {
+		return user;
+	}
+
+	public void setUser(String user) {
+		this.user = user;
 	}
 	
 	

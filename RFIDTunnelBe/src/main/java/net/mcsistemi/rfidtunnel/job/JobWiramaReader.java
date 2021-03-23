@@ -49,7 +49,7 @@ public class JobWiramaReader implements Runnable {
 			inBufferReader = connectReader();
 			while (running) {
 					String line = inBufferReader.readLine().toString();
-					readerService.createReaderStream(readerRfidWirama.getIpAdress(), readerRfidWirama.getPorta(), line, "", "", new Timestamp(System.currentTimeMillis()));
+					readerService.createReaderStream(readerRfidWirama.getIpAdress(), readerRfidWirama.getPorta(), line, "", "", "",new Timestamp(System.currentTimeMillis()));
 					logger.info("WIRAMA ---->>>>:" + line);
 			}
 		} catch (Exception e) {

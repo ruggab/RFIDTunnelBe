@@ -230,7 +230,7 @@ public class JobImpinj implements JobImpinjInterface {
 			reader.setGpo(3, readerRfidInpinj.isPortaOut3());
 			reader.setGpo(4, readerRfidInpinj.isPortaOut4());
 
-			if (readerRfidInpinj.isEnableUserTid()) {
+			if (readerRfidInpinj.isEnableUser()|| readerRfidInpinj.isEnableTid()) {
 
 				TagReadOp readUser = new TagReadOp();
 				readUser.setMemoryBank(MemoryBank.User);
