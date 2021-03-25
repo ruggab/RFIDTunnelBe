@@ -207,7 +207,7 @@ public class ReaderService implements IReaderService {
 		readerStream.setIpAdress(ipAdress);
 		readerStream.setPort(port);
 		readerStream.setPackId(packId);
-		readerStream.setUser(user);
+		readerStream.setUserData(user);
 		readerStreamRepository.save(readerStream);
 	}
 
