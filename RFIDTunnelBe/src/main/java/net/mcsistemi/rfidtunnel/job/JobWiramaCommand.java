@@ -1,19 +1,15 @@
 package net.mcsistemi.rfidtunnel.job;
 
 import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import net.mcsistemi.rfidtunnel.entity.ReaderRfidWirama;
 import net.mcsistemi.rfidtunnel.services.ReaderService;
@@ -27,7 +23,7 @@ public class JobWiramaCommand implements Runnable {
 	Socket socketCommand = null;
 	boolean running = true;
 
-	Logger logger = LoggerFactory.getLogger(JobWiramaCommand.class);
+	private static final Logger LOGGER = LogManager.getLogger(JobWiramaCommand.class);
 
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
 	ReaderService readerService = null;
@@ -61,7 +57,7 @@ public class JobWiramaCommand implements Runnable {
 				if (line.equals("ko")) {
 					readerRfidWirama.setStato(false);
 					readerService.save(readerRfidWirama);
-					logger.info("WIRAMA ---->>>>:" + line);
+					LOGGER.info("WIRAMA ---->>>>:" + line);
 					running = false;
 				}
 				
@@ -77,7 +73,7 @@ public class JobWiramaCommand implements Runnable {
 				if (out != null) {
 					out.close();
 				}
-				System.out.println("disconnecting from: " + readerRfidWirama.getIpAdress() + ":" + readerRfidWirama.getPortaComandi());
+				LOGGER.info("disconnecting from: " + readerRfidWirama.getIpAdress() + ":" + readerRfidWirama.getPortaComandi());
 				socketCommand.close();
 				readerRfidWirama.setStato(false);
 				readerService.save(readerRfidWirama);
@@ -93,15 +89,15 @@ public class JobWiramaCommand implements Runnable {
 	public BufferedReader connectSocket() throws Exception {
 		BufferedReader in = null;
 		// connect
-		logger.info("Connecting to Reader Wirama: " + readerRfidWirama.getIpAdress() + ":" + readerRfidWirama.getPortaComandi());
+		LOGGER.info("Connecting to Reader Wirama: " + readerRfidWirama.getIpAdress() + ":" + readerRfidWirama.getPortaComandi());
 		try {
 			socketCommand = new Socket(readerRfidWirama.getIpAdress(), new Integer(readerRfidWirama.getPortaComandi()));
 			in = new BufferedReader(new InputStreamReader(socketCommand.getInputStream()));
 		} catch (UnknownHostException e) {
-			logger.error("Unknown host: " + readerRfidWirama.getIpAdress());
+			LOGGER.error("Unknown host: " + readerRfidWirama.getIpAdress());
 			throw e;
 		} catch (IOException e) {
-			logger.error("Unable to get streams from Wirama");
+			LOGGER.error("Unable to get streams from Wirama");
 			throw e;
 		}
 		return in;
@@ -111,7 +107,7 @@ public class JobWiramaCommand implements Runnable {
 
 	public void stop() {
 
-		System.out.println("Stop thread ip: " + readerRfidWirama.getIpAdress());
+		LOGGER.info("Stop thread ip: " + readerRfidWirama.getIpAdress());
 		try {
 			running = false;
 		} catch (Exception e) {

@@ -26,6 +26,7 @@ import com.impinj.octane.TagReadOp;
 import net.mcsistemi.rfidtunnel.entity.Antenna;
 import net.mcsistemi.rfidtunnel.entity.ReaderRfidInpinj;
 import net.mcsistemi.rfidtunnel.listneroctane.ConnectionLostListenerImplement;
+import net.mcsistemi.rfidtunnel.listneroctane.FilteredTagReportListenerImplementation;
 import net.mcsistemi.rfidtunnel.listneroctane.KeepAliveListenerImplementation;
 import net.mcsistemi.rfidtunnel.listneroctane.ReaderStartListenerImplementation;
 import net.mcsistemi.rfidtunnel.listneroctane.ReaderStopListenerImplementation;
@@ -252,7 +253,9 @@ public class JobImpinj implements JobImpinjInterface {
 				reader.setTagOpCompleteListener(new TagOpCompleteListenerImplementation(readerRfidInpinj, this.readerService));
 			} else {
 				// set up listeners just for EPC
-				reader.setTagReportListener(new TagReportListenerImplementation(this.readerService));
+				//reader.setAntennaChangeListener( new AntennaChangeListenerImplementation());
+				reader.setTagReportListener(new FilteredTagReportListenerImplementation());
+				
 			}
 
 			if (readerRfidInpinj.getKeepAlive()) {

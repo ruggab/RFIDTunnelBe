@@ -7,10 +7,9 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import net.mcsistemi.rfidtunnel.entity.ReaderRfidWirama;
 import net.mcsistemi.rfidtunnel.services.ReaderService;
@@ -25,7 +24,7 @@ public class JobWiramaReader implements Runnable {
 
 	boolean running = true;
 
-	Logger logger = LoggerFactory.getLogger(JobWiramaReader.class);
+	private static final Logger LOGGER = LogManager.getLogger(JobWiramaReader.class);
 
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
 	ReaderService readerService = null;
@@ -50,7 +49,7 @@ public class JobWiramaReader implements Runnable {
 			while (running) {
 					String line = inBufferReader.readLine().toString();
 					readerService.createReaderStream(readerRfidWirama.getIpAdress(), readerRfidWirama.getPorta(), line, "", "", "",new Timestamp(System.currentTimeMillis()));
-					logger.info("WIRAMA ---->>>>:" + line);
+					LOGGER.info("WIRAMA ---->>>>:" + line);
 			}
 		} catch (Exception e) {
 			running = false;
@@ -75,15 +74,15 @@ public class JobWiramaReader implements Runnable {
 	public BufferedReader connectReader() throws Exception {
 		BufferedReader in = null;
 		// connect
-		logger.info("Connecting to Reader Wirama: " + readerRfidWirama.getIpAdress() + ":" + readerRfidWirama.getPorta());
+		LOGGER.info("Connecting to Reader Wirama: " + readerRfidWirama.getIpAdress() + ":" + readerRfidWirama.getPorta());
 		try {
 			socketReader = new Socket(readerRfidWirama.getIpAdress(), new Integer(readerRfidWirama.getPorta()));
 			in = new BufferedReader(new InputStreamReader(socketReader.getInputStream()));
 		} catch (UnknownHostException e) {
-			logger.error("Unknown host: " + readerRfidWirama.getIpAdress());
+			LOGGER.error("Unknown host: " + readerRfidWirama.getIpAdress());
 			throw e;
 		} catch (IOException e) {
-			logger.error("Unable to get streams from Wirama");
+			LOGGER.error("Unable to get streams from Wirama");
 			throw e;
 		}
 		return in;
@@ -91,7 +90,7 @@ public class JobWiramaReader implements Runnable {
 
 	public void stop() {
 
-		System.out.println("Stop thread ip: " + readerRfidWirama.getIpAdress());
+		LOGGER.info("Stop thread ip: " + readerRfidWirama.getIpAdress());
 		try {
 			running = false;
 		} catch (Exception e) {

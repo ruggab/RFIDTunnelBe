@@ -20,9 +20,7 @@ import net.mcsistemi.rfidtunnel.entity.ReaderRfidInpinj;
 import net.mcsistemi.rfidtunnel.entity.ReaderRfidWirama;
 import net.mcsistemi.rfidtunnel.entity.ReaderStream;
 import net.mcsistemi.rfidtunnel.entity.TipoReader;
-import net.mcsistemi.rfidtunnel.entity.TunnelLog;
 import net.mcsistemi.rfidtunnel.job.JobImpinj;
-import net.mcsistemi.rfidtunnel.job.JobWiramaCommand;
 import net.mcsistemi.rfidtunnel.job.JobWiramaReader;
 import net.mcsistemi.rfidtunnel.job.PoolImpinjReader;
 import net.mcsistemi.rfidtunnel.job.PoolWiramaReader;
@@ -30,7 +28,6 @@ import net.mcsistemi.rfidtunnel.repository.AntennaRepository;
 import net.mcsistemi.rfidtunnel.repository.ReaderRepository;
 import net.mcsistemi.rfidtunnel.repository.ReaderStreamRepository;
 import net.mcsistemi.rfidtunnel.repository.TipoReaderRepository;
-import net.mcsistemi.rfidtunnel.repository.TunnelLogRepository;
 
 @Service
 public class ReaderService implements IReaderService {
