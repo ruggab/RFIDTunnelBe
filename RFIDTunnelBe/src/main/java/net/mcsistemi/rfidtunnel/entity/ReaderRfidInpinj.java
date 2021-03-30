@@ -6,6 +6,10 @@ import javax.persistence.Table;
 
 import net.mcsistemi.rfidtunnel.form.ReaderForm;
 
+/**
+ * @author Gabriele
+ *
+ */
 @Entity
 @Table(name = "reader_rfid_inpinj")
 public class ReaderRfidInpinj extends Reader {
@@ -13,6 +17,7 @@ public class ReaderRfidInpinj extends Reader {
 	//
 	private Integer readerMode;
 
+	private Integer searchMode;
 	// --------- LOG FILE PARAMETERS -----------
 	private boolean createOutFile; // S/N
 	@Column(length = 10)
@@ -50,6 +55,14 @@ public class ReaderRfidInpinj extends Reader {
 	private Integer idTid;
 	
 	
+
+	public Integer getSearchMode() {
+		return searchMode;
+	}
+
+	public void setSearchMode(Integer searchMode) {
+		this.searchMode = searchMode;
+	}
 
 	public ReaderRfidInpinj() {
 	}

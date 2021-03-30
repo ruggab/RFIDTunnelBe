@@ -17,6 +17,7 @@ import com.impinj.octane.OctaneSdkException;
 import com.impinj.octane.ReaderMode;
 import com.impinj.octane.ReportConfig;
 import com.impinj.octane.ReportMode;
+import com.impinj.octane.SearchMode;
 import com.impinj.octane.Settings;
 import com.impinj.octane.TagFilter;
 import com.impinj.octane.TagFilterMode;
@@ -146,6 +147,9 @@ public class JobImpinj implements JobImpinjInterface {
 				settings.setReaderMode(ReaderMode.AutoSetDenseReader);
 				break;
 			}
+			
+			
+			// settings.setSearchMode(SearchMode.TagFocus);
 
 			// set some special settings for antenna 1
 

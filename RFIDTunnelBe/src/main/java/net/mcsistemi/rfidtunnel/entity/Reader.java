@@ -34,14 +34,7 @@ public class Reader {
 	
 	protected Boolean keepAlive;
 
-	public Boolean getKeepAlive() {
-		return keepAlive;
-	}
-
-	public void setKeepAlive(Boolean keepAlive) {
-		this.keepAlive = keepAlive;
-	}
-
+	
 	protected Boolean stato;
 	
 	@Transient
@@ -50,12 +43,14 @@ public class Reader {
 	public Reader() {
 	}
 
-//	public Reader(ReaderForm form) {
-//		this.ipAdress = form.getIpAdress();
-//		this.porta = form.getPorta();
-//		this.separatore = form.getSeparatore();
-//		this.idTipoReader = new Long(form.getTipoReaderSel());
-//	}
+	public Boolean getKeepAlive() {
+		return keepAlive;
+	}
+
+	public void setKeepAlive(Boolean keepAlive) {
+		this.keepAlive = keepAlive;
+	}
+
 
 	public Long getId() {
 		return id;
