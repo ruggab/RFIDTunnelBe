@@ -258,7 +258,22 @@ public class JobImpinj implements JobImpinjInterface {
 			} else {
 				// set up listeners just for EPC
 				//reader.setAntennaChangeListener( new AntennaChangeListenerImplementation());
-				reader.setTagReportListener(new FilteredTagReportListenerImplementation());
+				 ReportConfig r = settings.getReport();
+		         // tell the reader to include the antenna port number in the report
+	             r.setIncludeAntennaPortNumber(true);
+	             r.setIncludeFirstSeenTime(true);
+	             r.setIncludeChannel(true);
+	             r.setIncludeCrc(true);
+	             r.setIncludeDopplerFrequency(true);
+	             r.setIncludeFastId(true);
+	             r.setIncludeLastSeenTime(true);
+	             r.setIncludeLastSeenTime(true);
+	             r.setIncludePeakRssi(true);
+	             r.setIncludePhaseAngle(true);
+	             r.setIncludeSeenCount(true);
+	             settings.setReport(r);
+				
+				reader.setTagReportListener(new TagReportListenerImplementation(this.readerService));
 				
 			}
 
