@@ -49,7 +49,7 @@ public class FilteredTagReportListenerImplementation implements TagReportListene
             }
 
             if (t.isLastSeenTimePresent()) {
-                System.out.print(" first: " + t.getLastSeenTime().ToString());
+                System.out.print(" last: " + t.getLastSeenTime().ToString());
             }
 
             if (t.isSeenCountPresent()) {
@@ -58,6 +58,14 @@ public class FilteredTagReportListenerImplementation implements TagReportListene
 
             if (t.isRfDopplerFrequencyPresent()) {
                 System.out.print(" doppler: " + t.getRfDopplerFrequency());
+            }
+            
+            if (t.isChannelInMhzPresent()) {
+                System.out.print(" Channel In Mhz: " + t.getChannelInMhz());
+            }
+            
+            if (t.isCrcPresent()) {
+                System.out.print(" Crc: " + t.getCrc());
             }
 
             System.out.println("");
