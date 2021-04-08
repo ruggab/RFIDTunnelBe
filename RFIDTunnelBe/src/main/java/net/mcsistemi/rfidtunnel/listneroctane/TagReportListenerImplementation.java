@@ -27,22 +27,8 @@ public class TagReportListenerImplementation implements TagReportListener {
 		try {
 			for (Tag t : tags) {
 				logger.debug("IMPINJ ---->>>> EPC: " + t.getEpc().toString());
-				readerService.createReaderStream(reader.getAddress(), "", t.getEpc().toString(), "", "", "",new Timestamp(System.currentTimeMillis()));
-				System.out.print(" Antenna: " + t.getAntennaPortNumber());
-				System.out.print(" EPC: " + t.getEpc().toString());
-				System.out.print(" EPC: " + t.getTid().toString());
-				System.out.print(" EPC: " + t.getChannelInMhz());
-				System.out.print(" EPC: " + t.getCrc());
-				System.out.print(" EPC: " + t.getPcBits());
-				System.out.print(" EPC: " + t.getPeakRssiInDbm());
-				System.out.print(" EPC: " + t.getPhaseAngleInRadians());
-				System.out.print(" EPC: " + t.getRfDopplerFrequency());
-				System.out.print(" EPC: " + t.getTagSeenCount());
-				System.out.print(" EPC: " + t.getFirstSeenTime());
-				System.out.print(" EPC: " + t.getGpsCoodinates());
-				System.out.print(" EPC: " + t.getLastSeenTime());
-				System.out.print(" EPC: " + t.getModelDetails());
-				System.out.print(" EPC: " + t.getReadOperationResults());
+				readerService.createReaderStream(reader.getAddress(), "", t.getEpc().toString(),  t);
+				
 				
 				
 				
