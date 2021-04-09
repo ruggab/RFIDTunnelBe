@@ -21,7 +21,7 @@ import net.mcsistemi.rfidtunnel.entity.Reader;
 import net.mcsistemi.rfidtunnel.entity.ReaderRfidInpinj;
 import net.mcsistemi.rfidtunnel.entity.ReaderRfidWirama;
 import net.mcsistemi.rfidtunnel.entity.ReaderStream;
-import net.mcsistemi.rfidtunnel.entity.TipoReader;
+import net.mcsistemi.rfidtunnel.entity.Tipologica;
 import net.mcsistemi.rfidtunnel.exception.ResourceNotFoundException;
 import net.mcsistemi.rfidtunnel.form.ReaderForm;
 import net.mcsistemi.rfidtunnel.services.ReaderService;
@@ -35,15 +35,29 @@ public class ReaderRestAPIs {
 	private ReaderService readerService;
 
 	@GetMapping("/tipoReaderList")
-	public List<TipoReader> getAllTipoReader() throws Exception {
-		List<TipoReader> listTipoReader = null;
+	public List<Tipologica> getAllTipoReader() throws Exception {
+		List<Tipologica> listTipoReader = null;
 		try {
-			listTipoReader = readerService.findAllTipoReader();
+			listTipoReader = readerService.getAllTipoReader();
 		} catch (Exception e) {
 			throw e;
 		}
 		return listTipoReader;
 	}
+	
+	@GetMapping("/dispositiviList")
+	public List<Tipologica> getAllDispositivi() throws Exception {
+		List<Tipologica> listTipoReader = null;
+		try {
+			listTipoReader = readerService.getAllDispositivi();
+		} catch (Exception e) {
+			throw e;
+		}
+		return listTipoReader;
+	}
+	
+	
+	
 	
 	@GetMapping("/reader/{id}")
 	public Reader getReaderById(@PathVariable(value = "id") Long readerId) throws Exception {

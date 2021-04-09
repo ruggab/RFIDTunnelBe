@@ -8,8 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "tipo_reader")
-public class TipoReader {
+@Table(name = "tipologica")
+public class Tipologica {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,9 +20,11 @@ public class TipoReader {
 	
 	private String descrizione;
 	
+	private String contesto;
 	
 	
-	public TipoReader(){}
+	
+	public Tipologica(){}
 	
 	
 	public Long getId() {
@@ -51,4 +53,17 @@ public class TipoReader {
 	public void setDescrizione(String descrizione) {
 		this.descrizione = descrizione;
 	}
+
+
+	public String getContesto() {
+		return contesto;
+	}
+
+
+	public void setContesto(String contesto) {
+		this.contesto = contesto;
+	}
+	
+	
+	
 }

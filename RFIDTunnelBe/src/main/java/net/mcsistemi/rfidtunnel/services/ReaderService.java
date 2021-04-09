@@ -20,7 +20,7 @@ import net.mcsistemi.rfidtunnel.entity.Reader;
 import net.mcsistemi.rfidtunnel.entity.ReaderRfidInpinj;
 import net.mcsistemi.rfidtunnel.entity.ReaderRfidWirama;
 import net.mcsistemi.rfidtunnel.entity.ReaderStream;
-import net.mcsistemi.rfidtunnel.entity.TipoReader;
+import net.mcsistemi.rfidtunnel.entity.Tipologica;
 import net.mcsistemi.rfidtunnel.job.JobImpinj;
 import net.mcsistemi.rfidtunnel.job.JobWiramaReader;
 import net.mcsistemi.rfidtunnel.job.PoolImpinjReader;
@@ -29,12 +29,16 @@ import net.mcsistemi.rfidtunnel.repository.AntennaRepository;
 import net.mcsistemi.rfidtunnel.repository.ReaderRepository;
 import net.mcsistemi.rfidtunnel.repository.ReaderStreamRepository;
 import net.mcsistemi.rfidtunnel.repository.TipoReaderRepository;
+import net.mcsistemi.rfidtunnel.repository.TipologicaRepository;
 
 @Service
 public class ReaderService implements IReaderService {
 
 	@Autowired
 	private TipoReaderRepository tipoReaderRepository;
+	
+	@Autowired
+	private TipologicaRepository tipologicaRepository;
 
 	@Autowired
 	private ReaderRepository readerRepository;
@@ -45,9 +49,19 @@ public class ReaderService implements IReaderService {
 	@Autowired
 	private AntennaRepository antennaRepository;
 
-	public List<TipoReader> findAllTipoReader() {
+	public List<Tipologica> findAllTipoReader() {
 		return tipoReaderRepository.findAll();
 	}
+	
+	public List<Tipologica> getAllDispositivi() {
+		return tipologicaRepository.findByContesto("DISPOSITIVO");
+	}
+	
+	public List<Tipologica> getAllTipoReader() {
+		return tipologicaRepository.findByContesto("TIPO_READER");
+	}
+	
+	
 
 	public Reader getReaderById(Long readerId) throws Exception {
 
@@ -195,6 +209,20 @@ public class ReaderService implements IReaderService {
 
 		return list;
 	}
+	
+	public void createReaderStream(String ipAdress, String port, String epc, String tid, String user, String packId,Timestamp time) throws Exception {
+		ReaderStream readerStream = new ReaderStream();
+		
+		readerStream.setEpc(epc);
+		readerStream.setTimeStamp(time);
+		readerStream.setTid(tid);
+		readerStream.setIpAdress(ipAdress);
+		readerStream.setPort(port);
+		readerStream.setPackId(packId);
+		readerStream.setUserData(user);
+		readerStreamRepository.save(readerStream);
+	}
+
 
 	public void createReaderStream(String ipAdress, String port, String packId, Tag tag) throws Exception {
 		ReaderStream readerStream = new ReaderStream();
