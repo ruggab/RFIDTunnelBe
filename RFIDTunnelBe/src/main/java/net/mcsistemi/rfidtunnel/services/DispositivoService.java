@@ -80,6 +80,16 @@ public class DispositivoService implements IReaderService {
 		return reader.get();
 
 	}
+	
+	public Dispositivo getDispositivoById(Long dispositivoId) throws Exception {
+
+		Optional<Dispositivo> dispositivo = dispositivoRepository.findById(dispositivoId);
+		Dispositivo dispositivoObj = dispositivo.get();
+
+		
+		return dispositivoObj;
+
+	}
 
 	public void createReader(Reader reader) throws Exception {
 		Reader rr = null;

@@ -58,8 +58,6 @@ public class DispositiviRestAPIs {
 	}
 	
 	
-	
-	
 	@GetMapping("/reader/{id}")
 	public Reader getReaderById(@PathVariable(value = "id") Long readerId) throws Exception {
 		try {
@@ -68,6 +66,18 @@ public class DispositiviRestAPIs {
 			throw e;
 		}
 	}
+	
+	
+	@GetMapping("/dispositivo/{id}")
+	public Dispositivo getDispositivoById(@PathVariable(value = "id") Long dispositivoId) throws Exception {
+		try {
+			return dispositivoService.getDispositivoById(dispositivoId);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	
 	
 	@PostMapping("/creaReaderInpinj")
 	public void creaReaderInpinj(@RequestBody ReaderRfidInpinj reader) throws Exception, ResourceNotFoundException {
