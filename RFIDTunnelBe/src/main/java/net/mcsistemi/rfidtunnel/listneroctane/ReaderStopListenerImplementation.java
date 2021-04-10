@@ -7,14 +7,14 @@ import com.impinj.octane.ImpinjReader;
 import com.impinj.octane.ReaderStopEvent;
 import com.impinj.octane.ReaderStopListener;
 
-import net.mcsistemi.rfidtunnel.services.ReaderService;
+import net.mcsistemi.rfidtunnel.services.DispositivoService;
 
 public class ReaderStopListenerImplementation implements ReaderStopListener {
 
 	Logger logger = LoggerFactory.getLogger(TagReportListenerImplementation.class);
-	private ReaderService readerService;
+	private DispositivoService readerService;
 	
-	public ReaderStopListenerImplementation(ReaderService readerService) {
+	public ReaderStopListenerImplementation(DispositivoService readerService) {
 		this.readerService = readerService;
 	}
 	

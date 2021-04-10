@@ -15,16 +15,16 @@ import com.impinj.octane.Status;
 
 import net.mcsistemi.rfidtunnel.RfidtunnelApplication;
 import net.mcsistemi.rfidtunnel.entity.ReaderRfidInpinj;
-import net.mcsistemi.rfidtunnel.services.ReaderService;
+import net.mcsistemi.rfidtunnel.services.DispositivoService;
 
 public class KeepAliveListenerImplementation implements KeepaliveListener {
 
 	private static final Logger LOGGER = LogManager.getLogger(RfidtunnelApplication.class);
 	static net.mcsistemi.rfidtunnel.util.DateFunction myDate;
 	private ReaderRfidInpinj readerRfidInpinj = null;
-	private ReaderService readerService;
+	private DispositivoService readerService;
 
-	public KeepAliveListenerImplementation(ReaderRfidInpinj readerRfidInpinj, ReaderService readerService) {
+	public KeepAliveListenerImplementation(ReaderRfidInpinj readerRfidInpinj, DispositivoService readerService) {
 		this.readerRfidInpinj = readerRfidInpinj;
 		this.readerService = readerService;
 	}

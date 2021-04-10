@@ -33,7 +33,7 @@ import net.mcsistemi.rfidtunnel.listneroctane.ReaderStartListenerImplementation;
 import net.mcsistemi.rfidtunnel.listneroctane.ReaderStopListenerImplementation;
 import net.mcsistemi.rfidtunnel.listneroctane.TagOpCompleteListenerImplementation;
 import net.mcsistemi.rfidtunnel.listneroctane.TagReportListenerImplementation;
-import net.mcsistemi.rfidtunnel.services.ReaderService;
+import net.mcsistemi.rfidtunnel.services.DispositivoService;
 import net.mcsistemi.rfidtunnel.util.DateFunction;
 
 /**
@@ -53,9 +53,9 @@ public class JobImpinj implements JobImpinjInterface {
 	private Settings settings = null;
 	private String hostname = "";
 	private ReaderRfidInpinj readerRfidInpinj = null;
-	private ReaderService readerService = null;
+	private DispositivoService readerService = null;
 
-	public JobImpinj(ReaderRfidInpinj readerRfidInpinj, ReaderService readerService) throws Exception {
+	public JobImpinj(ReaderRfidInpinj readerRfidInpinj, DispositivoService readerService) throws Exception {
 
 		// Istanzia l'oggetto Reader
 		this.reader = new ImpinjReader();

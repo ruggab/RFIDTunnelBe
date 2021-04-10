@@ -15,7 +15,9 @@ import org.springframework.stereotype.Service;
 import com.impinj.octane.OctaneSdkException;
 import com.impinj.octane.Tag;
 
+import net.mcsistemi.rfidtunnel.controller.DispositiviRestAPIs;
 import net.mcsistemi.rfidtunnel.entity.Antenna;
+import net.mcsistemi.rfidtunnel.entity.Dispositivo;
 import net.mcsistemi.rfidtunnel.entity.Reader;
 import net.mcsistemi.rfidtunnel.entity.ReaderRfidInpinj;
 import net.mcsistemi.rfidtunnel.entity.ReaderRfidWirama;
@@ -26,13 +28,14 @@ import net.mcsistemi.rfidtunnel.job.JobWiramaReader;
 import net.mcsistemi.rfidtunnel.job.PoolImpinjReader;
 import net.mcsistemi.rfidtunnel.job.PoolWiramaReader;
 import net.mcsistemi.rfidtunnel.repository.AntennaRepository;
+import net.mcsistemi.rfidtunnel.repository.DispositivoRepository;
 import net.mcsistemi.rfidtunnel.repository.ReaderRepository;
 import net.mcsistemi.rfidtunnel.repository.ReaderStreamRepository;
 import net.mcsistemi.rfidtunnel.repository.TipoReaderRepository;
 import net.mcsistemi.rfidtunnel.repository.TipologicaRepository;
 
 @Service
-public class ReaderService implements IReaderService {
+public class DispositivoService implements IReaderService {
 
 	@Autowired
 	private TipoReaderRepository tipoReaderRepository;
@@ -42,6 +45,10 @@ public class ReaderService implements IReaderService {
 
 	@Autowired
 	private ReaderRepository readerRepository;
+	
+	@Autowired
+	private DispositivoRepository dispositivoRepository;
+
 
 	@Autowired
 	private ReaderStreamRepository readerStreamRepository;
@@ -53,7 +60,7 @@ public class ReaderService implements IReaderService {
 		return tipoReaderRepository.findAll();
 	}
 	
-	public List<Tipologica> getAllDispositivi() {
+	public List<Tipologica> getAllTipoDispositivi() {
 		return tipologicaRepository.findByContesto("DISPOSITIVO");
 	}
 	
@@ -94,16 +101,33 @@ public class ReaderService implements IReaderService {
 		// return readerList;
 	}
 
+	public void createDispositivo(Dispositivo dispositivo) throws Exception {
+		Reader rr = null;
+		//Controllo se esiste un dispositivo gia presente con lo stesso ipadress
+		List<Dispositivo> list = dispositivoRepository.findByIpAdress(dispositivo.getIpAdress());
+		if (list.size() > 0) {
+			throw new Exception("Attenzione IP già in uso per altro Dispositivo");
+		}
+		//
+		//Salva dispositivo
+		dispositivoRepository.save(dispositivo);
+	}
+	
+	
 	public List<Reader> getAllReader() throws Exception {
 		//
 		List<Reader> readerList = readerRepository.findAll(Sort.by(Sort.Direction.ASC, "ipAdress"));
 		return readerList;
 	}
+	
+	public List<Dispositivo> getAllDispositivi() throws Exception {
+		//
+		List<Dispositivo> dispositivoList = dispositivoRepository.findAll(Sort.by(Sort.Direction.ASC, "ipAdress"));
+		return dispositivoList;
+	}
 
 	public void deleteReader(Long readerId) throws Exception {
-
 		readerRepository.deleteById(readerId);
-
 	}
 
 	@Transactional

@@ -7,14 +7,14 @@ import com.impinj.octane.ImpinjReader;
 import com.impinj.octane.ReaderStartEvent;
 import com.impinj.octane.ReaderStartListener;
 
-import net.mcsistemi.rfidtunnel.services.ReaderService;
+import net.mcsistemi.rfidtunnel.services.DispositivoService;
 
 public class ReaderStartListenerImplementation implements ReaderStartListener {
 
 	Logger logger = LoggerFactory.getLogger(TagReportListenerImplementation.class);
-	private ReaderService readerService;
+	private DispositivoService readerService;
 	
-	public ReaderStartListenerImplementation(ReaderService readerService) {
+	public ReaderStartListenerImplementation(DispositivoService readerService) {
 		this.readerService = readerService;
 	}
     @Override

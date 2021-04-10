@@ -12,7 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.mcsistemi.rfidtunnel.entity.ReaderRfidWirama;
-import net.mcsistemi.rfidtunnel.services.ReaderService;
+import net.mcsistemi.rfidtunnel.services.DispositivoService;
 
 public class JobWiramaCommand implements Runnable {
 
@@ -26,9 +26,9 @@ public class JobWiramaCommand implements Runnable {
 	private static final Logger LOGGER = LogManager.getLogger(JobWiramaCommand.class);
 
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
-	ReaderService readerService = null;
+	DispositivoService readerService = null;
 
-	public JobWiramaCommand(ReaderRfidWirama readerRfidWirama, ReaderService readerService) {
+	public JobWiramaCommand(ReaderRfidWirama readerRfidWirama, DispositivoService readerService) {
 
 		this.readerRfidWirama = readerRfidWirama;
 		this.readerService = readerService;
