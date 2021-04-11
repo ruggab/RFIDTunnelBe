@@ -5,14 +5,15 @@ import com.impinj.octane.ImpinjReader;
 
 import net.mcsistemi.rfidtunnel.entity.ReaderRfidInpinj;
 import net.mcsistemi.rfidtunnel.services.DispositivoService;
+import net.mcsistemi.rfidtunnel.services.ReaderService;
 import net.mcsistemi.rfidtunnel.util.DateFunction;
 
 public class ConnectionLostListenerImplement implements ConnectionLostListener {
 	static DateFunction myDate;
 	private ReaderRfidInpinj readerRfidInpinj;
-	private DispositivoService readerService;
+	private ReaderService readerService;
 
-	public ConnectionLostListenerImplement(ReaderRfidInpinj readerRfidInpinj, DispositivoService readerService) {
+	public ConnectionLostListenerImplement(ReaderRfidInpinj readerRfidInpinj, ReaderService readerService) {
 		this.readerRfidInpinj = readerRfidInpinj;
 		this.readerService = readerService;
 	}

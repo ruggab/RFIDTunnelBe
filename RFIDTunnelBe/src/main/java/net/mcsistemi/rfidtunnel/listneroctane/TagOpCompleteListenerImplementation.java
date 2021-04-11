@@ -10,14 +10,15 @@ import com.impinj.octane.*;
 
 import net.mcsistemi.rfidtunnel.entity.ReaderRfidInpinj;
 import net.mcsistemi.rfidtunnel.services.DispositivoService;
+import net.mcsistemi.rfidtunnel.services.ReaderService;
 
 public class TagOpCompleteListenerImplementation implements TagOpCompleteListener {
 
 	Logger logger = LoggerFactory.getLogger(TagReportListenerImplementation.class);
-	private DispositivoService readerService;
+	private ReaderService readerService;
 	private ReaderRfidInpinj readerRfidInpinj;
 
-	public TagOpCompleteListenerImplementation(ReaderRfidInpinj readerRfidInpinj,DispositivoService readerService) {
+	public TagOpCompleteListenerImplementation(ReaderRfidInpinj readerRfidInpinj,ReaderService readerService) {
 		this.readerService = readerService;
 		this.readerRfidInpinj = readerRfidInpinj;
 	}

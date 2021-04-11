@@ -5,6 +5,7 @@ import com.impinj.octane.Tag;
 import com.impinj.octane.TagReport;
 import com.impinj.octane.TagReportListener;
 import net.mcsistemi.rfidtunnel.services.DispositivoService;
+import net.mcsistemi.rfidtunnel.services.ReaderService;
 
 import java.sql.Timestamp;
 import java.util.Date;
@@ -15,9 +16,9 @@ import org.slf4j.LoggerFactory;
 public class TagReportListenerImplementation implements TagReportListener {
 
 	Logger logger = LoggerFactory.getLogger(TagReportListenerImplementation.class);
-	private DispositivoService readerService;
+	private ReaderService readerService;
 
-	public TagReportListenerImplementation(DispositivoService readerService) {
+	public TagReportListenerImplementation(ReaderService readerService) {
 		this.readerService = readerService;
 	}
 
