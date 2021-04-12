@@ -25,6 +25,8 @@ public class Dispositivo {
 	private Long id;
 
 	private Long idTipoDispositivo;
+	
+	private String descTipoDispositivo;
 
 	@Column(length = 15)
 	private String ipAdress;
@@ -185,6 +187,33 @@ public class Dispositivo {
 
 	public void setNumPortInput(String numPortInput) {
 		this.numPortInput = numPortInput;
+	}
+
+
+
+
+	public String getDescTipoDispositivo() {
+		String descTipoDispositivo = "";
+ 		if (idTipoDispositivo == 1) {
+ 			descTipoDispositivo = "Reader RFID";
+		}
+ 		if (idTipoDispositivo == 2) {
+ 			descTipoDispositivo = "Reader BARCODE";
+		}
+ 		if (idTipoDispositivo == 3) {
+ 			descTipoDispositivo = "BOX GPIO";
+		}
+ 		if (idTipoDispositivo == 4) {
+ 			descTipoDispositivo = "BOX ANTENNE";
+		}
+		return descTipoDispositivo;
+	}
+
+
+
+
+	public void setDescTipoDispositivo(String descTipoDispositivo) {
+		this.descTipoDispositivo = descTipoDispositivo;
 	}
 
 
