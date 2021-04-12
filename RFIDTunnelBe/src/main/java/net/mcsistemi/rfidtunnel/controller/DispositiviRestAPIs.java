@@ -98,8 +98,14 @@ public class DispositiviRestAPIs {
 	}
 	
 	
-	
-	
+	@GetMapping("/readerRfidListFromDispositivi")
+	public List<Dispositivo> getReaderRfidListFromDispositivi() throws Exception, ResourceNotFoundException {
+		try {
+			return dispositivoService.getReaderRfidList();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
 	
 
 

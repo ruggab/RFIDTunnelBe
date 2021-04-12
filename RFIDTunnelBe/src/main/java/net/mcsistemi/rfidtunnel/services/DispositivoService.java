@@ -61,17 +61,10 @@ public class DispositivoService implements IDispositivoService {
 	}
 	
 	
-
-	
-	
 	public Dispositivo getDispositivoById(Long dispositivoId) throws Exception {
-
 		Optional<Dispositivo> dispositivo = dispositivoRepository.findById(dispositivoId);
 		Dispositivo dispositivoObj = dispositivo.get();
-
-		
 		return dispositivoObj;
-
 	}
 
 	
@@ -113,5 +106,11 @@ public class DispositivoService implements IDispositivoService {
 	}
 	
 	
+	
+	public List<Dispositivo> getReaderRfidList() throws Exception {
+		//
+		List<Dispositivo> dispositivoList = dispositivoRepository.findByIdTipoDispositivo(new Long(1));
+		return dispositivoList;
+	}
 
 }
