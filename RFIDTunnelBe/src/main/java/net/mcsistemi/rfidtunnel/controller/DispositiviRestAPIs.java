@@ -29,16 +29,18 @@ public class DispositiviRestAPIs {
 
 	
 	
-	@GetMapping("/tipoDispositiviList")
-	public List<Tipologica> getAllTipoDispositivi() throws Exception {
-		List<Tipologica> listTipoReader = null;
+	@GetMapping("/tipoDispositiviList/{contesto}")
+	public List<Tipologica> getAllTipoDispositivi(@PathVariable(value = "contesto") String contesto) throws Exception {
+		List<Tipologica> listTipoDispo = null;
 		try {
-			listTipoReader = dispositivoService.getAllTipoDispositivi();
+			listTipoDispo = dispositivoService.getAllTipoDispositivi(contesto);
 		} catch (Exception e) {
 			throw e;
 		}
-		return listTipoReader;
+		return listTipoDispo;
 	}
+	
+	
 	
 	
 	
@@ -107,6 +109,15 @@ public class DispositiviRestAPIs {
 		}
 	}
 	
+	
+	@GetMapping("/readerBarcodeListFromDispositivi")
+	public List<Dispositivo> getReaderBarcodeListFromDispositivi() throws Exception, ResourceNotFoundException {
+		try {
+			return dispositivoService.getReaderBarcodeList();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
 
 
 }

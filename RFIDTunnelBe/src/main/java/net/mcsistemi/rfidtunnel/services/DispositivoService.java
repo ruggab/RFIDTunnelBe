@@ -52,13 +52,11 @@ public class DispositivoService implements IDispositivoService {
 
 	
 	
-	public List<Tipologica> getAllTipoDispositivi() {
-		return tipologicaRepository.findByContesto("DISPOSITIVO");
+	public List<Tipologica> getAllTipoDispositivi(String contesto) {
+		return tipologicaRepository.findByContesto(contesto);
 	}
 	
-	public List<Tipologica> getAllTipoReader() {
-		return tipologicaRepository.findByContesto("TIPO_READER");
-	}
+	
 	
 	
 	public Dispositivo getDispositivoById(Long dispositivoId) throws Exception {
@@ -110,6 +108,12 @@ public class DispositivoService implements IDispositivoService {
 	public List<Dispositivo> getReaderRfidList() throws Exception {
 		//
 		List<Dispositivo> dispositivoList = dispositivoRepository.findByIdTipoDispositivo(new Long(1));
+		return dispositivoList;
+	}
+	
+	public List<Dispositivo> getReaderBarcodeList() throws Exception {
+		//
+		List<Dispositivo> dispositivoList = dispositivoRepository.findByIdTipoDispositivo(new Long(2));
 		return dispositivoList;
 	}
 
