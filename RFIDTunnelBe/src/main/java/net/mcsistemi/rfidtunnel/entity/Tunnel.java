@@ -32,9 +32,9 @@ public class Tunnel {
 	private Long idReaderBarcodeSelected;
 	private Long idTipoFormatoEPC;
 	private String formatoEPC;
-	private Long idtipoReaderSelected;
+	private Long idTipoReaderSelected;
 	private String mascheraBarcode;
-	private String msgNoReade;
+	private String msgNoRead;
 	private String descSceltaGestColli;
 	private String descSceltaTipoColli;
 	private String descTipoFormatoEPC;
@@ -82,24 +82,14 @@ public class Tunnel {
 	public void setFormatoEPC(String formatoEPC) {
 		this.formatoEPC = formatoEPC;
 	}
-	public Long getIdtipoReaderSelected() {
-		return idtipoReaderSelected;
-	}
-	public void setIdtipoReaderSelected(Long idtipoReaderSelected) {
-		this.idtipoReaderSelected = idtipoReaderSelected;
-	}
+	
 	public String getMascheraBarcode() {
 		return mascheraBarcode;
 	}
 	public void setMascheraBarcode(String mascheraBarcode) {
 		this.mascheraBarcode = mascheraBarcode;
 	}
-	public String getMsgNoReade() {
-		return msgNoReade;
-	}
-	public void setMsgNoReade(String msgNoReade) {
-		this.msgNoReade = msgNoReade;
-	}
+	
 	public String getDescSceltaGestColli() {
 		return descSceltaGestColli;
 	}
@@ -123,6 +113,18 @@ public class Tunnel {
 	}
 	public void setDescTipoReaderSelected(String descTipoReaderSelected) {
 		this.descTipoReaderSelected = descTipoReaderSelected;
+	}
+	public String getMsgNoRead() {
+		return msgNoRead;
+	}
+	public void setMsgNoRead(String msgNoRead) {
+		this.msgNoRead = msgNoRead;
+	}
+	public Long getIdTipoReaderSelected() {
+		return idTipoReaderSelected;
+	}
+	public void setIdTipoReaderSelected(Long idTipoReaderSelected) {
+		this.idTipoReaderSelected = idTipoReaderSelected;
 	}
 	
 
