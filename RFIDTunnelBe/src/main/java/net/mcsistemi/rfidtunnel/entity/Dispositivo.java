@@ -19,7 +19,7 @@ public class Dispositivo {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	private Long id;
-	
+
 	private String nome;
 
 	private Long idTipoDispositivo;
@@ -43,15 +43,12 @@ public class Dispositivo {
 	private String numPortOut;
 
 	private String numPortInput;
-	
-	
-	
 
 	public Dispositivo() {
 	}
 
-//	@Transient
-//	protected List<Antenna> listAntenna = new ArrayList<Antenna>();
+	// @Transient
+	// protected List<Antenna> listAntenna = new ArrayList<Antenna>();
 
 	public Long getId() {
 		return id;
@@ -139,6 +136,14 @@ public class Dispositivo {
 
 	public void setDescTipoDispositivo(String descTipoDispositivo) {
 		this.descTipoDispositivo = descTipoDispositivo;
+	}
+
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
 	}
 
 }
