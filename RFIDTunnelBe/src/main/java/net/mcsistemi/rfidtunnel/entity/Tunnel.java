@@ -39,6 +39,8 @@ public class Tunnel {
 	private String descSceltaTipoColli;
 	private String descTipoFormatoEPC;
 	private String descTipoReaderSelected;
+	private String descReaderRfidSelected;
+	private String descReaderBarcodeSelected;
 	
 	public Long getId() {
 		return id;
@@ -125,6 +127,18 @@ public class Tunnel {
 	}
 	public void setIdTipoReaderSelected(Long idTipoReaderSelected) {
 		this.idTipoReaderSelected = idTipoReaderSelected;
+	}
+	public String getDescReaderRfidSelected() {
+		return descReaderRfidSelected;
+	}
+	public void setDescReaderRfidSelected(String descReaderRfidSelected) {
+		this.descReaderRfidSelected = descReaderRfidSelected;
+	}
+	public String getDescReaderBarcodeSelected() {
+		return descReaderBarcodeSelected;
+	}
+	public void setDescReaderBarcodeSelected(String descReaderBarcodeSelected) {
+		this.descReaderBarcodeSelected = descReaderBarcodeSelected;
 	}
 	
 

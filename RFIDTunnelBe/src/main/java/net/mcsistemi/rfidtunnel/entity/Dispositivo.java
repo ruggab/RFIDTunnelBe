@@ -11,6 +11,10 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import net.mcsistemi.rfidtunnel.services.TipologicaService;
+
 /**
  * @author Gabriele
  *
@@ -25,7 +29,7 @@ public class Dispositivo {
 	private Long id;
 
 	private Long idTipoDispositivo;
-	
+
 	private String descTipoDispositivo;
 
 	@Column(length = 15)
@@ -33,11 +37,11 @@ public class Dispositivo {
 
 	@Column(length = 4)
 	private String porta;
-	
+
 	private Boolean monitorEnable;
-	
+
 	private Boolean logEnable;
-	
+
 	private String freqLogMs;
 
 	private String numAntenne;
@@ -45,10 +49,13 @@ public class Dispositivo {
 	private String numPortOut;
 
 	private String numPortInput;
-	 
 	
 	
 	
+
+	public Dispositivo() {
+	}
+
 //	@Transient
 //	protected List<Antenna> listAntenna = new ArrayList<Antenna>();
 
@@ -56,172 +63,88 @@ public class Dispositivo {
 		return id;
 	}
 
-
-
-
 	public void setId(Long id) {
 		this.id = id;
 	}
-
-
-
 
 	public Long getIdTipoDispositivo() {
 		return idTipoDispositivo;
 	}
 
-
-
-
 	public void setIdTipoDispositivo(Long idTipoDispositivo) {
 		this.idTipoDispositivo = idTipoDispositivo;
 	}
-
-
-
 
 	public String getIpAdress() {
 		return ipAdress;
 	}
 
-
-
-
 	public void setIpAdress(String ipAdress) {
 		this.ipAdress = ipAdress;
 	}
-
-
-
 
 	public String getPorta() {
 		return porta;
 	}
 
-
-
-
 	public void setPorta(String porta) {
 		this.porta = porta;
 	}
-
-
-
 
 	public Boolean getMonitorEnable() {
 		return monitorEnable;
 	}
 
-
-
-
 	public void setMonitorEnable(Boolean monitorEnable) {
 		this.monitorEnable = monitorEnable;
 	}
-
-
-
 
 	public Boolean getLogEnable() {
 		return logEnable;
 	}
 
-
-
-
 	public void setLogEnable(Boolean logEnable) {
 		this.logEnable = logEnable;
 	}
-
-
-
 
 	public String getFreqLogMs() {
 		return freqLogMs;
 	}
 
-
-
-
 	public void setFreqLogMs(String freqLogMs) {
 		this.freqLogMs = freqLogMs;
 	}
-
-
-
 
 	public String getNumAntenne() {
 		return numAntenne;
 	}
 
-
-
-
 	public void setNumAntenne(String numAntenne) {
 		this.numAntenne = numAntenne;
 	}
-
-
-
 
 	public String getNumPortOut() {
 		return numPortOut;
 	}
 
-
-
-
 	public void setNumPortOut(String numPortOut) {
 		this.numPortOut = numPortOut;
 	}
-
-
-
 
 	public String getNumPortInput() {
 		return numPortInput;
 	}
 
-
-
-
 	public void setNumPortInput(String numPortInput) {
 		this.numPortInput = numPortInput;
 	}
 
-
-
-
 	public String getDescTipoDispositivo() {
-		String descTipoDispositivo = "";
- 		if (idTipoDispositivo == 1) {
- 			descTipoDispositivo = "Reader RFID";
-		}
- 		if (idTipoDispositivo == 2) {
- 			descTipoDispositivo = "Reader BARCODE";
-		}
- 		if (idTipoDispositivo == 3) {
- 			descTipoDispositivo = "BOX GPIO";
-		}
- 		if (idTipoDispositivo == 4) {
- 			descTipoDispositivo = "BOX ANTENNE";
-		}
 		return descTipoDispositivo;
 	}
-
-
-
 
 	public void setDescTipoDispositivo(String descTipoDispositivo) {
 		this.descTipoDispositivo = descTipoDispositivo;
 	}
-
-
-
-
-	public Dispositivo() {
-	}
-
-	
 
 }

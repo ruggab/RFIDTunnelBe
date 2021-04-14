@@ -28,7 +28,6 @@ import net.mcsistemi.rfidtunnel.repository.AntennaRepository;
 import net.mcsistemi.rfidtunnel.repository.ReaderRepository;
 import net.mcsistemi.rfidtunnel.repository.ReaderStreamRepository;
 import net.mcsistemi.rfidtunnel.repository.TipoReaderRepository;
-import net.mcsistemi.rfidtunnel.repository.TipologicaRepository;
 
 @Service
 public class ReaderService implements IReaderService {
@@ -36,8 +35,7 @@ public class ReaderService implements IReaderService {
 	@Autowired
 	private TipoReaderRepository tipoReaderRepository;
 	
-	@Autowired
-	private TipologicaRepository tipologicaRepository;
+	
 
 	@Autowired
 	private ReaderRepository readerRepository;
@@ -55,9 +53,6 @@ public class ReaderService implements IReaderService {
 	
 	
 	
-	public List<Tipologica> getAllTipoReader() {
-		return tipologicaRepository.findByContesto("TIPO_READER");
-	}
 	
 	
 

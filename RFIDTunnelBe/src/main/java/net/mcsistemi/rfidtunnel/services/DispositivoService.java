@@ -37,54 +37,42 @@ import net.mcsistemi.rfidtunnel.repository.TipologicaRepository;
 @Service
 public class DispositivoService implements IDispositivoService {
 
-	
-	@Autowired
-	private TipologicaRepository tipologicaRepository;
-	
-	
 	@Autowired
 	private DispositivoRepository dispositivoRepository;
 
-
-	
 	@Autowired
 	private AntennaRepository antennaRepository;
 
-	
-	
-	public List<Tipologica> getAllTipoDispositivi(String contesto) {
-		return tipologicaRepository.findByContesto(contesto);
-	}
-	
-	
-	
-	
+	@Autowired
+	private TipologicaRepository tipologicaRepository;
+
 	public Dispositivo getDispositivoById(Long dispositivoId) throws Exception {
 		Optional<Dispositivo> dispositivo = dispositivoRepository.findById(dispositivoId);
 		Dispositivo dispositivoObj = dispositivo.get();
 		return dispositivoObj;
 	}
 
-	
-
 	public void createDispositivo(Dispositivo dispositivo) throws Exception {
 		Reader rr = null;
-		//Controllo se esiste un dispositivo gia presente con lo stesso ipadress
+		// Controllo se esiste un dispositivo gia presente con lo stesso ipadress
 		List<Dispositivo> list = dispositivoRepository.findByIpAdress(dispositivo.getIpAdress());
 		if (list.size() > 0) {
 			throw new Exception("Attenzione IP già in uso per altro Dispositivo");
 		}
 		//
-		//Salva dispositivo
+		// Salva dispositivo
 		dispositivoRepository.save(dispositivo);
 	}
-	
-	
 
-	
 	public List<Dispositivo> getAllDispositivi() throws Exception {
 		//
 		List<Dispositivo> dispositivoList = dispositivoRepository.findAll(Sort.by(Sort.Direction.ASC, "ipAdress"));
+		for (Iterator iterator = dispositivoList.iterator(); iterator.hasNext();) {
+			Dispositivo dispositivo = (Dispositivo) iterator.next();	
+			Tipologica tip = tipologicaRepository.getOne(dispositivo.getIdTipoDispositivo());
+			dispositivo.setDescTipoDispositivo(tip.getDescrizione());
+			
+		}
 		return dispositivoList;
 	}
 
@@ -102,15 +90,13 @@ public class DispositivoService implements IDispositivoService {
 		List<Antenna> listAntenna = antennaRepository.findByIdReader(readerId);
 		return listAntenna;
 	}
-	
-	
-	
+
 	public List<Dispositivo> getReaderRfidList() throws Exception {
 		//
 		List<Dispositivo> dispositivoList = dispositivoRepository.findByIdTipoDispositivo(new Long(1));
 		return dispositivoList;
 	}
-	
+
 	public List<Dispositivo> getReaderBarcodeList() throws Exception {
 		//
 		List<Dispositivo> dispositivoList = dispositivoRepository.findByIdTipoDispositivo(new Long(2));

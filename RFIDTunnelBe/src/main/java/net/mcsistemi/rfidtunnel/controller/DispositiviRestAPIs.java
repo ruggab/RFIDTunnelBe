@@ -13,9 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import net.mcsistemi.rfidtunnel.entity.Antenna;
 import net.mcsistemi.rfidtunnel.entity.Dispositivo;
-import net.mcsistemi.rfidtunnel.entity.Tipologica;
 import net.mcsistemi.rfidtunnel.exception.ResourceNotFoundException;
 import net.mcsistemi.rfidtunnel.services.DispositivoService;
 
@@ -27,24 +25,6 @@ public class DispositiviRestAPIs {
 	@Autowired
 	private DispositivoService dispositivoService;
 
-	
-	
-	@GetMapping("/tipoDispositiviList/{contesto}")
-	public List<Tipologica> getAllTipoDispositivi(@PathVariable(value = "contesto") String contesto) throws Exception {
-		List<Tipologica> listTipoDispo = null;
-		try {
-			listTipoDispo = dispositivoService.getAllTipoDispositivi(contesto);
-		} catch (Exception e) {
-			throw e;
-		}
-		return listTipoDispo;
-	}
-	
-	
-	
-	
-	
-	
 	@GetMapping("/dispositivo/{id}")
 	public Dispositivo getDispositivoById(@PathVariable(value = "id") Long dispositivoId) throws Exception {
 		try {
@@ -53,11 +33,7 @@ public class DispositiviRestAPIs {
 			throw e;
 		}
 	}
-	
-	
-	
-	
-	
+
 	@PostMapping("/creaDispositivo")
 	public void creaDispositivo(@RequestBody Dispositivo dispositivo) throws Exception, ResourceNotFoundException {
 		try {
@@ -66,9 +42,7 @@ public class DispositiviRestAPIs {
 			throw e;
 		}
 	}
-  
-	
-	
+
 	@GetMapping("/allDispositivi")
 	public List<Dispositivo> getAllDispositivi() throws Exception, ResourceNotFoundException {
 		try {
@@ -77,10 +51,7 @@ public class DispositiviRestAPIs {
 			throw e;
 		}
 	}
-	
-	
-	
-	
+
 	@DeleteMapping("/deleteDispositivo/{id}")
 	public void deleteDispositivo(@PathVariable(value = "id") Long readerId) throws Exception {
 		try {
@@ -89,7 +60,7 @@ public class DispositiviRestAPIs {
 			throw e;
 		}
 	}
-	
+
 	@PutMapping("/updateDispositivo")
 	public void updateDispositivo(@RequestBody Dispositivo dispositivo) throws Exception, ResourceNotFoundException {
 		try {
@@ -98,8 +69,7 @@ public class DispositiviRestAPIs {
 			throw e;
 		}
 	}
-	
-	
+
 	@GetMapping("/readerRfidListFromDispositivi")
 	public List<Dispositivo> getReaderRfidListFromDispositivi() throws Exception, ResourceNotFoundException {
 		try {
@@ -108,8 +78,7 @@ public class DispositiviRestAPIs {
 			throw e;
 		}
 	}
-	
-	
+
 	@GetMapping("/readerBarcodeListFromDispositivi")
 	public List<Dispositivo> getReaderBarcodeListFromDispositivi() throws Exception, ResourceNotFoundException {
 		try {
@@ -118,6 +87,5 @@ public class DispositiviRestAPIs {
 			throw e;
 		}
 	}
-
 
 }

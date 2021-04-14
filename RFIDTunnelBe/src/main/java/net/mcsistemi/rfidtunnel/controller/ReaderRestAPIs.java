@@ -32,16 +32,7 @@ public class ReaderRestAPIs {
 	@Autowired
 	private ReaderService readerService;
 
-	@GetMapping("/tipoReaderList")
-	public List<Tipologica> getAllTipoReader() throws Exception {
-		List<Tipologica> listTipoReader = null;
-		try {
-			listTipoReader = readerService.getAllTipoReader();
-		} catch (Exception e) {
-			throw e;
-		}
-		return listTipoReader;
-	}
+	
 	
 	
 	
