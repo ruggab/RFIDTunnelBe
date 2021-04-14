@@ -26,8 +26,16 @@ public class Tunnel {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	private Long id;
+	private String nome;
 	private Long idSceltaGestColli;
 	private Long idSceltaTipoColli;
+	public String getNome() {
+		return nome;
+	}
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+
 	private Long idReaderRfidSelected;
 	private Long idReaderBarcodeSelected;
 	private Long idTipoFormatoEPC;

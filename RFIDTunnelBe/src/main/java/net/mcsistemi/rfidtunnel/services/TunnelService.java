@@ -59,7 +59,7 @@ public class TunnelService implements ITunnelService {
 			}
 			if (tunnel.getIdSceltaTipoColli() != null) {
 				tip = tipologicaRepository.getOne(tunnel.getIdSceltaTipoColli());
-				tunnel.setDescSceltaGestColli(tip.getDescrizione());
+				tunnel.setDescSceltaTipoColli(tip.getDescrizione());
 			}
 			if (tunnel.getIdTipoFormatoEPC() != null) {
 				tip = tipologicaRepository.getOne(tunnel.getIdTipoFormatoEPC());

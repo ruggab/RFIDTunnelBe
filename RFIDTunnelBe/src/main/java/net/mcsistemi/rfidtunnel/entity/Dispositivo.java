@@ -1,19 +1,11 @@
 package net.mcsistemi.rfidtunnel.entity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Transient;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
-import net.mcsistemi.rfidtunnel.services.TipologicaService;
 
 /**
  * @author Gabriele
@@ -27,6 +19,8 @@ public class Dispositivo {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	private Long id;
+	
+	private String nome;
 
 	private Long idTipoDispositivo;
 
