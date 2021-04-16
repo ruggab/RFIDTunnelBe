@@ -54,9 +54,11 @@ public class TunnelRestAPIs {
 	
 	
 	@GetMapping("/allTunnel")
+	
 	public List<Tunnel> getAllTunnel() throws Exception, ResourceNotFoundException {
 		try {
-			return tunnelService.getAllTunnel();
+			List<Tunnel> listTunnel = tunnelService.getAllTunnel();
+			return listTunnel;
 		} catch (Exception e) {
 			throw e;
 		}
@@ -77,6 +79,7 @@ public class TunnelRestAPIs {
 	@PutMapping("/updateTunnel")
 	public void updateTunnel(@RequestBody Tunnel tunnel) throws Exception, ResourceNotFoundException {
 		try {
+			tunnelService.delete(tunnel.getId());
 			tunnelService.save(tunnel);
 		} catch (Exception e) {
 			throw e;
