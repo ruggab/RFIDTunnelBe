@@ -1,10 +1,13 @@
 package net.mcsistemi.rfidtunnel.entity;
 
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 /**
@@ -43,6 +46,10 @@ public class Dispositivo {
 	private String numPortOut;
 
 	private String numPortInput;
+	
+	@ManyToMany
+	private Set<Tunnel> tunnels;
+
 
 	public Dispositivo() {
 	}
@@ -145,5 +152,16 @@ public class Dispositivo {
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
+
+	public Set<Tunnel> getTunnels() {
+		return tunnels;
+	}
+
+	public void setTunnels(Set<Tunnel> tunnels) {
+		this.tunnels = tunnels;
+	}
+
+	
+	
 
 }

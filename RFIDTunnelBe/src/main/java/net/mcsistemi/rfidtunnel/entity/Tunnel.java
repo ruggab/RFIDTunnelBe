@@ -2,12 +2,14 @@ package net.mcsistemi.rfidtunnel.entity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -43,6 +45,9 @@ public class Tunnel {
 	private String descTipoReaderSelected;
 	private String descReaderRfidSelected;
 	private String descReaderBarcodeSelected;
+	
+	@ManyToMany
+	private Set<Dispositivo> dispositivi;
 
 	public String getNome() {
 		return nome;
@@ -180,4 +185,14 @@ public class Tunnel {
 		this.descReaderBarcodeSelected = descReaderBarcodeSelected;
 	}
 
+	public Set<Dispositivo> getDispositivi() {
+		return dispositivi;
+	}
+
+	public void setDispositivi(Set<Dispositivo> dispositivi) {
+		this.dispositivi = dispositivi;
+	}
+
+	
+	
 }
