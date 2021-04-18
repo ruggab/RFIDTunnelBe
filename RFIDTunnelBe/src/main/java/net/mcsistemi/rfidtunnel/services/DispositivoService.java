@@ -68,10 +68,15 @@ public class DispositivoService implements IDispositivoService {
 		//
 		List<Dispositivo> dispositivoList = dispositivoRepository.findAll(Sort.by(Sort.Direction.ASC, "ipAdress"));
 		for (Iterator iterator = dispositivoList.iterator(); iterator.hasNext();) {
-			Dispositivo dispositivo = (Dispositivo) iterator.next();	
+			Dispositivo dispositivo = (Dispositivo) iterator.next();
 			Tipologica tip = tipologicaRepository.getOne(dispositivo.getIdTipoDispositivo());
 			dispositivo.setDescTipoDispositivo(tip.getDescrizione());
-			
+			if (dispositivo.getIdModelloReader() != null) {
+				tip = tipologicaRepository.getOne(dispositivo.getIdModelloReader());
+				dispositivo.setDescModelloReader(tip.getDescrizione());
+			} else {
+				dispositivo.setDescModelloReader("");
+			}
 		}
 		return dispositivoList;
 	}

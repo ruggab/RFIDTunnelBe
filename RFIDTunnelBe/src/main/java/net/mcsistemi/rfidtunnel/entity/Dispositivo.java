@@ -31,6 +31,10 @@ public class Dispositivo {
 	private Long idTipoDispositivo;
 
 	private String descTipoDispositivo;
+	
+	private Long idModelloReader;
+	
+	private String descModelloReader;
 
 	@Column(length = 15)
 	private String ipAdress;
@@ -162,6 +166,22 @@ public class Dispositivo {
 
 	public void setTunnels(Set<Tunnel> tunnels) {
 		this.tunnels = tunnels;
+	}
+
+	public Long getIdModelloReader() {
+		return idModelloReader;
+	}
+
+	public void setIdModelloReader(Long idModelloReader) {
+		this.idModelloReader = idModelloReader;
+	}
+
+	public String getDescModelloReader() {
+		return descModelloReader;
+	}
+
+	public void setDescModelloReader(String descModelloReader) {
+		this.descModelloReader = descModelloReader;
 	}
 
 	
