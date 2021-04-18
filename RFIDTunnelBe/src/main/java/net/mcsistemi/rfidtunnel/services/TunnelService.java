@@ -3,6 +3,7 @@ package net.mcsistemi.rfidtunnel.services;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.transaction.Transactional;
 
@@ -37,6 +38,21 @@ public class TunnelService implements ITunnelService {
 	public Tunnel getTunnelById(Long id) throws Exception {
 		Optional<Tunnel> tunnel = tunnelRepository.findById(id);
 		Tunnel tunnelObj = tunnel.get();
+		Set<Dispositivo> dispoSet = tunnelObj.getDispositivi();
+		for (Iterator iterator = dispoSet.iterator(); iterator.hasNext();) {
+			Dispositivo dispositivo = (Dispositivo) iterator.next();
+			Tipologica tip = tipologicaRepository.getOne(dispositivo.getIdTipoDispositivo());
+			dispositivo.setDescTipoDispositivo(tip.getDescrizione());
+			if (dispositivo.getIdModelloReader() != null) {
+				tip = tipologicaRepository.getOne(dispositivo.getIdModelloReader());
+				dispositivo.setDescModelloReader(tip.getDescrizione());
+			} else {
+				dispositivo.setDescModelloReader("");
+			}
+		}
+		
+		
+		setDescrizioniInTunnel(tunnelObj);
 		return  tunnelObj;
 	}
 
@@ -52,36 +68,37 @@ public class TunnelService implements ITunnelService {
 		List<Tunnel> tunnelList = tunnelRepository.findAll();
 		for (Iterator iterator = tunnelList.iterator(); iterator.hasNext();) {
 			Tunnel tunnel = (Tunnel) iterator.next();
-			Tipologica tip = null;
-			if (tunnel.getIdSceltaGestColli() != null) {
-				tip = tipologicaRepository.getOne(tunnel.getIdSceltaGestColli());
-				tunnel.setDescSceltaGestColli(tip.getDescrizione());
-			}
-			if (tunnel.getIdSceltaTipoColli() != null) {
-				tip = tipologicaRepository.getOne(tunnel.getIdSceltaTipoColli());
-				tunnel.setDescSceltaTipoColli(tip.getDescrizione());
-			}
-			if (tunnel.getIdTipoFormatoEPC() != null) {
-				tip = tipologicaRepository.getOne(tunnel.getIdTipoFormatoEPC());
-				tunnel.setDescTipoFormatoEPC(tip.getDescrizione());
-			}
-			if (tunnel.getIdTipoReaderSelected() != null) {
-				tip = tipologicaRepository.getOne(tunnel.getIdTipoReaderSelected());
-				tunnel.setDescTipoReaderSelected(tip.getDescrizione());
-			}
-			if (tunnel.getIdReaderBarcodeSelected() != null) {
-				Dispositivo dispo = dispositivoRepository.getOne(tunnel.getIdReaderBarcodeSelected());
-				tunnel.setDescReaderBarcodeSelected(dispo.getIpAdress());
-			}
-			if (tunnel.getIdReaderRfidSelected() != null) {
-				Dispositivo dispo = dispositivoRepository.getOne(tunnel.getIdReaderRfidSelected());
-				tunnel.setDescReaderRfidSelected(dispo.getIpAdress());
-			}
+			setDescrizioniInTunnel(tunnel);
 		}
-		
-		
-		
 		return tunnelList;
+	}
+	
+	private void setDescrizioniInTunnel(Tunnel tunnel) {
+		Tipologica tip = null;
+		if (tunnel.getIdSceltaGestColli() != null) {
+			tip = tipologicaRepository.getOne(tunnel.getIdSceltaGestColli());
+			tunnel.setDescSceltaGestColli(tip.getDescrizione());
+		}
+		if (tunnel.getIdSceltaTipoColli() != null) {
+			tip = tipologicaRepository.getOne(tunnel.getIdSceltaTipoColli());
+			tunnel.setDescSceltaTipoColli(tip.getDescrizione());
+		}
+		if (tunnel.getIdTipoFormatoEPC() != null) {
+			tip = tipologicaRepository.getOne(tunnel.getIdTipoFormatoEPC());
+			tunnel.setDescTipoFormatoEPC(tip.getDescrizione());
+		}
+		if (tunnel.getIdTipoReaderSelected() != null) {
+			tip = tipologicaRepository.getOne(tunnel.getIdTipoReaderSelected());
+			tunnel.setDescTipoReaderSelected(tip.getDescrizione());
+		}
+		if (tunnel.getIdReaderBarcodeSelected() != null) {
+			Dispositivo dispo = dispositivoRepository.getOne(tunnel.getIdReaderBarcodeSelected());
+			tunnel.setDescReaderBarcodeSelected(dispo.getIpAdress());
+		}
+		if (tunnel.getIdReaderRfidSelected() != null) {
+			Dispositivo dispo = dispositivoRepository.getOne(tunnel.getIdReaderRfidSelected());
+			tunnel.setDescReaderRfidSelected(dispo.getIpAdress());
+		}
 	}
 
 	public void delete(Long tunnelId) throws Exception {
