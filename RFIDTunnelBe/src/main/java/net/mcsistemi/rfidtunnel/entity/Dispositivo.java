@@ -25,6 +25,10 @@ public class Dispositivo {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	private Long id;
+	
+	@ManyToMany
+	private Set<Tunnel> tunnels;
+
 
 	private String nome;
 
@@ -54,8 +58,6 @@ public class Dispositivo {
 
 	private String numPortInput;
 	
-	@ManyToMany
-	private Set<Tunnel> tunnels;
 
 
 	public Dispositivo() {
