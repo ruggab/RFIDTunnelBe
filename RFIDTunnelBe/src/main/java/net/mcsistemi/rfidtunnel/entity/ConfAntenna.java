@@ -30,8 +30,8 @@ public class ConfAntenna {
 	
 	private boolean enable;
 	
-	@ManyToOne
-    private ConfReader confReader;
+	
+    private Long idConfReader;
 	
 	
 	public ConfAntenna(){}
@@ -106,16 +106,17 @@ public class ConfAntenna {
 	}
 
 
-	public ConfReader getConfReader() {
-		return confReader;
+	public Long getIdConfReader() {
+		return idConfReader;
 	}
 
 
-	public void setConfReader(ConfReader confReader) {
-		this.confReader = confReader;
+	public void setIdConfReader(Long idConfReader) {
+		this.idConfReader = idConfReader;
 	}
 
 
+	
 	
 	
 	

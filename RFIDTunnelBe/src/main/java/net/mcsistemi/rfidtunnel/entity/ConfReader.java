@@ -1,5 +1,6 @@
 package net.mcsistemi.rfidtunnel.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -30,7 +31,7 @@ public class ConfReader {
 	private Set<Tunnel> tunnels;
 	
 	@Transient
-	private List<ConfAntenna> antennas;
+	private List<ConfAntenna> antennas = new ArrayList();
 
 	private Long idDispositivo;
 
