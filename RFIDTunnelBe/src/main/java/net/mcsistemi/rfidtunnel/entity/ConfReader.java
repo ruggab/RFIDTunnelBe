@@ -31,9 +31,8 @@ public class ConfReader {
 	
 	@Transient
 	private List<ConfAntenna> antennas;
-	
-	@OneToOne
-	private Dispositivo dispositivo;
+
+	private Long idDispositivo;
 
 	private Integer readerMode;
 	private Integer searchMode;
@@ -163,6 +162,14 @@ public class ConfReader {
 
 	public void setTunnels(Set<Tunnel> tunnels) {
 		this.tunnels = tunnels;
+	}
+
+	public Long getIdDispositivo() {
+		return idDispositivo;
+	}
+
+	public void setIdDispositivo(Long idDispositivo) {
+		this.idDispositivo = idDispositivo;
 	}
 	
 	
