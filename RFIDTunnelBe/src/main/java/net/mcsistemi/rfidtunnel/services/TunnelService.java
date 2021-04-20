@@ -107,6 +107,9 @@ public class TunnelService implements ITunnelService {
 
 	@Transactional
 	public void save(Tunnel tunnel) throws Exception {
+		if (tunnel.getId() != null) {
+			tunnelRepository.deleteById(tunnel.getId());
+		}
 		tunnelRepository.save(tunnel);
 	}
 

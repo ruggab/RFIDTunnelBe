@@ -27,7 +27,7 @@ public class ConfReader {
 	@Column(name = "id")
 	private Long id;
 	//
-	@ManyToMany(mappedBy = "readers")
+	@ManyToMany(mappedBy = "confReaders")
 	private Set<Tunnel> tunnels;
 	
 	@Transient

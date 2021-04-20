@@ -86,6 +86,13 @@ public class TunnelRestAPIs {
 		}
 	}
 	
-	
+	@PutMapping("/saveTunnel")
+	public void salvaTunnel(@RequestBody Tunnel tunnel) throws Exception, ResourceNotFoundException {
+		try {
+			tunnelService.save(tunnel);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
 	
 }

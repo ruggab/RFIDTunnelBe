@@ -47,7 +47,7 @@ public class Tunnel {
 	private Set<Dispositivo> dispositivi;
 	
 	@ManyToMany
-	private Set<ConfReader> readers;
+	private Set<ConfReader> confReaders;
 
 	public String getNome() {
 		return nome;
@@ -193,13 +193,15 @@ public class Tunnel {
 		this.dispositivi = dispositivi;
 	}
 
-	public Set<ConfReader> getReaders() {
-		return readers;
+	public Set<ConfReader> getConfReaders() {
+		return confReaders;
 	}
 
-	public void setReaders(Set<ConfReader> readers) {
-		this.readers = readers;
+	public void setConfReaders(Set<ConfReader> confReaders) {
+		this.confReaders = confReaders;
 	}
+
+	
 
 	
 	
