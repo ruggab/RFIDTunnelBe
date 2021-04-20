@@ -40,7 +40,6 @@ public class ConfReader {
 	private Boolean keepAlive;
 	private Boolean stato;
 	private boolean autoStartActive;
-	private Integer numPortaAutostart;
 	private Integer autoStartMode;
 	private Integer autoStopMode;
 	private boolean enableUser;
@@ -68,13 +67,7 @@ public class ConfReader {
 		this.autoStartActive = autoStartActive;
 	}
 
-	public Integer getNumPortaAutostart() {
-		return numPortaAutostart;
-	}
 
-	public void setNumPortaAutostart(Integer numPortaAutostart) {
-		this.numPortaAutostart = numPortaAutostart;
-	}
 
 	public Integer getAutoStartMode() {
 		return autoStartMode;
