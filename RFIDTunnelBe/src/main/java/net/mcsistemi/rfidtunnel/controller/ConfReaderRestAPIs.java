@@ -49,7 +49,7 @@ public class ConfReaderRestAPIs {
 	 
 	
 	@PostMapping("/associaConfReader")
-	public void associaConfReader(@RequestBody ConfReader reader) throws Exception, ResourceNotFoundException {
+	public void associaReader(@RequestBody ConfReader reader) throws Exception, ResourceNotFoundException {
 		try {
 			confReaderService.updateConfReader(reader);
 		} catch (Exception e) {

@@ -34,18 +34,16 @@ public class ConfReader {
 
 	private Long idDispositivo;
 	private Long idTunnel;
-
+	private Boolean keepAlive;
 	private Integer readerMode;
 	private Integer searchMode;
-	private Boolean keepAlive;
-	private Boolean stato;
 	private boolean autoStartActive;
 	private Integer autoStartMode;
 	private Integer autoStopMode;
 	private boolean enableUser;
 	private boolean enableTid;
 	private boolean enableEpc;
-
+	//private Boolean stato;
 	
 
 	public Integer getSearchMode() {
@@ -129,13 +127,13 @@ public class ConfReader {
 		this.keepAlive = keepAlive;
 	}
 
-	public Boolean getStato() {
-		return stato;
-	}
-
-	public void setStato(Boolean stato) {
-		this.stato = stato;
-	}
+//	public Boolean getStato() {
+//		return stato;
+//	}
+//
+//	public void setStato(Boolean stato) {
+//		this.stato = stato;
+//	}
 
 	public void setEnableEpc(boolean enableEpc) {
 		this.enableEpc = enableEpc;
