@@ -38,6 +38,19 @@ public class ConfReaderRestAPIs {
 		}
 	}
 	
+	
+	
+	@PostMapping("/confReaderByTunnelAndDispo")
+	public ConfReader getReaderById(@RequestBody ConfReader reader) throws Exception {
+		try {
+			ConfReader cf =  confReaderService.getConfReaderByTunnelAndDispo(reader);
+			return cf;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	
 	@PostMapping("/creaConfReader")
 	public void creaConfReader(@RequestBody ConfReader reader) throws Exception, ResourceNotFoundException {
 		try {

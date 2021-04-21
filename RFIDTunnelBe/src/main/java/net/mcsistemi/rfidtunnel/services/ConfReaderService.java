@@ -25,7 +25,19 @@ public class ConfReaderService implements IReaderService {
 	@Autowired
 	private ConfAntennaRepository confAntennaRepository;
 	
-
+	
+	
+	public ConfReader getConfReaderByTunnelAndDispo(ConfReader confReader) throws Exception {
+		ConfReader cr = new ConfReader();
+		List<ConfReader> confReaderList = confReaderRepository.findByIdTunnelAndIdDispositivo(confReader.getIdTunnel(), confReader.getIdDispositivo());
+		if (confReaderList.size() > 0) {
+			cr = confReaderList.get(0);
+			cr.getAntennas().addAll(confAntennaRepository.findByIdReader(cr.getId()));
+		}
+		return cr;
+	}
+	
+	
 	public ConfReader getReaderById(Long readerId) throws Exception {
 		ConfReader cr = new ConfReader();
 		Optional<ConfReader> confReader = confReaderRepository.findById(readerId);
@@ -60,9 +72,10 @@ public class ConfReaderService implements IReaderService {
 
 	@Transactional
 	public void updateConfReader(ConfReader confReader) throws Exception {
-
-		confAntennaRepository.deleteByIdReader(confReader.getId());
-		confReaderRepository.deleteByIdTunnelAndIdDispositivo(confReader.getId(), confReader.getIdDispositivo());
+		if (confReader.getId()!=null) {
+			confAntennaRepository.deleteByIdReader(confReader.getId());
+		}
+		confReaderRepository.deleteByIdTunnelAndIdDispositivo(confReader.getIdTunnel(), confReader.getIdDispositivo());
 		//
 		ConfReader cf = confReaderRepository.save(confReader);
 		List<ConfAntenna> listaAntenna = confReader.getAntennas();
