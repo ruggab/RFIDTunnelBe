@@ -2,6 +2,7 @@ package net.mcsistemi.rfidtunnel.entity;
 
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  * @author Gabriele
@@ -44,9 +46,11 @@ public class Tunnel {
 	private String descReaderBarcodeSelected;
 	
 	@ManyToMany
+	@Transient
 	private Set<Dispositivo> dispositivi;
 	
-	@ManyToMany
+	@ManyToMany(cascade = {CascadeType.ALL})
+	@Transient
 	private Set<ConfReader> confReaders;
 
 	public String getNome() {

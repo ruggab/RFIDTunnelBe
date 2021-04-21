@@ -28,10 +28,12 @@ public class ConfReader {
 	private Long id;
 	//
 	@ManyToMany(mappedBy = "confReaders")
+	@Transient
 	private Set<Tunnel> tunnels;
 	
 	@Transient
-	private List<ConfAntenna> antennas = new ArrayList();
+	private List<ConfAntenna> antennas = new ArrayList<ConfAntenna>();
+	
 
 	private Long idDispositivo;
 

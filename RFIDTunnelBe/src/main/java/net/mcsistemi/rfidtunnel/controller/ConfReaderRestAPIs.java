@@ -29,9 +29,9 @@ public class ConfReaderRestAPIs {
 	
 	
 	@GetMapping("/confReader/{id}")
-	public ConfReader getReaderById(@PathVariable(value = "id") Long readerId) throws Exception {
+	public ConfReader getReaderById(@PathVariable(value = "id") Long id) throws Exception {
 		try {
-			ConfReader cf =  confReaderService.getReaderById(readerId);
+			ConfReader cf =  confReaderService.getReaderById(id);
 			return cf;
 		} catch (Exception e) {
 			throw e;
