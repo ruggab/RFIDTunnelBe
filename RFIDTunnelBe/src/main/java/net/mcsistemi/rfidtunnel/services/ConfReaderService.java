@@ -1,6 +1,5 @@
 package net.mcsistemi.rfidtunnel.services;
 
-import java.sql.Timestamp;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -8,18 +7,10 @@ import java.util.Optional;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import com.impinj.octane.Tag;
-
-import net.mcsistemi.rfidtunnel.entity.Antenna;
 import net.mcsistemi.rfidtunnel.entity.ConfAntenna;
 import net.mcsistemi.rfidtunnel.entity.ConfReader;
-import net.mcsistemi.rfidtunnel.entity.Reader;
-import net.mcsistemi.rfidtunnel.entity.ReaderRfidInpinj;
-import net.mcsistemi.rfidtunnel.entity.ReaderRfidWirama;
-import net.mcsistemi.rfidtunnel.entity.ReaderStream;
 import net.mcsistemi.rfidtunnel.repository.ConfAntennaRepository;
 import net.mcsistemi.rfidtunnel.repository.ConfReaderRepository;
 
@@ -33,11 +24,6 @@ public class ConfReaderService implements IReaderService {
 	
 	@Autowired
 	private ConfAntennaRepository confAntennaRepository;
-
-	
-	
-	
-	
 	
 
 	public ConfReader getReaderById(Long readerId) throws Exception {
@@ -53,7 +39,7 @@ public class ConfReaderService implements IReaderService {
 
 	}
 
-	public void createReader(ConfReader reader) throws Exception {
+	public void save(ConfReader reader) throws Exception {
 		confReaderRepository.save(reader);
 	}
 
@@ -72,29 +58,21 @@ public class ConfReaderService implements IReaderService {
 
 	}
 
-//	@Transactional
-//	public void updateReader(Reader reader) throws Exception {
-//
-//		antennaRepository.deleteByIdReader(reader.getId());
-//		readerRepository.deleteById(reader.getId());
-//		Reader r = null;
-//		if (reader.getIdTipoReader() == 1) {
-//			r = (ReaderRfidInpinj) reader;
-//		} else {
-//			r = (ReaderRfidWirama) reader;
-//		}
-//
-//		//
-//		// Reader reader = ReaderFactory.getReader(readerForm);
-//		r = readerRepository.save(r);
-//		List<Antenna> listaAntenna = reader.getListAntenna();
-//		for (Iterator iterator = listaAntenna.iterator(); iterator.hasNext();) {
-//			Antenna antenna = (Antenna) iterator.next();
-//			antenna.setIdReader(r.getId());
-//			antennaRepository.save(antenna);
-//		}
-//
-//	}
+	@Transactional
+	public void updateConfReader(ConfReader confReader) throws Exception {
+
+		confAntennaRepository.deleteByIdReader(confReader.getId());
+		confReaderRepository.deleteByIdTunnelAndIdDispositivo(confReader.getId(), confReader.getIdDispositivo());
+		//
+		ConfReader cf = confReaderRepository.save(confReader);
+		List<ConfAntenna> listaAntenna = confReader.getAntennas();
+		for (Iterator iterator = listaAntenna.iterator(); iterator.hasNext();) {
+			ConfAntenna antenna = (ConfAntenna) iterator.next();
+			antenna.setIdConfReader(cf.getId());
+			confAntennaRepository.save(antenna);
+		}
+
+	}
 
 		
 	

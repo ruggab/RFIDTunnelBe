@@ -41,14 +41,21 @@ public class ConfReaderRestAPIs {
 	@PostMapping("/creaConfReader")
 	public void creaConfReader(@RequestBody ConfReader reader) throws Exception, ResourceNotFoundException {
 		try {
-			confReaderService.createReader(reader);
+			confReaderService.save(reader);
 		} catch (Exception e) {
 			throw e;
 		}
 	}
 	 
 	
-	
+	@PostMapping("/associaConfReader")
+	public void associaConfReader(@RequestBody ConfReader reader) throws Exception, ResourceNotFoundException {
+		try {
+			confReaderService.updateConfReader(reader);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
 
   
 	@GetMapping("/allConfReader")

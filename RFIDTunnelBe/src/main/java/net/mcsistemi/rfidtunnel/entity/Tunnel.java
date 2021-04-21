@@ -46,12 +46,8 @@ public class Tunnel {
 	private String descReaderBarcodeSelected;
 	
 	@ManyToMany
-	@Transient
 	private Set<Dispositivo> dispositivi;
 	
-	@ManyToMany(cascade = {CascadeType.ALL})
-	@Transient
-	private Set<ConfReader> confReaders;
 
 	public String getNome() {
 		return nome;
@@ -197,16 +193,5 @@ public class Tunnel {
 		this.dispositivi = dispositivi;
 	}
 
-	public Set<ConfReader> getConfReaders() {
-		return confReaders;
-	}
-
-	public void setConfReaders(Set<ConfReader> confReaders) {
-		this.confReaders = confReaders;
-	}
-
-	
-
-	
 	
 }

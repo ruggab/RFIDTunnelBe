@@ -1,5 +1,6 @@
 package net.mcsistemi.rfidtunnel.services;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -11,10 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import net.mcsistemi.rfidtunnel.entity.Antenna;
+import net.mcsistemi.rfidtunnel.entity.ConfAntenna;
+import net.mcsistemi.rfidtunnel.entity.ConfReader;
 import net.mcsistemi.rfidtunnel.entity.Dispositivo;
 import net.mcsistemi.rfidtunnel.entity.Tipologica;
 import net.mcsistemi.rfidtunnel.entity.Tunnel;
 import net.mcsistemi.rfidtunnel.repository.AntennaRepository;
+import net.mcsistemi.rfidtunnel.repository.ConfAntennaRepository;
+import net.mcsistemi.rfidtunnel.repository.ConfReaderRepository;
 import net.mcsistemi.rfidtunnel.repository.DispositivoRepository;
 import net.mcsistemi.rfidtunnel.repository.TipologicaRepository;
 import net.mcsistemi.rfidtunnel.repository.TunnelRepository;
@@ -32,7 +37,10 @@ public class TunnelService implements ITunnelService {
 	private TunnelRepository tunnelRepository;
 	
 	@Autowired
-	private AntennaRepository antennaRepository;
+	private ConfAntennaRepository confAntennaRepository;
+	
+	@Autowired
+	private ConfReaderRepository confReaderRepository;
 	
 	
 	public Tunnel getTunnelById(Long id) throws Exception {
@@ -107,14 +115,17 @@ public class TunnelService implements ITunnelService {
 
 	@Transactional
 	public void save(Tunnel tunnel) throws Exception {
+
 		if (tunnel.getId() != null) {
 			tunnelRepository.deleteById(tunnel.getId());
 		}
 		tunnelRepository.save(tunnel);
 	}
 
-	public List<Antenna> getAllAntenna(Long readerId) throws Exception {
-		List<Antenna> listAntenna = antennaRepository.findByIdReader(readerId);
+	
+	
+	public List<ConfAntenna> getAllAntenna(Long readerId) throws Exception {
+		List<ConfAntenna> listAntenna = confAntennaRepository.findByIdReader(readerId);
 		return listAntenna;
 	}
 	

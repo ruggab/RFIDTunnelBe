@@ -9,6 +9,6 @@ import net.mcsistemi.rfidtunnel.entity.ConfReader;
 @Repository
 public interface ConfReaderRepository extends JpaSpecificationExecutor<ConfReader>, JpaRepository<ConfReader, Long> {
 
-	
+	public void  deleteByIdTunnelAndIdDispositivo(Long idReader, Long idDispositivo) throws Exception;
 
 }

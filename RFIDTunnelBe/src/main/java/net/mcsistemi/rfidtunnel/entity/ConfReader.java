@@ -26,16 +26,14 @@ public class ConfReader {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	private Long id;
-	//
-	@ManyToMany(mappedBy = "confReaders")
-	@Transient
-	private Set<Tunnel> tunnels;
+	
 	
 	@Transient
 	private List<ConfAntenna> antennas = new ArrayList<ConfAntenna>();
 	
 
 	private Long idDispositivo;
+	private Long idTunnel;
 
 	private Integer readerMode;
 	private Integer searchMode;
@@ -151,15 +149,7 @@ public class ConfReader {
 	public void setAntennas(List<ConfAntenna> antennas) {
 		this.antennas = antennas;
 	}
-
-	public Set<Tunnel> getTunnels() {
-		return tunnels;
-	}
-
-	public void setTunnels(Set<Tunnel> tunnels) {
-		this.tunnels = tunnels;
-	}
-
+	
 	public Long getIdDispositivo() {
 		return idDispositivo;
 	}
@@ -167,8 +157,14 @@ public class ConfReader {
 	public void setIdDispositivo(Long idDispositivo) {
 		this.idDispositivo = idDispositivo;
 	}
-	
-	
-	
+
+	public Long getIdTunnel() {
+		return idTunnel;
+	}
+
+	public void setIdTunnel(Long idTunnel) {
+		this.idTunnel = idTunnel;
+	}
+
 
 }
