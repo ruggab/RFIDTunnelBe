@@ -29,6 +29,8 @@ public class ConfReader {
 
 	@Transient
 	private List<ConfAntenna> antennas = new ArrayList<ConfAntenna>();
+	@Transient
+	private List<ConfPorta> ports = new ArrayList<ConfPorta>();
 
 	private Long idDispositivo;
 	private Long idTunnel;
@@ -204,6 +206,14 @@ public class ConfReader {
 
 	public void setDebGpiPortStop(Integer debGpiPortStop) {
 		this.debGpiPortStop = debGpiPortStop;
+	}
+
+	public List<ConfPorta> getPorts() {
+		return ports;
+	}
+
+	public void setPorts(List<ConfPorta> ports) {
+		this.ports = ports;
 	}
 
 

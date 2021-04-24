@@ -16,15 +16,12 @@ public class ConfPorta {
 	@Column(name="id")
     private Long id;
 	
-	private String nome;
+	private Long numPorta;
 	
-    private String tipoIo; 
-    
+	private Long idPortMode;
 	
-	
-	public ConfPorta(){}
-	
-	
+	private Integer pulsedDurMls;
+
 	public Long getId() {
 		return id;
 	}
@@ -33,6 +30,29 @@ public class ConfPorta {
 		this.id = id;
 	}
 
+	public Long getNumPorta() {
+		return numPorta;
+	}
+
+	public void setNumPorta(Long numPorta) {
+		this.numPorta = numPorta;
+	}
+
+	public Long getIdPortMode() {
+		return idPortMode;
+	}
+
+	public void setIdPortMode(Long idPortMode) {
+		this.idPortMode = idPortMode;
+	}
+
+	public Integer getPulsedDurMls() {
+		return pulsedDurMls;
+	}
+
+	public void setPulsedDurMls(Integer pulsedDurMls) {
+		this.pulsedDurMls = pulsedDurMls;
+	}
 
 
 	
