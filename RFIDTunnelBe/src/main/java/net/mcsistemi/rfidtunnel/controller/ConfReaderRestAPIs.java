@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import net.mcsistemi.rfidtunnel.entity.ConfAntenna;
+import net.mcsistemi.rfidtunnel.entity.ConfPorta;
 import net.mcsistemi.rfidtunnel.entity.ConfReader;
 import net.mcsistemi.rfidtunnel.exception.ResourceNotFoundException;
 import net.mcsistemi.rfidtunnel.services.ConfReaderService;
@@ -88,6 +89,17 @@ public class ConfReaderRestAPIs {
 			throw e;
 		}
 	}
+	
+	
+	@GetMapping("/allConfPort/{id}")
+	public List<ConfPorta> getAllConfPort(@PathVariable(value = "id") Long readerId) throws Exception, ResourceNotFoundException {
+		try {
+			return confReaderService.getAllConfPort(readerId);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
 	
 	
 	@DeleteMapping("/deleteConfReader/{id}")

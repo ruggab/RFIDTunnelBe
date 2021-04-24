@@ -40,8 +40,7 @@ public class DispositivoService implements IDispositivoService {
 	@Autowired
 	private DispositivoRepository dispositivoRepository;
 
-	@Autowired
-	private AntennaRepository antennaRepository;
+	
 
 	@Autowired
 	private TipologicaRepository tipologicaRepository;
@@ -91,10 +90,9 @@ public class DispositivoService implements IDispositivoService {
 		dispositivoRepository.save(dispositivo);
 	}
 
-	public List<Antenna> getAllAntenna(Long readerId) throws Exception {
-		List<Antenna> listAntenna = antennaRepository.findByIdReader(readerId);
-		return listAntenna;
-	}
+	
+	
+	
 
 	public List<Dispositivo> getReaderRfidList() throws Exception {
 		//

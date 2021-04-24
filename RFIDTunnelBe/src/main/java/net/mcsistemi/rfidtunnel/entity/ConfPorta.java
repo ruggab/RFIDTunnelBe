@@ -16,6 +16,8 @@ public class ConfPorta {
 	@Column(name="id")
     private Long id;
 	
+	private Long idConfReader;
+	
 	private Long numPorta;
 	
 	private Long idPortMode;
@@ -53,6 +55,16 @@ public class ConfPorta {
 	public void setPulsedDurMls(Integer pulsedDurMls) {
 		this.pulsedDurMls = pulsedDurMls;
 	}
+
+	public Long getIdConfReader() {
+		return idConfReader;
+	}
+
+	public void setIdConfReader(Long idConfReader) {
+		this.idConfReader = idConfReader;
+	}
+	
+	
 
 
 	

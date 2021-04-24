@@ -10,8 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import net.mcsistemi.rfidtunnel.entity.ConfAntenna;
+import net.mcsistemi.rfidtunnel.entity.ConfPorta;
 import net.mcsistemi.rfidtunnel.entity.ConfReader;
 import net.mcsistemi.rfidtunnel.repository.ConfAntennaRepository;
+import net.mcsistemi.rfidtunnel.repository.ConfPortRepository;
 import net.mcsistemi.rfidtunnel.repository.ConfReaderRepository;
 
 @Service
@@ -25,6 +27,8 @@ public class ConfReaderService implements IReaderService {
 	@Autowired
 	private ConfAntennaRepository confAntennaRepository;
 	
+	@Autowired
+	private ConfPortRepository confPortRepository;
 	
 	
 	public ConfReader getConfReaderByTunnelAndDispo(ConfReader confReader) throws Exception {
@@ -93,6 +97,11 @@ public class ConfReaderService implements IReaderService {
 	public List<ConfAntenna> getAllAntenna(Long readerId) throws Exception {
 		List<ConfAntenna> listAntenna = confAntennaRepository.findByIdReader(readerId);
 		return listAntenna;
+	}
+	
+	public List<ConfPorta> getAllConfPort(Long readerId) throws Exception {
+		List<ConfPorta> listConfPort = confPortRepository.findByIdReader(readerId);
+		return listConfPort;
 	}
 	
 	
