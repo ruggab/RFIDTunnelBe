@@ -44,19 +44,19 @@ public class Dispositivo {
 	private String ipAdress;
 
 	@Column(length = 4)
-	private String porta;
+	private Long porta;
 
 	private Boolean monitorEnable;
 
 	private Boolean logEnable;
 
-	private String freqLogMs;
+	private Integer freqLogMs;
 
-	private String numAntenne;
+	private Integer numAntenne;
 
-	private String numPortOut;
+	private Integer numPortOut;
 
-	private String numPortInput;
+	private Integer numPortInput;
 	
 
 
@@ -90,13 +90,7 @@ public class Dispositivo {
 		this.ipAdress = ipAdress;
 	}
 
-	public String getPorta() {
-		return porta;
-	}
-
-	public void setPorta(String porta) {
-		this.porta = porta;
-	}
+	
 
 	public Boolean getMonitorEnable() {
 		return monitorEnable;
@@ -114,37 +108,7 @@ public class Dispositivo {
 		this.logEnable = logEnable;
 	}
 
-	public String getFreqLogMs() {
-		return freqLogMs;
-	}
-
-	public void setFreqLogMs(String freqLogMs) {
-		this.freqLogMs = freqLogMs;
-	}
-
-	public String getNumAntenne() {
-		return numAntenne;
-	}
-
-	public void setNumAntenne(String numAntenne) {
-		this.numAntenne = numAntenne;
-	}
-
-	public String getNumPortOut() {
-		return numPortOut;
-	}
-
-	public void setNumPortOut(String numPortOut) {
-		this.numPortOut = numPortOut;
-	}
-
-	public String getNumPortInput() {
-		return numPortInput;
-	}
-
-	public void setNumPortInput(String numPortInput) {
-		this.numPortInput = numPortInput;
-	}
+	
 
 	public String getDescTipoDispositivo() {
 		return descTipoDispositivo;
@@ -185,6 +149,48 @@ public class Dispositivo {
 	public void setDescModelloReader(String descModelloReader) {
 		this.descModelloReader = descModelloReader;
 	}
+
+	public Long getPorta() {
+		return porta;
+	}
+
+	public void setPorta(Long porta) {
+		this.porta = porta;
+	}
+
+	public Integer getFreqLogMs() {
+		return freqLogMs;
+	}
+
+	public void setFreqLogMs(Integer freqLogMs) {
+		this.freqLogMs = freqLogMs;
+	}
+
+	public Integer getNumAntenne() {
+		return numAntenne;
+	}
+
+	public void setNumAntenne(Integer numAntenne) {
+		this.numAntenne = numAntenne;
+	}
+
+	public Integer getNumPortOut() {
+		return numPortOut;
+	}
+
+	public void setNumPortOut(Integer numPortOut) {
+		this.numPortOut = numPortOut;
+	}
+
+	public Integer getNumPortInput() {
+		return numPortInput;
+	}
+
+	public void setNumPortInput(Integer numPortInput) {
+		this.numPortInput = numPortInput;
+	}
+
+	
 
 	
 	

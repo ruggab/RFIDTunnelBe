@@ -26,25 +26,34 @@ public class ConfReader {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	private Long id;
-	
-	
+
 	@Transient
 	private List<ConfAntenna> antennas = new ArrayList<ConfAntenna>();
-	
 
 	private Long idDispositivo;
 	private Long idTunnel;
 	private Boolean keepAlive;
 	private Integer readerMode;
 	private Integer searchMode;
-	private boolean autoStartActive;
+
+	// Ports
 	private Integer autoStartMode;
 	private Integer autoStopMode;
+
+	// Start
+	private Integer gpiPortStart;
+	private boolean stateGpiPortStart;
+	private Integer debGpiPortStart;
+	// Stop
+	private Integer gpiPortStop;
+	private boolean stateGpiPortStop;
+	private Integer debGpiPortStop;
+
+	//
 	private boolean enableUser;
 	private boolean enableTid;
 	private boolean enableEpc;
-	//private Boolean stato;
-	
+	// private Boolean stato;
 
 	public Integer getSearchMode() {
 		return searchMode;
@@ -57,15 +66,7 @@ public class ConfReader {
 	public ConfReader() {
 	}
 
-	public boolean isAutoStartActive() {
-		return autoStartActive;
-	}
-
-	public void setAutoStartActive(boolean autoStartActive) {
-		this.autoStartActive = autoStartActive;
-	}
-
-
+	
 
 	public Integer getAutoStartMode() {
 		return autoStartMode;
@@ -127,18 +128,10 @@ public class ConfReader {
 		this.keepAlive = keepAlive;
 	}
 
-//	public Boolean getStato() {
-//		return stato;
-//	}
-//
-//	public void setStato(Boolean stato) {
-//		this.stato = stato;
-//	}
 
 	public void setEnableEpc(boolean enableEpc) {
 		this.enableEpc = enableEpc;
 	}
-
 
 	public List<ConfAntenna> getAntennas() {
 		return antennas;
@@ -147,7 +140,7 @@ public class ConfReader {
 	public void setAntennas(List<ConfAntenna> antennas) {
 		this.antennas = antennas;
 	}
-	
+
 	public Long getIdDispositivo() {
 		return idDispositivo;
 	}
@@ -164,5 +157,58 @@ public class ConfReader {
 		this.idTunnel = idTunnel;
 	}
 
+	public Integer getGpiPortStart() {
+		return gpiPortStart;
+	}
+
+	public void setGpiPortStart(Integer gpiPortStart) {
+		this.gpiPortStart = gpiPortStart;
+	}
+
+
+	public Integer getGpiPortStop() {
+		return gpiPortStop;
+	}
+
+	public void setGpiPortStop(Integer gpiPortStop) {
+		this.gpiPortStop = gpiPortStop;
+	}
+
+	public boolean isStateGpiPortStart() {
+		return stateGpiPortStart;
+	}
+
+	public void setStateGpiPortStart(boolean stateGpiPortStart) {
+		this.stateGpiPortStart = stateGpiPortStart;
+	}
+
+	public Integer getDebGpiPortStart() {
+		return debGpiPortStart;
+	}
+
+	public void setDebGpiPortStart(Integer debGpiPortStart) {
+		this.debGpiPortStart = debGpiPortStart;
+	}
+
+	public boolean isStateGpiPortStop() {
+		return stateGpiPortStop;
+	}
+
+	public void setStateGpiPortStop(boolean stateGpiPortStop) {
+		this.stateGpiPortStop = stateGpiPortStop;
+	}
+
+	public Integer getDebGpiPortStop() {
+		return debGpiPortStop;
+	}
+
+	public void setDebGpiPortStop(Integer debGpiPortStop) {
+		this.debGpiPortStop = debGpiPortStop;
+	}
+
+
+	
+	
+	
 
 }
