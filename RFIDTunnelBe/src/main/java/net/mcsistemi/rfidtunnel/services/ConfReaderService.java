@@ -37,6 +37,7 @@ public class ConfReaderService implements IReaderService {
 		if (confReaderList.size() > 0) {
 			cr = confReaderList.get(0);
 			cr.getAntennas().addAll(confAntennaRepository.findByIdReader(cr.getId()));
+			cr.getPorts().addAll(confPortRepository.findByIdReader(cr.getId()));
 		}
 		return cr;
 	}
@@ -78,6 +79,7 @@ public class ConfReaderService implements IReaderService {
 	public void updateConfReader(ConfReader confReader) throws Exception {
 		if (confReader.getId()!=null) {
 			confAntennaRepository.deleteByIdReader(confReader.getId());
+			confPortRepository.deleteByIdReader(confReader.getId());
 		}
 		confReaderRepository.deleteByIdTunnelAndIdDispositivo(confReader.getIdTunnel(), confReader.getIdDispositivo());
 		//
@@ -87,6 +89,12 @@ public class ConfReaderService implements IReaderService {
 			ConfAntenna antenna = (ConfAntenna) iterator.next();
 			antenna.setIdConfReader(cf.getId());
 			confAntennaRepository.save(antenna);
+		}
+		List<ConfPorta> listaPort = confReader.getPorts();
+		for (Iterator iterator = listaPort.iterator(); iterator.hasNext();) {
+			ConfPorta port = (ConfPorta) iterator.next();
+			port.setIdConfReader(cf.getId());
+			confPortRepository.save(port);
 		}
 
 	}

@@ -42,7 +42,7 @@ public class ConfReaderRestAPIs {
 	
 	
 	@PostMapping("/confReaderByTunnelAndDispo")
-	public ConfReader getReaderById(@RequestBody ConfReader reader) throws Exception {
+	public ConfReader getConfReaderByTunnelAndDispo(@RequestBody ConfReader reader) throws Exception {
 		try {
 			ConfReader cf =  confReaderService.getConfReaderByTunnelAndDispo(reader);
 			return cf;
