@@ -149,13 +149,18 @@ public class TunnelService implements ITunnelService {
 			Set<Dispositivo> dispoSet = tunnelObj.getDispositivi();
 			List<ConfReader> listReaderImpinj = new ArrayList<ConfReader>();
 			List<ConfReader> listReaderWirama = new ArrayList<ConfReader>();
+			List<Dispositivo> listDispo = new ArrayList<Dispositivo>();
 			for (Iterator iterator = dispoSet.iterator(); iterator.hasNext();) {
 				Dispositivo dispositivo = (Dispositivo) iterator.next();
 				//Se il tipo dispositivo è un reader rfid recuper la configurazione annessa
 				if (dispositivo.getIdTipoDispositivo() == 1 && dispositivo.getIdModelloReader() == 6) {
 					listReaderImpinj.addAll(confReaderRepository.findByIdTunnelAndIdDispositivo(tunnel.getId(), dispositivo.getId()));
-				} else {
-					listReaderImpinj.addAll(confReaderRepository.findByIdTunnelAndIdDispositivo(tunnel.getId(), dispositivo.getId()));
+				} 
+				if (dispositivo.getIdTipoDispositivo() == 1 && dispositivo.getIdModelloReader() == 5) {
+					listReaderWirama.addAll(confReaderRepository.findByIdTunnelAndIdDispositivo(tunnel.getId(), dispositivo.getId()));
+				}
+				if (dispositivo.getIdTipoDispositivo() == 2 ) {
+					listDispo.add(dispositivo);
 				}
 				
 			}

@@ -4,6 +4,8 @@ import com.impinj.octane.ImpinjReader;
 import com.impinj.octane.Tag;
 import com.impinj.octane.TagReport;
 import com.impinj.octane.TagReportListener;
+
+import net.mcsistemi.rfidtunnel.services.ConfReaderService;
 import net.mcsistemi.rfidtunnel.services.DispositivoService;
 import net.mcsistemi.rfidtunnel.services.ReaderService;
 
@@ -17,9 +19,14 @@ public class TagReportListenerImplementation implements TagReportListener {
 
 	Logger logger = LoggerFactory.getLogger(TagReportListenerImplementation.class);
 	private ReaderService readerService;
+	private ConfReaderService confReaderService;
 
 	public TagReportListenerImplementation(ReaderService readerService) {
 		this.readerService = readerService;
+	}
+	
+	public TagReportListenerImplementation(ConfReaderService confReaderService) {
+		this.confReaderService = confReaderService;
 	}
 
 	@Override
@@ -28,11 +35,23 @@ public class TagReportListenerImplementation implements TagReportListener {
 		try {
 			for (Tag t : tags) {
 				logger.debug("IMPINJ ---->>>> EPC: " + t.getEpc().toString());
+				logger.debug("IMPINJ ---->>>> EPC: " + t.getTid().toString());
 				readerService.createReaderStream(reader.getAddress(), "", t.getEpc().toString(),  t);
-				
-				
-				
-				
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+	
+	public void onTagReported(String ipAdress, TagReport report) {
+		List<Tag> tags = report.getTags();
+		try {
+			for (Tag t : tags) {
+				logger.debug("IMPINJ ---->>>> EPC: " + t.getEpc().toString());
+				logger.debug("IMPINJ ---->>>> TID: " + t.getTid().toString());
+				confReaderService.createReaderStream(ipAdress, "", t.getEpc().toString(),  t);
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

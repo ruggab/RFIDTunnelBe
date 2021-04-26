@@ -51,6 +51,11 @@ public class ConfReader {
 	private boolean stateGpiPortStop;
 	private Integer debGpiPortStop;
 
+	// Maintenance
+	private Integer gpiPortMaintenance;
+	private boolean stateGpiPortMaintenance;
+	private Integer debGpiPortMaintenance;
+
 	//
 	private boolean enableUser;
 	private boolean enableTid;
@@ -67,8 +72,6 @@ public class ConfReader {
 
 	public ConfReader() {
 	}
-
-	
 
 	public Integer getAutoStartMode() {
 		return autoStartMode;
@@ -130,7 +133,6 @@ public class ConfReader {
 		this.keepAlive = keepAlive;
 	}
 
-
 	public void setEnableEpc(boolean enableEpc) {
 		this.enableEpc = enableEpc;
 	}
@@ -166,7 +168,6 @@ public class ConfReader {
 	public void setGpiPortStart(Integer gpiPortStart) {
 		this.gpiPortStart = gpiPortStart;
 	}
-
 
 	public Integer getGpiPortStop() {
 		return gpiPortStop;
@@ -216,8 +217,29 @@ public class ConfReader {
 		this.ports = ports;
 	}
 
+	public Integer getGpiPortMaintenance() {
+		return gpiPortMaintenance;
+	}
 
-	
+	public void setGpiPortMaintenance(Integer gpiPortMaintenance) {
+		this.gpiPortMaintenance = gpiPortMaintenance;
+	}
+
+	public boolean isStateGpiPortMaintenance() {
+		return stateGpiPortMaintenance;
+	}
+
+	public void setStateGpiPortMaintenance(boolean stateGpiPortMaintenance) {
+		this.stateGpiPortMaintenance = stateGpiPortMaintenance;
+	}
+
+	public Integer getDebGpiPortMaintenance() {
+		return debGpiPortMaintenance;
+	}
+
+	public void setDebGpiPortMaintenance(Integer debGpiPortMaintenance) {
+		this.debGpiPortMaintenance = debGpiPortMaintenance;
+	}
 	
 	
 

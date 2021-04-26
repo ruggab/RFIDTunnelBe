@@ -14,7 +14,9 @@ import com.impinj.octane.KeepaliveListener;
 import com.impinj.octane.Status;
 
 import net.mcsistemi.rfidtunnel.RfidtunnelApplication;
+import net.mcsistemi.rfidtunnel.entity.ConfReader;
 import net.mcsistemi.rfidtunnel.entity.ReaderRfidInpinj;
+import net.mcsistemi.rfidtunnel.services.ConfReaderService;
 import net.mcsistemi.rfidtunnel.services.DispositivoService;
 import net.mcsistemi.rfidtunnel.services.ReaderService;
 
@@ -24,10 +26,18 @@ public class KeepAliveListenerImplementation implements KeepaliveListener {
 	static net.mcsistemi.rfidtunnel.util.DateFunction myDate;
 	private ReaderRfidInpinj readerRfidInpinj = null;
 	private ReaderService readerService;
+	
+	private ConfReader confReader = null;
+	private ConfReaderService confReaderService;
 
 	public KeepAliveListenerImplementation(ReaderRfidInpinj readerRfidInpinj, ReaderService readerService) {
 		this.readerRfidInpinj = readerRfidInpinj;
 		this.readerService = readerService;
+	}
+	
+	public KeepAliveListenerImplementation(ConfReader confReader, ConfReaderService confReaderService) {
+		this.confReader = confReader;
+		this.confReaderService = confReaderService;
 	}
 
 	@Override
