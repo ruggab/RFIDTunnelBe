@@ -9,14 +9,24 @@ import java.util.Set;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import com.impinj.octane.OctaneSdkException;
 
 import net.mcsistemi.rfidtunnel.entity.Antenna;
 import net.mcsistemi.rfidtunnel.entity.ConfAntenna;
 import net.mcsistemi.rfidtunnel.entity.ConfReader;
 import net.mcsistemi.rfidtunnel.entity.Dispositivo;
+import net.mcsistemi.rfidtunnel.entity.Reader;
+import net.mcsistemi.rfidtunnel.entity.ReaderRfidInpinj;
+import net.mcsistemi.rfidtunnel.entity.ReaderRfidWirama;
 import net.mcsistemi.rfidtunnel.entity.Tipologica;
 import net.mcsistemi.rfidtunnel.entity.Tunnel;
+import net.mcsistemi.rfidtunnel.job.JobImpinj;
+import net.mcsistemi.rfidtunnel.job.JobWiramaReader;
+import net.mcsistemi.rfidtunnel.job.PoolImpinjReader;
+import net.mcsistemi.rfidtunnel.job.PoolWiramaReader;
 import net.mcsistemi.rfidtunnel.repository.AntennaRepository;
 import net.mcsistemi.rfidtunnel.repository.ConfAntennaRepository;
 import net.mcsistemi.rfidtunnel.repository.ConfReaderRepository;
@@ -130,6 +140,100 @@ public class TunnelService implements ITunnelService {
 	}
 	
 	
+	
+	public List<Tunnel> start(Tunnel tunnel) throws Exception {
+		List<Tunnel> listTunnel = null;
+		try {
+			Optional<Tunnel> tunnelOne = tunnelRepository.findById(tunnel.getId());
+			Tunnel tunnelObj = tunnelOne.get();
+			Set<Dispositivo> dispoSet = tunnelObj.getDispositivi();
+			List<ConfReader> listReaderImpinj = new ArrayList<ConfReader>();
+			List<ConfReader> listReaderWirama = new ArrayList<ConfReader>();
+			for (Iterator iterator = dispoSet.iterator(); iterator.hasNext();) {
+				Dispositivo dispositivo = (Dispositivo) iterator.next();
+				//Se il tipo dispositivo è un reader rfid recuper la configurazione annessa
+				if (dispositivo.getIdTipoDispositivo() == 1 && dispositivo.getIdModelloReader() == 6) {
+					listReaderImpinj.addAll(confReaderRepository.findByIdTunnelAndIdDispositivo(tunnel.getId(), dispositivo.getId()));
+				} else {
+					listReaderImpinj.addAll(confReaderRepository.findByIdTunnelAndIdDispositivo(tunnel.getId(), dispositivo.getId()));
+				}
+				
+			}
+				
+				
+			// reader = list.get(0);
+			// }
+
+//			if (reader instanceof ReaderRfidWirama) {
+//				ReaderRfidWirama readerRfidWirama = (ReaderRfidWirama) reader;
+//				JobWiramaReader jobWiramaReader = new JobWiramaReader((ReaderRfidWirama) reader, this);
+//				//JobWiramaCommand jobWiramaCommand = new JobWiramaCommand((ReaderRfidWirama) reader, this);
+//				PoolWiramaReader.addThread(readerRfidWirama.getIpAdress()+readerRfidWirama.getPorta(), jobWiramaReader);
+//				//PoolWiramaReader.addThread(reader.getIpAdress() + readerRfidWirama.getPortaComandi(), jobWiramaCommand);
+//				jobWiramaReader.start();
+//				//jobWiramaCommand.start();
+//			}
+//			if (reader instanceof ReaderRfidInpinj) {
+//				JobImpinj jobImpinj = new JobImpinj((ReaderRfidInpinj) reader, this);
+//				PoolImpinjReader.addJob(reader.getId(), jobImpinj);
+//				jobImpinj.start();
+//			}
+			//tunnel.setStato(true);
+			tunnelRepository.save(tunnel);
+			listTunnel = tunnelRepository.findAll();
+//		} catch (OctaneSdkException ex) {
+//			System.out.println(ex.getMessage());
+//			listTunnel = this.stop(tunnel);
+//			throw ex;
+		} catch (Exception ex) {
+			listTunnel = this.stop(tunnel);
+			System.out.println(ex.getMessage());
+			throw ex;
+		}
+		return listTunnel;
+	}
+
+	public List<Tunnel> stop(Tunnel tunnel) throws Exception {
+		List<Tunnel> list = null;
+		// List<Reader> list = readerRepository.findByIpAdressAndPortaOrderByIdTipoReader(readerForm.getIpAdress(),
+		// readerForm.getPorta());
+		tunnel = tunnelRepository.findById(tunnel.getId()).get();
+
+//		if (tunnel instanceof ReaderRfidWirama) {
+//			try {
+//				ReaderRfidWirama readerRfidWirama = (ReaderRfidWirama) reader;
+//				JobWiramaReader jobWirama = (JobWiramaReader) PoolWiramaReader.getThread(reader.getIpAdress() + readerRfidWirama.getPorta());
+//				//JobWiramaCommand jobWiramaCommand = (JobWiramaCommand) PoolWiramaReader.getThread(reader.getIpAdress() + readerRfidWirama.getPorta());
+//				jobWirama.stop();
+//				//jobWiramaCommand.stop();
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			} finally {
+//				PoolWiramaReader.removeThread(reader.getIpAdress());
+//				reader.setStato(false);
+//				readerRepository.save(reader);
+//				list = readerRepository.findAll(Sort.by(Sort.Direction.ASC, "ipAdress"));
+//			}
+//		}
+//		if (reader instanceof ReaderRfidInpinj) {
+//			try {
+//				JobImpinj jobImpinj = (JobImpinj) PoolImpinjReader.getJob(reader.getId());
+//				if (jobImpinj != null) {
+//					jobImpinj.stop();
+//				}
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			} finally {
+//				// PoolImpinjReader.removeJob(reader.getId());
+//				reader.setStato(false);
+//				readerRepository.save(reader);
+//				list = readerRepository.findAll(Sort.by(Sort.Direction.ASC, "ipAdress"));
+//			}
+//
+//		}
+
+		return list;
+	}
 	
 	
 

@@ -1,6 +1,8 @@
 package net.mcsistemi.rfidtunnel.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import net.mcsistemi.rfidtunnel.entity.Antenna;
 import net.mcsistemi.rfidtunnel.entity.Dispositivo;
+import net.mcsistemi.rfidtunnel.entity.Reader;
 import net.mcsistemi.rfidtunnel.entity.Tipologica;
 import net.mcsistemi.rfidtunnel.entity.Tunnel;
 import net.mcsistemi.rfidtunnel.exception.ResourceNotFoundException;
@@ -93,6 +96,35 @@ public class TunnelRestAPIs {
 		} catch (Exception e) {
 			throw e;
 		}
+	}
+	
+	
+	@PostMapping("/startTunnel")
+	public List<Tunnel>  start(@RequestBody Tunnel tunnel) throws Exception, ResourceNotFoundException {
+		try {
+			List<Tunnel> listTunnel = tunnelService.start(tunnel);
+			Map<String, String> response = new HashMap<>();
+			response.put("stato", "ok");
+			response.put("msg", "Tunnel started");
+			return listTunnel;
+		} catch (Exception e) {
+			throw e;
+		}
+
+	}
+	
+	@PostMapping("/stopTunnel")
+	public List<Tunnel> stop(@RequestBody Tunnel tunnel) throws Exception, ResourceNotFoundException {
+		try {
+			List<Tunnel> listTunnel =  tunnelService.stop(tunnel);
+			Map<String, String> response = new HashMap<>();
+			response.put("stato", "ok");
+			response.put("msg", "Tunnel stopped");
+			return listTunnel;
+		} catch (Exception e) {
+			throw e;
+		}
+
 	}
 	
 }
