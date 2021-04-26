@@ -11,7 +11,8 @@
 	<groupId>net.mcsistemi</groupId>
 	<artifactId>RFIDTunnelBe</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>rfidtunnel</name>
+	<name>RFIDTunnelBe</name>
+	<packaging>war</packaging>
 	
 	<description>Rfid Tunnel Wirama</description>
 
