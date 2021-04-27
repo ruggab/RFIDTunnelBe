@@ -10,16 +10,16 @@ import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.mcsistemi.rfidtunnel.job.TunnelJob;
+//import net.mcsistemi.rfidtunnel.job.TunnelJob;
 import net.mcsistemi.rfidtunnel.repository.ScannerStreamRepository;
-import net.mcsistemi.rfidtunnel.repository.TunnelLogRepository;
+//import net.mcsistemi.rfidtunnel.repository.TunnelLogRepository;
 
 public class JobScannerBarcode implements Runnable {
 
 	private String ip;
     private int port;
     private ScannerStreamRepository repository;
-    private TunnelLogRepository logRep;
+   /// private TunnelLogRepository logRep;
     
     Socket echoSocket = null;
     boolean running = true;
