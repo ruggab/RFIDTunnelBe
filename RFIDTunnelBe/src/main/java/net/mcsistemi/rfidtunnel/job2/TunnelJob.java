@@ -1,22 +1,16 @@
 package net.mcsistemi.rfidtunnel.job2;
 
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 
-import net.mcsistemi.rfidtunnel.model.Scanner;
-import net.mcsistemi.rfidtunnel.model.ScannerStream;
-import net.mcsistemi.rfidtunnel.model.Wirama;
+import net.mcsistemi.rfidtunnel.entity.ScannerStream;
 import net.mcsistemi.rfidtunnel.repository.PropertiesRepository;
 import net.mcsistemi.rfidtunnel.repository.ScannerStreamRepository;
-import net.mcsistemi.rfidtunnel.repository.TunnelLogRepository;
-import net.mcsistemi.rfidtunnel.repository.WiramaStreamRepository;
 
-public class TunnelJob implements Job {
+public class TunnelJob  {
 
 	Logger logger = LoggerFactory.getLogger(TunnelJob.class);
 	
