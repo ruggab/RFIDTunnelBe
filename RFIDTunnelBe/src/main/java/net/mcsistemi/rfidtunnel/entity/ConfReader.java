@@ -60,7 +60,15 @@ public class ConfReader {
 	private boolean enableUser;
 	private boolean enableTid;
 	private boolean enableEpc;
-	// private Boolean stato;
+	private Boolean stato;
+
+	public Boolean getStato() {
+		return stato;
+	}
+
+	public void setStato(Boolean stato) {
+		this.stato = stato;
+	}
 
 	public Integer getSearchMode() {
 		return searchMode;

@@ -53,7 +53,7 @@ import net.mcsistemi.rfidtunnel.util.DateFunction;
  * 
  */
 
-public class JobImpinj implements JobImpinjInterface {
+public class JobRfidImpinj implements JobImpinjInterface {
 
 	static DateFunction myDate = new DateFunction();
 	public static String PACKAGE_BARCODE = "";
@@ -63,7 +63,7 @@ public class JobImpinj implements JobImpinjInterface {
 	private ConfReader confReader = null;
 	private ConfReaderService confReaderService = null;
 
-	public JobImpinj(ConfReader confReader, Dispositivo dispositivo, ConfReaderService confReaderService) throws Exception {
+	public JobRfidImpinj(ConfReader confReader, Dispositivo dispositivo, ConfReaderService confReaderService) throws Exception {
 
 		// Istanzia l'oggetto Reader
 		this.reader = new ImpinjReader();
@@ -160,7 +160,7 @@ public class JobImpinj implements JobImpinjInterface {
 			
 			
 
-			if (confReader.isEnableUser() || confReader.isEnableTid()) {
+			if (confReader.isEnableUser()) {
 
 				TagReadOp readUser = new TagReadOp();
 				readUser.setMemoryBank(MemoryBank.User);
@@ -206,9 +206,9 @@ public class JobImpinj implements JobImpinjInterface {
 				// Configurazione controllo KEEP ALIVE
 				settings.getKeepalives().setPeriodInMs(5000); // Tempo di Attesa prima di attivare evento di
 				settings.getKeepalives().setEnabled(true); // Abilita il Controllo Disconnessione
-				reader.setKeepaliveListener(new KeepAliveListenerImplementation(readerRfidInpinj, this.readerService));
+				reader.setKeepaliveListener(new KeepAliveListenerImplementation(dispositivo,confReader,confReaderService));
 			}
-			reader.setConnectionLostListener(new ConnectionLostListenerImplement(readerRfidInpinj, this.readerService));
+			reader.setConnectionLostListener(new ConnectionLostListenerImplement(confReader,confReaderService));
 
 			myDate.RefreshDate();
 			System.out.println(myDate.getFullDate() + " READER STARTING ........");
@@ -231,14 +231,7 @@ public class JobImpinj implements JobImpinjInterface {
 		if (reader.isConnected()) {
 			this.reader.applySettings(settings);
 			// Switch all led 0
-			this.reader.setGpo(1, false);
-			this.reader.setGpo(2, false);
-			this.reader.setGpo(3, false);
-			this.reader.setGpo(4, false);
-			// Switch ON led 1
-			if (readerRfidInpinj.isPortaOut1()) {
-				reader.setGpo(1, true);
-			}
+		
 			reader.start();
 			System.out.println(myDate.getFullDate() + " Reader Start Success");
 		} else {
@@ -248,10 +241,7 @@ public class JobImpinj implements JobImpinjInterface {
 	}
 
 	public void stop() throws OctaneSdkException {
-		reader.setGpo(1, false);
-		reader.setGpo(2, false);
-		reader.setGpo(3, false);
-		reader.setGpo(4, false);
+		
 		reader.stop();
 		reader.disconnect();
 		System.out.println("TUNNEL DISCONNECTED, NO OPERATION AVAILABLE !");

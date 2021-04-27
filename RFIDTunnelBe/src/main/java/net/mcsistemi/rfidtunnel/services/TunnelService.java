@@ -171,7 +171,7 @@ public class TunnelService implements ITunnelService {
 
 //			if (reader instanceof ReaderRfidWirama) {
 //				ReaderRfidWirama readerRfidWirama = (ReaderRfidWirama) reader;
-//				JobWiramaReader jobWiramaReader = new JobWiramaReader((ReaderRfidWirama) reader, this);
+//				JobRfidWirama jobWiramaReader = new JobRfidWirama((ReaderRfidWirama) reader, this);
 //				//JobWiramaCommand jobWiramaCommand = new JobWiramaCommand((ReaderRfidWirama) reader, this);
 //				PoolWiramaReader.addThread(readerRfidWirama.getIpAdress()+readerRfidWirama.getPorta(), jobWiramaReader);
 //				//PoolWiramaReader.addThread(reader.getIpAdress() + readerRfidWirama.getPortaComandi(), jobWiramaCommand);
@@ -179,7 +179,7 @@ public class TunnelService implements ITunnelService {
 //				//jobWiramaCommand.start();
 //			}
 //			if (reader instanceof ReaderRfidInpinj) {
-//				JobImpinj jobImpinj = new JobImpinj((ReaderRfidInpinj) reader, this);
+//				JobRfidImpinj jobImpinj = new JobRfidImpinj((ReaderRfidInpinj) reader, this);
 //				PoolImpinjReader.addJob(reader.getId(), jobImpinj);
 //				jobImpinj.start();
 //			}
@@ -207,7 +207,7 @@ public class TunnelService implements ITunnelService {
 //		if (tunnel instanceof ReaderRfidWirama) {
 //			try {
 //				ReaderRfidWirama readerRfidWirama = (ReaderRfidWirama) reader;
-//				JobWiramaReader jobWirama = (JobWiramaReader) PoolWiramaReader.getThread(reader.getIpAdress() + readerRfidWirama.getPorta());
+//				JobRfidWirama jobWirama = (JobRfidWirama) PoolWiramaReader.getThread(reader.getIpAdress() + readerRfidWirama.getPorta());
 //				//JobWiramaCommand jobWiramaCommand = (JobWiramaCommand) PoolWiramaReader.getThread(reader.getIpAdress() + readerRfidWirama.getPorta());
 //				jobWirama.stop();
 //				//jobWiramaCommand.stop();
@@ -222,7 +222,7 @@ public class TunnelService implements ITunnelService {
 //		}
 //		if (reader instanceof ReaderRfidInpinj) {
 //			try {
-//				JobImpinj jobImpinj = (JobImpinj) PoolImpinjReader.getJob(reader.getId());
+//				JobRfidImpinj jobImpinj = (JobRfidImpinj) PoolImpinjReader.getJob(reader.getId());
 //				if (jobImpinj != null) {
 //					jobImpinj.stop();
 //				}

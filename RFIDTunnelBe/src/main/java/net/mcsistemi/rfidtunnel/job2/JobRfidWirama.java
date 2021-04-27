@@ -15,7 +15,7 @@ import net.mcsistemi.rfidtunnel.entity.ReaderRfidWirama;
 import net.mcsistemi.rfidtunnel.services.DispositivoService;
 import net.mcsistemi.rfidtunnel.services.ReaderService;
 
-public class JobWiramaReader implements Runnable {
+public class JobRfidWirama implements Runnable {
 
 	private Thread worker;
 	
@@ -25,12 +25,12 @@ public class JobWiramaReader implements Runnable {
 
 	boolean running = true;
 
-	private static final Logger LOGGER = LogManager.getLogger(JobWiramaReader.class);
+	private static final Logger LOGGER = LogManager.getLogger(JobRfidWirama.class);
 
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
 	ReaderService readerService = null;
 
-	public JobWiramaReader(ReaderRfidWirama readerRfidWirama, ReaderService readerService) {
+	public JobRfidWirama(ReaderRfidWirama readerRfidWirama, ReaderService readerService) {
 		
 		this.readerRfidWirama = readerRfidWirama;
 		this.readerService = readerService;
