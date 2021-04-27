@@ -13,12 +13,13 @@ import net.mcsistemi.rfidtunnel.entity.ReaderRfidInpinj;
 import net.mcsistemi.rfidtunnel.services.ConfReaderService;
 import net.mcsistemi.rfidtunnel.services.DispositivoService;
 import net.mcsistemi.rfidtunnel.services.ReaderService;
+import net.mcsistemi.rfidtunnel.services.TunnelService;
 
 public class TagOpCompleteListenerImplementation implements TagOpCompleteListener {
 
 	Logger logger = LoggerFactory.getLogger(TagReportListenerImplementation.class);
 	private ReaderService readerService;
-	private ConfReaderService confReaderService;
+	private TunnelService tunnelService;
 	private ReaderRfidInpinj readerRfidInpinj;
 	private ConfReader confReader;
 	private String ipAdress;
@@ -27,10 +28,9 @@ public class TagOpCompleteListenerImplementation implements TagOpCompleteListene
 		this.readerService = readerService;
 		this.readerRfidInpinj = readerRfidInpinj;
 	}
-	public TagOpCompleteListenerImplementation(String ipAdress, ConfReader confReader,ConfReaderService confReaderService) {
-		this.confReaderService = confReaderService;
+	public TagOpCompleteListenerImplementation(ConfReader confReader,TunnelService tunnelService) {
+		this.tunnelService = tunnelService;
 		this.confReader = confReader;
-		this.ipAdress = ipAdress;
 	}
 
 	public void onTagOpComplete(ImpinjReader reader, TagOpReport results) {
@@ -96,7 +96,7 @@ public class TagOpCompleteListenerImplementation implements TagOpCompleteListene
 						epc = confReader.isEnableEpc() ?  epc : "";
 						tid = confReader.isEnableTid() ? tid : "";
 						user = confReader.isEnableUser() ? user : "";
-						confReaderService.createReaderStream(this.ipAdress, "", epc, tid, user, "",new Timestamp(System.currentTimeMillis()));
+						tunnelService.createReaderStream(this.ipAdress, "", epc, tid, user, "",new Timestamp(System.currentTimeMillis()));
 					}
 				}
 			}

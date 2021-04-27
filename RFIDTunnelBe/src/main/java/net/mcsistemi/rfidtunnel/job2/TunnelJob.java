@@ -1,91 +1,77 @@
 package net.mcsistemi.rfidtunnel.job2;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 
+import net.mcsistemi.rfidtunnel.entity.ConfReader;
+import net.mcsistemi.rfidtunnel.entity.Dispositivo;
 import net.mcsistemi.rfidtunnel.entity.ScannerStream;
+import net.mcsistemi.rfidtunnel.entity.Tunnel;
 import net.mcsistemi.rfidtunnel.repository.PropertiesRepository;
 import net.mcsistemi.rfidtunnel.repository.ScannerStreamRepository;
+import net.mcsistemi.rfidtunnel.services.TunnelService;
 
-public class TunnelJob  {
+public class TunnelJob {
 
 	Logger logger = LoggerFactory.getLogger(TunnelJob.class);
-	
-	public String TUNNEL_IP;
-	public int TUNNEL_PORT;
-	public String SCANNER_IP;
-	public int SCANNER_PORT;
-	public String PATH;
 
-	Wirama wirama = null;
-	JobScannerBarcode scanner = null;
-	
-	@Autowired
-	private PropertiesRepository propertiesRep;
-	
-	@Autowired
-    private ScannerStreamRepository scannerRep;
-	
-	@Autowired
-    private WiramaStreamRepository wiramaRep;
-	
-	@Autowired
-    private TunnelLogRepository logRep;
-	
-	
+	// @Autowired
+	// private ScannerStreamRepository scannerRep;
+
+	// @Autowired
+	// private WiramaStreamRepository wiramaRep;
+	//
+	// @Autowired
+	// private TunnelLogRepository logRep;
+
 	public static String packId = null; // <-- JobScannerBarcode
-	
-	@Bean
-	public void execute(JobExecutionContext context) 
-			throws JobExecutionException {
-		
+
+	//
+	private Tunnel tunnel;
+	private List<ConfReader> listReaderImpinj;
+	private List<ConfReader> listReaderWirama;
+	private List<Dispositivo> listBarcode;
+	private TunnelService tunnelService;
+
+	public TunnelJob(Tunnel tunnel, List<ConfReader> listReaderImpinj, List<ConfReader> listReaderWirama, List<Dispositivo> listBarcode, TunnelService tunnelService) {
+		this.tunnel = tunnel;
+		this.listReaderImpinj = listReaderImpinj;
+		this.listReaderWirama = listReaderWirama;
+		this.listBarcode = listBarcode;
+		this.tunnelService = tunnelService;
+	}
+
+	public void startTunnel() {
 		try {
-			
-			TUNNEL_IP = propertiesRep.findByKey("TUNNEL_IP").getValue();
-			TUNNEL_PORT = Integer.parseInt(propertiesRep.findByKey("TUNNEL_PORT").getValue());
-			SCANNER_IP = propertiesRep.findByKey("SCANNER_IP").getValue();
-			SCANNER_PORT = Integer.parseInt(propertiesRep.findByKey("SCANNER_PORT").getValue());
-			PATH = propertiesRep.findByKey("CSV_DIRECTORY").getValue();
+			for (Iterator iterator = this.listBarcode.iterator(); iterator.hasNext();) {
+				Dispositivo dispositivo = (Dispositivo) iterator.next();
+				JobScannerBarcode scanner = new JobScannerBarcode(this.tunnel, dispositivo, tunnelService);
+				Thread scannerThread = new Thread(scanner);
+				scannerThread.start();
+			}
 
-			// Tunnel Wirama
-			wirama = new Wirama(TUNNEL_IP, TUNNEL_PORT, wiramaRep, PATH, logRep);
-						
-			// JobScannerBarcode
-			scanner = new JobScannerBarcode(SCANNER_IP, SCANNER_PORT, scannerRep, logRep);
+			for (Iterator iterator = this.listReaderImpinj.iterator(); iterator.hasNext();) {
+				ConfReader confReader = (ConfReader) iterator.next();
+				JobRfidImpinj jobRfidImpinj = new JobRfidImpinj(confReader, tunnelService);
+				jobRfidImpinj.start();
+			}
 
-			Thread tunnelThread = new Thread(wirama);
-			Thread scannerThread = new Thread(scanner);
-
-			tunnelThread.start();
-			scannerThread.start();
-
-//			checker = new ThreadChecker(new HashMap<Thread, Runnable>() {{ put(tunnelThread, wirama) ; put(scannerThread, scanner); }});
-//
-//			Thread threadChecker = new Thread(checker);
-//			threadChecker.start();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		catch(Exception e) {
-			
-		}
-		
-	}
-	
-	public void saveScanner(ScannerStream s) {
-		scannerRep.save(s);
+
 	}
 
-    public void stopTunnel(Wirama wirama) {
+	public void stopScanner(JobScannerBarcode scanner) {
 
-        wirama.closeSocket();
-        
-    }
+		scanner.closeSocket();
 
-    public void stopScanner(JobScannerBarcode scanner) {
-
-        scanner.closeSocket();
-        
-    }
+	}
 }

@@ -44,6 +44,7 @@ public class Tunnel {
 	private String descTipoReaderSelected;
 	private String descReaderRfidSelected;
 	private String descReaderBarcodeSelected;
+	private boolean stato;
 	
 	@ManyToMany
 	private Set<Dispositivo> dispositivi;
@@ -193,5 +194,15 @@ public class Tunnel {
 		this.dispositivi = dispositivi;
 	}
 
+	public boolean isStato() {
+		return stato;
+	}
+
+	public void setStato(boolean stato) {
+		this.stato = stato;
+	}
+
+	
+	
 	
 }

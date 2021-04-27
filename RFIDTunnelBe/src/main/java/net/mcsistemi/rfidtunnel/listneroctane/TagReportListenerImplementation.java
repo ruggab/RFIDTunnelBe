@@ -8,6 +8,7 @@ import com.impinj.octane.TagReportListener;
 import net.mcsistemi.rfidtunnel.services.ConfReaderService;
 import net.mcsistemi.rfidtunnel.services.DispositivoService;
 import net.mcsistemi.rfidtunnel.services.ReaderService;
+import net.mcsistemi.rfidtunnel.services.TunnelService;
 
 import java.sql.Timestamp;
 import java.util.Date;
@@ -19,14 +20,14 @@ public class TagReportListenerImplementation implements TagReportListener {
 
 	Logger logger = LoggerFactory.getLogger(TagReportListenerImplementation.class);
 	private ReaderService readerService;
-	private ConfReaderService confReaderService;
+	private TunnelService tunnelService;
 
 	public TagReportListenerImplementation(ReaderService readerService) {
 		this.readerService = readerService;
 	}
 	
-	public TagReportListenerImplementation(ConfReaderService confReaderService) {
-		this.confReaderService = confReaderService;
+	public TagReportListenerImplementation(TunnelService tunnelService) {
+		this.tunnelService = tunnelService;
 	}
 
 	@Override
@@ -51,7 +52,7 @@ public class TagReportListenerImplementation implements TagReportListener {
 			for (Tag t : tags) {
 				logger.debug("IMPINJ ---->>>> EPC: " + t.getEpc().toString());
 				logger.debug("IMPINJ ---->>>> TID: " + t.getTid().toString());
-				confReaderService.createReaderStream(ipAdress, "", t.getEpc().toString(),  t);
+				tunnelService.createReaderStream(ipAdress, "", t.getEpc().toString(),  t);
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

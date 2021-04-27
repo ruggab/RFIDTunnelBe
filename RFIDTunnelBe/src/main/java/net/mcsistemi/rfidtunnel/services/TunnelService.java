@@ -1,5 +1,6 @@
 package net.mcsistemi.rfidtunnel.services;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.impinj.octane.OctaneSdkException;
+import com.impinj.octane.Tag;
 
 import net.mcsistemi.rfidtunnel.entity.Antenna;
 import net.mcsistemi.rfidtunnel.entity.ConfAntenna;
@@ -21,16 +23,19 @@ import net.mcsistemi.rfidtunnel.entity.Dispositivo;
 import net.mcsistemi.rfidtunnel.entity.Reader;
 import net.mcsistemi.rfidtunnel.entity.ReaderRfidInpinj;
 import net.mcsistemi.rfidtunnel.entity.ReaderRfidWirama;
+import net.mcsistemi.rfidtunnel.entity.ReaderStream;
 import net.mcsistemi.rfidtunnel.entity.Tipologica;
 import net.mcsistemi.rfidtunnel.entity.Tunnel;
 import net.mcsistemi.rfidtunnel.job.JobImpinj;
 import net.mcsistemi.rfidtunnel.job.JobWiramaReader;
 import net.mcsistemi.rfidtunnel.job.PoolImpinjReader;
 import net.mcsistemi.rfidtunnel.job.PoolWiramaReader;
+import net.mcsistemi.rfidtunnel.job2.TunnelJob;
 import net.mcsistemi.rfidtunnel.repository.AntennaRepository;
 import net.mcsistemi.rfidtunnel.repository.ConfAntennaRepository;
 import net.mcsistemi.rfidtunnel.repository.ConfReaderRepository;
 import net.mcsistemi.rfidtunnel.repository.DispositivoRepository;
+import net.mcsistemi.rfidtunnel.repository.ReaderStreamRepository;
 import net.mcsistemi.rfidtunnel.repository.TipologicaRepository;
 import net.mcsistemi.rfidtunnel.repository.TunnelRepository;
 
@@ -51,6 +56,9 @@ public class TunnelService implements ITunnelService {
 	
 	@Autowired
 	private ConfReaderRepository confReaderRepository;
+	
+	@Autowired
+	private ReaderStreamRepository readerStreamRepository;
 	
 	
 	public Tunnel getTunnelById(Long id) throws Exception {
@@ -149,47 +157,33 @@ public class TunnelService implements ITunnelService {
 			Set<Dispositivo> dispoSet = tunnelObj.getDispositivi();
 			List<ConfReader> listReaderImpinj = new ArrayList<ConfReader>();
 			List<ConfReader> listReaderWirama = new ArrayList<ConfReader>();
-			List<Dispositivo> listDispo = new ArrayList<Dispositivo>();
+			List<Dispositivo> listBarcode = new ArrayList<Dispositivo>();
 			for (Iterator iterator = dispoSet.iterator(); iterator.hasNext();) {
 				Dispositivo dispositivo = (Dispositivo) iterator.next();
-				//Se il tipo dispositivo è un reader rfid recuper la configurazione annessa
+				//Se il tipo dispositivo è un reader rfid Impinj recuper la configurazione annessa
 				if (dispositivo.getIdTipoDispositivo() == 1 && dispositivo.getIdModelloReader() == 6) {
-					listReaderImpinj.addAll(confReaderRepository.findByIdTunnelAndIdDispositivo(tunnel.getId(), dispositivo.getId()));
+					ConfReader confReader = confReaderRepository.findByIdTunnelAndIdDispositivo(tunnel.getId(), dispositivo.getId()).get(0);
+					confReader.setDispositivo(dispositivo);
+					listReaderImpinj.add(confReader);
 				} 
+				//Se il tipo dispositivo è un reader rfid Wiram recuper la configurazione annessa
 				if (dispositivo.getIdTipoDispositivo() == 1 && dispositivo.getIdModelloReader() == 5) {
-					listReaderWirama.addAll(confReaderRepository.findByIdTunnelAndIdDispositivo(tunnel.getId(), dispositivo.getId()));
+					ConfReader confReader = confReaderRepository.findByIdTunnelAndIdDispositivo(tunnel.getId(), dispositivo.getId()).get(0);
+					confReader.setDispositivo(dispositivo);
+					listReaderWirama.add(confReader);
 				}
+				//Se il tipo dispositivo è un Barcode
 				if (dispositivo.getIdTipoDispositivo() == 2 ) {
-					listDispo.add(dispositivo);
+					listBarcode.add(dispositivo);
 				}
 				
 			}
-				
-				
-			// reader = list.get(0);
-			// }
-
-//			if (reader instanceof ReaderRfidWirama) {
-//				ReaderRfidWirama readerRfidWirama = (ReaderRfidWirama) reader;
-//				JobRfidWirama jobWiramaReader = new JobRfidWirama((ReaderRfidWirama) reader, this);
-//				//JobWiramaCommand jobWiramaCommand = new JobWiramaCommand((ReaderRfidWirama) reader, this);
-//				PoolWiramaReader.addThread(readerRfidWirama.getIpAdress()+readerRfidWirama.getPorta(), jobWiramaReader);
-//				//PoolWiramaReader.addThread(reader.getIpAdress() + readerRfidWirama.getPortaComandi(), jobWiramaCommand);
-//				jobWiramaReader.start();
-//				//jobWiramaCommand.start();
-//			}
-//			if (reader instanceof ReaderRfidInpinj) {
-//				JobRfidImpinj jobImpinj = new JobRfidImpinj((ReaderRfidInpinj) reader, this);
-//				PoolImpinjReader.addJob(reader.getId(), jobImpinj);
-//				jobImpinj.start();
-//			}
-			//tunnel.setStato(true);
+			TunnelJob tunnelJob = new TunnelJob(tunnel,listReaderImpinj, listReaderWirama,listBarcode, this );
+			tunnelJob.startTunnel();
+			
+			tunnel.setStato(true);
 			tunnelRepository.save(tunnel);
 			listTunnel = tunnelRepository.findAll();
-//		} catch (OctaneSdkException ex) {
-//			System.out.println(ex.getMessage());
-//			listTunnel = this.stop(tunnel);
-//			throw ex;
 		} catch (Exception ex) {
 			listTunnel = this.stop(tunnel);
 			System.out.println(ex.getMessage());
@@ -199,47 +193,47 @@ public class TunnelService implements ITunnelService {
 	}
 
 	public List<Tunnel> stop(Tunnel tunnel) throws Exception {
-		List<Tunnel> list = null;
-		// List<Reader> list = readerRepository.findByIpAdressAndPortaOrderByIdTipoReader(readerForm.getIpAdress(),
-		// readerForm.getPorta());
-		tunnel = tunnelRepository.findById(tunnel.getId()).get();
-
-//		if (tunnel instanceof ReaderRfidWirama) {
-//			try {
-//				ReaderRfidWirama readerRfidWirama = (ReaderRfidWirama) reader;
-//				JobRfidWirama jobWirama = (JobRfidWirama) PoolWiramaReader.getThread(reader.getIpAdress() + readerRfidWirama.getPorta());
-//				//JobWiramaCommand jobWiramaCommand = (JobWiramaCommand) PoolWiramaReader.getThread(reader.getIpAdress() + readerRfidWirama.getPorta());
-//				jobWirama.stop();
-//				//jobWiramaCommand.stop();
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			} finally {
-//				PoolWiramaReader.removeThread(reader.getIpAdress());
-//				reader.setStato(false);
-//				readerRepository.save(reader);
-//				list = readerRepository.findAll(Sort.by(Sort.Direction.ASC, "ipAdress"));
-//			}
-//		}
-//		if (reader instanceof ReaderRfidInpinj) {
-//			try {
-//				JobRfidImpinj jobImpinj = (JobRfidImpinj) PoolImpinjReader.getJob(reader.getId());
-//				if (jobImpinj != null) {
-//					jobImpinj.stop();
-//				}
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			} finally {
-//				// PoolImpinjReader.removeJob(reader.getId());
-//				reader.setStato(false);
-//				readerRepository.save(reader);
-//				list = readerRepository.findAll(Sort.by(Sort.Direction.ASC, "ipAdress"));
-//			}
-//
-//		}
-
-		return list;
+		TunnelJob tunnelJob = new TunnelJob(tunnel,listReaderImpinj, listReaderWirama,listBarcode, this );
+		tunnelJob.startTunnel();
 	}
 	
-	
+	public void createReaderStream(String ipAdress, String port, String epc, String tid, String user, String packId,Timestamp time) throws Exception {
+		ReaderStream readerStream = new ReaderStream();
+		
+		readerStream.setEpc(epc);
+		readerStream.setTimeStamp(time);
+		readerStream.setTid(tid);
+		readerStream.setIpAdress(ipAdress);
+		readerStream.setPort(port);
+		readerStream.setPackId(packId);
+		readerStream.setUserData(user);
+		readerStreamRepository.save(readerStream);
+	}
+
+
+	public void createReaderStream(String ipAdress, String port, String packId, Tag tag) throws Exception {
+		ReaderStream readerStream = new ReaderStream();
+		
+		readerStream.setEpc(tag.getEpc().toHexString());
+		readerStream.setTimeStamp(new Timestamp(System.currentTimeMillis()));
+		readerStream.setTid(tag.getTid().toHexString());
+		readerStream.setIpAdress(ipAdress);
+		readerStream.setPort(port);
+		readerStream.setPackId(packId);
+		readerStream.setUserData("");
+		readerStream.setAntennaPortNumber(tag.getAntennaPortNumber()+"");
+		readerStream.setChannelInMhz(tag.getChannelInMhz()+"");
+		readerStream.setFirstSeenTime(tag.getFirstSeenTime()+"");
+		readerStream.setLastSeenTime(tag.getLastSeenTime()+"");
+		readerStream.setModelName(tag.getModelDetails().getModelName().name());
+		readerStream.setPeakRssiInDbm(tag.getPeakRssiInDbm()+"");
+		readerStream.setPhaseAngleInRadians(tag.getPhaseAngleInRadians()+"");
+		readerStream.setRfDopplerFrequency(tag.getRfDopplerFrequency()+"");
+		readerStream.setTagSeenCount(tag.getTagSeenCount()+"");
+		readerStream.setUserData("");
+		readerStream.setFirstSeenTime(tag.getFirstSeenTime()+"");
+		readerStream.setLastSeenTime(tag.getLastSeenTime()+"");
+		readerStreamRepository.save(readerStream);
+	}
 
 }

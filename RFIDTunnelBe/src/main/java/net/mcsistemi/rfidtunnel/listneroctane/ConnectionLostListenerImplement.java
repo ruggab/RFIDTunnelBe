@@ -8,6 +8,7 @@ import net.mcsistemi.rfidtunnel.entity.ReaderRfidInpinj;
 import net.mcsistemi.rfidtunnel.services.ConfReaderService;
 import net.mcsistemi.rfidtunnel.services.DispositivoService;
 import net.mcsistemi.rfidtunnel.services.ReaderService;
+import net.mcsistemi.rfidtunnel.services.TunnelService;
 import net.mcsistemi.rfidtunnel.util.DateFunction;
 
 public class ConnectionLostListenerImplement implements ConnectionLostListener {
@@ -16,16 +17,16 @@ public class ConnectionLostListenerImplement implements ConnectionLostListener {
 	private ReaderService readerService;
 	
 	private ConfReader confReader;
-	private ConfReaderService confReaderService;
+	private TunnelService tunnelService;
 
 	public ConnectionLostListenerImplement(ReaderRfidInpinj readerRfidInpinj, ReaderService readerService) {
 		this.readerRfidInpinj = readerRfidInpinj;
 		this.readerService = readerService;
 	}
 	
-	public ConnectionLostListenerImplement(ConfReader confReader,ConfReaderService confReaderService) {
+	public ConnectionLostListenerImplement(ConfReader confReader,TunnelService tunnelService) {
 		this.confReader = confReader;
-		this.confReaderService = confReaderService;
+		this.tunnelService = tunnelService;
 	}
 
 	@Override
@@ -33,7 +34,7 @@ public class ConnectionLostListenerImplement implements ConnectionLostListener {
 		System.out.println("----Entrata ConnectionLostListenerImplement");
 		try {
 			confReader.setStato(false);
-			confReaderService.save(confReader);
+			//confReaderService.save(confReader);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

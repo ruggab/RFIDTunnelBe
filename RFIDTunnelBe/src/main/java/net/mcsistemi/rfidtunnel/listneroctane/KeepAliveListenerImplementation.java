@@ -20,6 +20,7 @@ import net.mcsistemi.rfidtunnel.entity.ReaderRfidInpinj;
 import net.mcsistemi.rfidtunnel.services.ConfReaderService;
 import net.mcsistemi.rfidtunnel.services.DispositivoService;
 import net.mcsistemi.rfidtunnel.services.ReaderService;
+import net.mcsistemi.rfidtunnel.services.TunnelService;
 
 public class KeepAliveListenerImplementation implements KeepaliveListener {
 
@@ -29,8 +30,8 @@ public class KeepAliveListenerImplementation implements KeepaliveListener {
 	private ReaderService readerService;
 	
 	private ConfReader confReader = null;
-	private ConfReaderService confReaderService;
-	private Dispositivo dispositivo;
+	private TunnelService tunnelService;
+	
 
 
 	public KeepAliveListenerImplementation(ReaderRfidInpinj readerRfidInpinj, ReaderService readerService) {
@@ -38,10 +39,10 @@ public class KeepAliveListenerImplementation implements KeepaliveListener {
 		this.readerService = readerService;
 	}
 	
-	public KeepAliveListenerImplementation(Dispositivo dispositivo, ConfReader confReader, ConfReaderService confReaderService) {
+	public KeepAliveListenerImplementation(ConfReader confReader, TunnelService tunnelService) {
 		this.confReader = confReader;
-		this.confReaderService = confReaderService;
-		this.dispositivo = dispositivo;
+		this.tunnelService = tunnelService;
+		
 	}
 
 	@Override
@@ -139,11 +140,11 @@ public class KeepAliveListenerImplementation implements KeepaliveListener {
 
 				LOGGER.info(myDate.getFullDate() + " Reader try to Re-Connecting...........");
 				// Connessione ed Attivazione LED su Tunnel
-				reader.connect(this.dispositivo.getIpAdress());
+				reader.connect(this.confReader.getDispositivo().getIpAdress());
 				if (reader.isConnected()) {
 					reader.setGpo(1, true);
 					confReader.setStato(true);
-					confReaderService.save(confReader);
+					//tunnelService.save(confReader);
 				} else {
 					LOGGER.info(myDate.getFullDate() + " Reader Re-Connection Failed");
 				}
@@ -152,7 +153,7 @@ public class KeepAliveListenerImplementation implements KeepaliveListener {
 				LOGGER.info("READER CONNESSO");
 				if (!confReader.getStato()) {
 					confReader.setStato(true);
-					confReaderService.save(confReader);
+					//confReaderService.save(confReader);
 				}
 			}
 		} catch (Exception ex) {

@@ -42,6 +42,7 @@ import net.mcsistemi.rfidtunnel.listneroctane.TagReportListenerImplementation;
 import net.mcsistemi.rfidtunnel.services.ConfReaderService;
 import net.mcsistemi.rfidtunnel.services.DispositivoService;
 import net.mcsistemi.rfidtunnel.services.ReaderService;
+import net.mcsistemi.rfidtunnel.services.TunnelService;
 import net.mcsistemi.rfidtunnel.util.DateFunction;
 
 /**
@@ -60,20 +61,20 @@ public class JobRfidImpinj implements JobImpinjInterface {
 	private ImpinjReader reader = null;
 	private Settings settings = null;
 	private String hostname = "";
-	private ConfReader confReader = null;
-	private ConfReaderService confReaderService = null;
+	private ConfReader confReader;
+	private TunnelService tunnelService;
 
-	public JobRfidImpinj(ConfReader confReader, Dispositivo dispositivo, ConfReaderService confReaderService) throws Exception {
+	public JobRfidImpinj(ConfReader confReader,  TunnelService tunnelService) throws Exception {
 
 		// Istanzia l'oggetto Reader
 		this.reader = new ImpinjReader();
 		this.confReader = confReader;
-		this.confReaderService = confReaderService;
+		this.tunnelService = tunnelService;
 
 		try {
 
 			// DA SOSTITUIRE CON OPPORTUNA PARAMETRIZZAZIONE IN VISTA DEI THREAD
-			this.hostname = dispositivo.getIpAdress(); // Indirizzo IP Reader
+			this.hostname = this.confReader.getDispositivo().getIpAdress(); // Indirizzo IP Reader
 			// Connessione ed Attivazione LED su Tunnel
 			this.reader.connect(hostname);
 			// Caricamento della Configurazione del Reader
@@ -116,7 +117,7 @@ public class JobRfidImpinj implements JobImpinjInterface {
 			// reader.setGpiChangeListener(new GpiChangeListenerImplementation());
 
 			// enable this GPI and set some debounce
-			dispositivo.getNumPortInput();
+			confReader.getDispositivo().getNumPortInput();
 			// Start Port
 			if (!StringUtils.isEmpty(confReader.getGpiPortStart())) {
 				settings.getGpis().get(confReader.getGpiPortStart()).setIsEnabled(true);
@@ -179,7 +180,7 @@ public class JobRfidImpinj implements JobImpinjInterface {
 				settings.getReport().getOptimizedReadOps().add(readUser);
 				settings.getReport().getOptimizedReadOps().add(readTid);
 				// set up listeners for user and TID also
-				reader.setTagOpCompleteListener(new TagOpCompleteListenerImplementation(dispositivo.getIpAdress(),confReader, this.confReaderService));
+				reader.setTagOpCompleteListener(new TagOpCompleteListenerImplementation(confReader, this.tunnelService));
 			} else {
 				// set up listeners just for EPC
 				// reader.setAntennaChangeListener( new AntennaChangeListenerImplementation());
@@ -198,17 +199,17 @@ public class JobRfidImpinj implements JobImpinjInterface {
 				r.setIncludeSeenCount(true);
 				settings.setReport(r);
 
-				reader.setTagReportListener(new TagReportListenerImplementation(this.confReaderService));
+				reader.setTagReportListener(new TagReportListenerImplementation(this.tunnelService));
 
-			}
+			} 
 
 			if (confReader.getKeepAlive()) {
 				// Configurazione controllo KEEP ALIVE
 				settings.getKeepalives().setPeriodInMs(5000); // Tempo di Attesa prima di attivare evento di
 				settings.getKeepalives().setEnabled(true); // Abilita il Controllo Disconnessione
-				reader.setKeepaliveListener(new KeepAliveListenerImplementation(dispositivo,confReader,confReaderService));
+				reader.setKeepaliveListener(new KeepAliveListenerImplementation(confReader,this.tunnelService));
 			}
-			reader.setConnectionLostListener(new ConnectionLostListenerImplement(confReader,confReaderService));
+			reader.setConnectionLostListener(new ConnectionLostListenerImplement(confReader,this.tunnelService));
 
 			myDate.RefreshDate();
 			System.out.println(myDate.getFullDate() + " READER STARTING ........");

@@ -31,7 +31,9 @@ public class ConfReader {
 	private List<ConfAntenna> antennas = new ArrayList<ConfAntenna>();
 	@Transient
 	private List<ConfPorta> ports = new ArrayList<ConfPorta>();
-
+	@Transient
+	private Dispositivo dispositivo;
+	
 	private Long idDispositivo;
 	private Long idTunnel;
 	private Boolean keepAlive;
@@ -247,6 +249,14 @@ public class ConfReader {
 
 	public void setDebGpiPortMaintenance(Integer debGpiPortMaintenance) {
 		this.debGpiPortMaintenance = debGpiPortMaintenance;
+	}
+
+	public Dispositivo getDispositivo() {
+		return dispositivo;
+	}
+
+	public void setDispositivo(Dispositivo dispositivo) {
+		this.dispositivo = dispositivo;
 	}
 	
 	

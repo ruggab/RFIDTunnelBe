@@ -12,32 +12,32 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotBlank;
 
-
 @Entity
 @Table(name = "scanner")
 public class ScannerStream {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="id")
-    private Long id;
-	
-	//@NotBlank
-    private String packId;
-	
+	@Column(name = "id")
+	private Long id;
+
+	// @NotBlank
+	private String packId;
+
 	@Temporal(TemporalType.TIMESTAMP)
-    private Date timeStamp;
-	
+	private Date timeStamp;
+
 	@Column(nullable = true)
 	private long epcCount;
-	
-	public ScannerStream(){}
-	
-	public ScannerStream(String packId, Date timeStamp) {
-		this.packId=packId;
-		this.timeStamp=timeStamp;
+
+	public ScannerStream() {
 	}
-		
+
+	public ScannerStream(String packId, Date timeStamp) {
+		this.packId = packId;
+		this.timeStamp = timeStamp;
+	}
+
 	public Long getId() {
 		return id;
 	}
@@ -53,7 +53,7 @@ public class ScannerStream {
 	public void setPackId(String packId) {
 		this.packId = packId;
 	}
-	
+
 	public Date getTimeStamp() {
 		return timeStamp;
 	}
@@ -69,5 +69,5 @@ public class ScannerStream {
 	public void setEpcCount(long epcCount) {
 		this.epcCount = epcCount;
 	}
-	
+
 }
