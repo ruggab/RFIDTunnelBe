@@ -143,22 +143,21 @@ public class KeepAliveListenerImplementation implements KeepaliveListener {
 				reader.connect(this.confReader.getDispositivo().getIpAdress());
 				if (reader.isConnected()) {
 					reader.setGpo(1, true);
-					confReader.setStato(true);
-					//tunnelService.save(confReader);
+					this.confReader.getDispositivo().setStato(true);
+					tunnelService.aggiornaDispositivo(this.confReader.getDispositivo());
 				} else {
 					LOGGER.info(myDate.getFullDate() + " Reader Re-Connection Failed");
 				}
 
 			} else {
 				LOGGER.info("READER CONNESSO");
-				if (!confReader.getStato()) {
-					confReader.setStato(true);
-					//confReaderService.save(confReader);
+				if (!this.confReader.getDispositivo().getStato()) {
+					this.confReader.getDispositivo().setStato(true);
+					tunnelService.aggiornaDispositivo(this.confReader.getDispositivo());
 				}
 			}
 		} catch (Exception ex) {
-			System.err.println(ex.getMessage());
-			ex.printStackTrace();
+			LOGGER.error(ex.toString() + " - " + ex.getMessage());
 		}
 
 	}

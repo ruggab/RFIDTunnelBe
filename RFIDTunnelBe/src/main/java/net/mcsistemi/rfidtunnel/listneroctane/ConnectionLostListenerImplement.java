@@ -33,8 +33,8 @@ public class ConnectionLostListenerImplement implements ConnectionLostListener {
 	public void onConnectionLost(ImpinjReader reader) {
 		System.out.println("----Entrata ConnectionLostListenerImplement");
 		try {
-			confReader.setStato(false);
-			//confReaderService.save(confReader);
+			confReader.getDispositivo().setStato(false);
+			tunnelService.aggiornaDispositivo(this.confReader.getDispositivo());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

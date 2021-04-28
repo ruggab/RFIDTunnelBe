@@ -58,8 +58,9 @@ public class Dispositivo {
 
 	private Integer numPortInput;
 	
+	private Boolean stato;
 
-
+	
 	public Dispositivo() {
 	}
 
@@ -73,6 +74,15 @@ public class Dispositivo {
 	public void setId(Long id) {
 		this.id = id;
 	}
+	
+	public Boolean getStato() {
+		return stato;
+	}
+
+	public void setStato(Boolean stato) {
+		this.stato = stato;
+	}
+
 
 	public Long getIdTipoDispositivo() {
 		return idTipoDispositivo;

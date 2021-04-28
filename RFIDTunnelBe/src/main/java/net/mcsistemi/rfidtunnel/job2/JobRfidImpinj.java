@@ -32,6 +32,7 @@ import net.mcsistemi.rfidtunnel.entity.ConfPorta;
 import net.mcsistemi.rfidtunnel.entity.ConfReader;
 import net.mcsistemi.rfidtunnel.entity.Dispositivo;
 import net.mcsistemi.rfidtunnel.entity.ReaderRfidInpinj;
+import net.mcsistemi.rfidtunnel.entity.Tunnel;
 import net.mcsistemi.rfidtunnel.listneroctane.ConnectionLostListenerImplement;
 import net.mcsistemi.rfidtunnel.listneroctane.FilteredTagReportListenerImplementation;
 import net.mcsistemi.rfidtunnel.listneroctane.KeepAliveListenerImplementation;
@@ -54,17 +55,17 @@ import net.mcsistemi.rfidtunnel.util.DateFunction;
  * 
  */
 
-public class JobRfidImpinj implements JobImpinjInterface {
+public class JobRfidImpinj extends Job implements JobImpinjInterface {
 
 	static DateFunction myDate = new DateFunction();
 	public static String PACKAGE_BARCODE = "";
 	private ImpinjReader reader = null;
 	private Settings settings = null;
-	private String hostname = "";
+	
 	private ConfReader confReader;
 	private TunnelService tunnelService;
 
-	public JobRfidImpinj(ConfReader confReader,  TunnelService tunnelService) throws Exception {
+	public JobRfidImpinj(Tunnel tunnel, ConfReader confReader,  TunnelService tunnelService) throws Exception {
 
 		// Istanzia l'oggetto Reader
 		this.reader = new ImpinjReader();
@@ -73,10 +74,8 @@ public class JobRfidImpinj implements JobImpinjInterface {
 
 		try {
 
-			// DA SOSTITUIRE CON OPPORTUNA PARAMETRIZZAZIONE IN VISTA DEI THREAD
-			this.hostname = this.confReader.getDispositivo().getIpAdress(); // Indirizzo IP Reader
-			// Connessione ed Attivazione LED su Tunnel
-			this.reader.connect(hostname);
+			// Connessione  (Attivazione LED su Tunnel da stabilire)
+			this.reader.connect(this.confReader.getDispositivo().getIpAdress());
 			// Caricamento della Configurazione del Reader
 			this.settings = reader.queryDefaultSettings();
 
@@ -224,7 +223,7 @@ public class JobRfidImpinj implements JobImpinjInterface {
 
 	public void start() throws OctaneSdkException {
 		if (!reader.isConnected()) {
-			this.reader.connect(hostname);
+			this.reader.connect(this.confReader.getDispositivo().getIpAdress());
 			System.out.println(" Reader Already RE - Connected");
 		} else {
 			System.out.println(" Reader Already Connected");

@@ -13,12 +13,10 @@ import org.slf4j.LoggerFactory;
 import net.mcsistemi.rfidtunnel.entity.Dispositivo;
 import net.mcsistemi.rfidtunnel.entity.ScannerStream;
 import net.mcsistemi.rfidtunnel.entity.Tunnel;
-//import net.mcsistemi.rfidtunnel.job.TunnelJob;
-import net.mcsistemi.rfidtunnel.repository.ScannerStreamRepository;
 import net.mcsistemi.rfidtunnel.services.TunnelService;
 //import net.mcsistemi.rfidtunnel.repository.TunnelLogRepository;
 
-public class JobScannerBarcode implements Runnable {
+public class JobScannerBarcode extends Job implements Runnable {
 
 	Logger logger = LoggerFactory.getLogger(JobScannerBarcode.class);
 	

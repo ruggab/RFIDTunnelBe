@@ -15,7 +15,7 @@ import net.mcsistemi.rfidtunnel.entity.ReaderRfidWirama;
 import net.mcsistemi.rfidtunnel.services.DispositivoService;
 import net.mcsistemi.rfidtunnel.services.ReaderService;
 
-public class JobRfidWirama implements Runnable {
+public class JobRfidWirama extends Job implements Runnable {
 
 	private Thread worker;
 	

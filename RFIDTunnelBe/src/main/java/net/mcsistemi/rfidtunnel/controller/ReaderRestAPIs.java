@@ -127,9 +127,7 @@ public class ReaderRestAPIs {
 	public List<Reader>  startReader(@RequestBody Reader reader) throws Exception, ResourceNotFoundException {
 		try {
 			List<Reader> listReader = readerService.startReader(reader);
-			Map<String, String> response = new HashMap<>();
-			response.put("stato", "ok");
-			response.put("msg", "Reader started");
+			
 			return listReader;
 		} catch (Exception e) {
 			throw e;
@@ -141,9 +139,7 @@ public class ReaderRestAPIs {
 	public List<Reader> stopReader(@RequestBody Reader reader) throws Exception, ResourceNotFoundException {
 		try {
 			List<Reader> listReader =  readerService.stopReader(reader);
-			Map<String, String> response = new HashMap<>();
-			response.put("stato", "ok");
-			response.put("msg", "Reader stopped");
+			
 			return listReader;
 		} catch (Exception e) {
 			throw e;

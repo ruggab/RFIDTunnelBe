@@ -103,9 +103,7 @@ public class TunnelRestAPIs {
 	public List<Tunnel>  start(@RequestBody Tunnel tunnel) throws Exception, ResourceNotFoundException {
 		try {
 			List<Tunnel> listTunnel = tunnelService.start(tunnel);
-			Map<String, String> response = new HashMap<>();
-			response.put("stato", "ok");
-			response.put("msg", "Tunnel started");
+			
 			return listTunnel;
 		} catch (Exception e) {
 			throw e;
@@ -117,9 +115,7 @@ public class TunnelRestAPIs {
 	public List<Tunnel> stop(@RequestBody Tunnel tunnel) throws Exception, ResourceNotFoundException {
 		try {
 			List<Tunnel> listTunnel =  tunnelService.stop(tunnel);
-			Map<String, String> response = new HashMap<>();
-			response.put("stato", "ok");
-			response.put("msg", "Tunnel stopped");
+			
 			return listTunnel;
 		} catch (Exception e) {
 			throw e;

@@ -195,7 +195,7 @@ public class ReaderService implements IReaderService {
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
-				// PoolImpinjReader.removeJob(reader.getId());
+				// PoolJob.removeJob(reader.getId());
 				reader.setStato(false);
 				readerRepository.save(reader);
 				list = readerRepository.findAll(Sort.by(Sort.Direction.ASC, "ipAdress"));

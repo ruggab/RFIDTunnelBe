@@ -30,6 +30,7 @@ import net.mcsistemi.rfidtunnel.job.JobImpinj;
 import net.mcsistemi.rfidtunnel.job.JobWiramaReader;
 import net.mcsistemi.rfidtunnel.job.PoolImpinjReader;
 import net.mcsistemi.rfidtunnel.job.PoolWiramaReader;
+import net.mcsistemi.rfidtunnel.job2.PoolJob;
 import net.mcsistemi.rfidtunnel.job2.TunnelJob;
 import net.mcsistemi.rfidtunnel.repository.AntennaRepository;
 import net.mcsistemi.rfidtunnel.repository.ConfAntennaRepository;
@@ -139,6 +140,11 @@ public class TunnelService implements ITunnelService {
 		}
 		tunnelRepository.save(tunnel);
 	}
+	
+	@Transactional
+	public void aggiornaDispositivo(Dispositivo dispo) throws Exception {
+		dispositivoRepository.save(dispo);
+	}
 
 	
 	
@@ -180,6 +186,7 @@ public class TunnelService implements ITunnelService {
 			}
 			TunnelJob tunnelJob = new TunnelJob(tunnel,listReaderImpinj, listReaderWirama,listBarcode, this );
 			tunnelJob.startTunnel();
+			PoolJob.addJob(tunnelJob.getTunnel().getId(), tunnelJob);
 			
 			tunnel.setStato(true);
 			tunnelRepository.save(tunnel);
@@ -193,8 +200,22 @@ public class TunnelService implements ITunnelService {
 	}
 
 	public List<Tunnel> stop(Tunnel tunnel) throws Exception {
-		TunnelJob tunnelJob = new TunnelJob(tunnel,listReaderImpinj, listReaderWirama,listBarcode, this );
-		tunnelJob.startTunnel();
+		List<Tunnel> listTunnel = null;
+		try {
+			TunnelJob tunnelJob = (TunnelJob)PoolJob.getJob(tunnel.getId());
+			tunnelJob.stopTunnel();
+			PoolJob.removeJob(tunnel.getId());
+		} catch (Exception ex) {
+			System.out.println(ex.getMessage());
+			throw ex;
+		} finally {
+			// PoolJob.removeJob(reader.getId());
+			tunnel.setStato(false);
+			tunnelRepository.save(tunnel);
+			listTunnel = tunnelRepository.findAll();
+		}
+		return listTunnel;
+		
 	}
 	
 	public void createReaderStream(String ipAdress, String port, String epc, String tid, String user, String packId,Timestamp time) throws Exception {
