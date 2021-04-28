@@ -34,6 +34,7 @@ import net.mcsistemi.rfidtunnel.job2.PoolJob;
 import net.mcsistemi.rfidtunnel.job2.TunnelJob;
 import net.mcsistemi.rfidtunnel.repository.AntennaRepository;
 import net.mcsistemi.rfidtunnel.repository.ConfAntennaRepository;
+import net.mcsistemi.rfidtunnel.repository.ConfPortRepository;
 import net.mcsistemi.rfidtunnel.repository.ConfReaderRepository;
 import net.mcsistemi.rfidtunnel.repository.DispositivoRepository;
 import net.mcsistemi.rfidtunnel.repository.ReaderStreamRepository;
@@ -45,23 +46,25 @@ public class TunnelService implements ITunnelService {
 
 	@Autowired
 	private DispositivoRepository dispositivoRepository;
-	
+
 	@Autowired
 	private TipologicaRepository tipologicaRepository;
 
 	@Autowired
 	private TunnelRepository tunnelRepository;
-	
+
 	@Autowired
 	private ConfAntennaRepository confAntennaRepository;
+
+	@Autowired
+	private ConfPortRepository confPortRepository;
 	
 	@Autowired
 	private ConfReaderRepository confReaderRepository;
-	
+
 	@Autowired
 	private ReaderStreamRepository readerStreamRepository;
-	
-	
+
 	public Tunnel getTunnelById(Long id) throws Exception {
 		Optional<Tunnel> tunnel = tunnelRepository.findById(id);
 		Tunnel tunnelObj = tunnel.get();
@@ -77,19 +80,15 @@ public class TunnelService implements ITunnelService {
 				dispositivo.setDescModelloReader("");
 			}
 		}
-		
-		
+
 		setDescrizioniInTunnel(tunnelObj);
-		return  tunnelObj;
+		return tunnelObj;
 	}
 
 	public void create(Tunnel tunnel) throws Exception {
 		tunnelRepository.save(tunnel);
 	}
-	
-	
 
-	
 	public List<Tunnel> getAllTunnel() throws Exception {
 		//
 		List<Tunnel> tunnelList = tunnelRepository.findAll();
@@ -99,7 +98,7 @@ public class TunnelService implements ITunnelService {
 		}
 		return tunnelList;
 	}
-	
+
 	private void setDescrizioniInTunnel(Tunnel tunnel) {
 		Tipologica tip = null;
 		if (tunnel.getIdSceltaGestColli() != null) {
@@ -140,21 +139,17 @@ public class TunnelService implements ITunnelService {
 		}
 		tunnelRepository.save(tunnel);
 	}
-	
+
 	@Transactional
 	public void aggiornaDispositivo(Dispositivo dispo) throws Exception {
 		dispositivoRepository.save(dispo);
 	}
 
-	
-	
 	public List<ConfAntenna> getAllAntenna(Long readerId) throws Exception {
 		List<ConfAntenna> listAntenna = confAntennaRepository.findByIdReader(readerId);
 		return listAntenna;
 	}
-	
-	
-	
+
 	public List<Tunnel> start(Tunnel tunnel) throws Exception {
 		List<Tunnel> listTunnel = null;
 		try {
@@ -166,28 +161,31 @@ public class TunnelService implements ITunnelService {
 			List<Dispositivo> listBarcode = new ArrayList<Dispositivo>();
 			for (Iterator iterator = dispoSet.iterator(); iterator.hasNext();) {
 				Dispositivo dispositivo = (Dispositivo) iterator.next();
-				//Se il tipo dispositivo è un reader rfid Impinj recuper la configurazione annessa
-				if (dispositivo.getIdTipoDispositivo() == 1 && dispositivo.getIdModelloReader() == 6) {
+				// Se il tipo dispositivo è un reader rfid Impinj recuper la configurazione annessa
+				if (dispositivo.getIdTipoDispositivo() == 1 && dispositivo.getIdModelloReader() == 5) {
 					ConfReader confReader = confReaderRepository.findByIdTunnelAndIdDispositivo(tunnel.getId(), dispositivo.getId()).get(0);
+					confReader.getAntennas().addAll(confAntennaRepository.findByIdReader(confReader.getId()));
+					confReader.getPorts().addAll(confPortRepository.findByIdReader(confReader.getId()));
 					confReader.setDispositivo(dispositivo);
 					listReaderImpinj.add(confReader);
-				} 
-				//Se il tipo dispositivo è un reader rfid Wiram recuper la configurazione annessa
-				if (dispositivo.getIdTipoDispositivo() == 1 && dispositivo.getIdModelloReader() == 5) {
+				}
+				// Se il tipo dispositivo è un reader rfid Wiram recuper la configurazione annessa
+				if (dispositivo.getIdTipoDispositivo() == 1 && dispositivo.getIdModelloReader() == 6) {
 					ConfReader confReader = confReaderRepository.findByIdTunnelAndIdDispositivo(tunnel.getId(), dispositivo.getId()).get(0);
 					confReader.setDispositivo(dispositivo);
 					listReaderWirama.add(confReader);
 				}
-				//Se il tipo dispositivo è un Barcode
-				if (dispositivo.getIdTipoDispositivo() == 2 ) {
+				// Se il tipo dispositivo è un Barcode
+				if (dispositivo.getIdTipoDispositivo() == 2) {
 					listBarcode.add(dispositivo);
 				}
-				
+
 			}
-			TunnelJob tunnelJob = new TunnelJob(tunnel,listReaderImpinj, listReaderWirama,listBarcode, this );
+			TunnelJob tunnelJob = new TunnelJob(tunnel, listReaderImpinj, listReaderWirama, listBarcode, this);
+			PoolJob.addJob(tunnelJob.getTunnel().getNome() + "_" + tunnelJob.getTunnel().getId(), tunnelJob);
 			tunnelJob.startTunnel();
-			PoolJob.addJob(tunnelJob.getTunnel().getId(), tunnelJob);
 			
+
 			tunnel.setStato(true);
 			tunnelRepository.save(tunnel);
 			listTunnel = tunnelRepository.findAll();
@@ -202,9 +200,9 @@ public class TunnelService implements ITunnelService {
 	public List<Tunnel> stop(Tunnel tunnel) throws Exception {
 		List<Tunnel> listTunnel = null;
 		try {
-			TunnelJob tunnelJob = (TunnelJob)PoolJob.getJob(tunnel.getId());
+			TunnelJob tunnelJob = (TunnelJob) PoolJob.getJob(tunnel.getNome() + "_" + tunnel.getId());
 			tunnelJob.stopTunnel();
-			PoolJob.removeJob(tunnel.getId());
+			PoolJob.removeJob(tunnelJob.getTunnel().getNome() + "_" + tunnelJob.getTunnel().getId());
 		} catch (Exception ex) {
 			System.out.println(ex.getMessage());
 			throw ex;
@@ -215,12 +213,12 @@ public class TunnelService implements ITunnelService {
 			listTunnel = tunnelRepository.findAll();
 		}
 		return listTunnel;
-		
+
 	}
-	
-	public void createReaderStream(String ipAdress, String port, String epc, String tid, String user, String packId,Timestamp time) throws Exception {
+
+	public void createReaderStream(String ipAdress, String port, String epc, String tid, String user, String packId, Timestamp time) throws Exception {
 		ReaderStream readerStream = new ReaderStream();
-		
+
 		readerStream.setEpc(epc);
 		readerStream.setTimeStamp(time);
 		readerStream.setTid(tid);
@@ -231,10 +229,9 @@ public class TunnelService implements ITunnelService {
 		readerStreamRepository.save(readerStream);
 	}
 
-
 	public void createReaderStream(String ipAdress, String port, String packId, Tag tag) throws Exception {
 		ReaderStream readerStream = new ReaderStream();
-		
+
 		readerStream.setEpc(tag.getEpc().toHexString());
 		readerStream.setTimeStamp(new Timestamp(System.currentTimeMillis()));
 		readerStream.setTid(tag.getTid().toHexString());
@@ -242,18 +239,18 @@ public class TunnelService implements ITunnelService {
 		readerStream.setPort(port);
 		readerStream.setPackId(packId);
 		readerStream.setUserData("");
-		readerStream.setAntennaPortNumber(tag.getAntennaPortNumber()+"");
-		readerStream.setChannelInMhz(tag.getChannelInMhz()+"");
-		readerStream.setFirstSeenTime(tag.getFirstSeenTime()+"");
-		readerStream.setLastSeenTime(tag.getLastSeenTime()+"");
+		readerStream.setAntennaPortNumber(tag.getAntennaPortNumber() + "");
+		readerStream.setChannelInMhz(tag.getChannelInMhz() + "");
+		readerStream.setFirstSeenTime(tag.getFirstSeenTime() + "");
+		readerStream.setLastSeenTime(tag.getLastSeenTime() + "");
 		readerStream.setModelName(tag.getModelDetails().getModelName().name());
-		readerStream.setPeakRssiInDbm(tag.getPeakRssiInDbm()+"");
-		readerStream.setPhaseAngleInRadians(tag.getPhaseAngleInRadians()+"");
-		readerStream.setRfDopplerFrequency(tag.getRfDopplerFrequency()+"");
-		readerStream.setTagSeenCount(tag.getTagSeenCount()+"");
+		readerStream.setPeakRssiInDbm(tag.getPeakRssiInDbm() + "");
+		readerStream.setPhaseAngleInRadians(tag.getPhaseAngleInRadians() + "");
+		readerStream.setRfDopplerFrequency(tag.getRfDopplerFrequency() + "");
+		readerStream.setTagSeenCount(tag.getTagSeenCount() + "");
 		readerStream.setUserData("");
-		readerStream.setFirstSeenTime(tag.getFirstSeenTime()+"");
-		readerStream.setLastSeenTime(tag.getLastSeenTime()+"");
+		readerStream.setFirstSeenTime(tag.getFirstSeenTime() + "");
+		readerStream.setLastSeenTime(tag.getLastSeenTime() + "");
 		readerStreamRepository.save(readerStream);
 	}
 

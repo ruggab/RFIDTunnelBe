@@ -35,9 +35,9 @@ public class TagReportListenerImplementation implements TagReportListener {
 		List<Tag> tags = report.getTags();
 		try {
 			for (Tag t : tags) {
-				logger.debug("IMPINJ ---->>>> EPC: " + t.getEpc().toString());
-				logger.debug("IMPINJ ---->>>> EPC: " + t.getTid().toString());
-				readerService.createReaderStream(reader.getAddress(), "", t.getEpc().toString(),  t);
+				logger.info("IMPINJ ---->>>> EPC: " + t.getEpc().toString());
+				logger.info("IMPINJ ---->>>> TID: " + t.getTid().toString());
+				readerService.createReaderStream(reader.getAddress(), "", "",  t);
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -45,19 +45,5 @@ public class TagReportListenerImplementation implements TagReportListener {
 		}
 
 	}
-	
-	public void onTagReported(String ipAdress, TagReport report) {
-		List<Tag> tags = report.getTags();
-		try {
-			for (Tag t : tags) {
-				logger.debug("IMPINJ ---->>>> EPC: " + t.getEpc().toString());
-				logger.debug("IMPINJ ---->>>> TID: " + t.getTid().toString());
-				tunnelService.createReaderStream(ipAdress, "", t.getEpc().toString(),  t);
-			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
-	}
 }

@@ -46,15 +46,17 @@ public class TunnelJob extends Job {
 			for (Iterator iterator = this.listBarcode.iterator(); iterator.hasNext();) {
 				Dispositivo dispositivo = (Dispositivo) iterator.next();
 				JobScannerBarcode scanner = new JobScannerBarcode(this.tunnel, dispositivo, tunnelService);
-				PoolJob.addJob(dispositivo.getId(), scanner);
+				PoolJob.addJob(dispositivo.getIpAdress() + "_" + dispositivo.getId(), scanner);
 				Thread scannerThread = new Thread(scanner);
+				logger.info("Start Barcode " + dispositivo.getNome() + " ip:" + dispositivo.getIpAdress());
 				scannerThread.start();
 			}
 
 			for (Iterator iterator = this.listReaderImpinj.iterator(); iterator.hasNext();) {
 				ConfReader confReader = (ConfReader) iterator.next();
 				JobRfidImpinj jobRfidImpinj = new JobRfidImpinj(this.tunnel, confReader, tunnelService);
-				PoolJob.addJob(confReader.getIdDispositivo(), jobRfidImpinj);
+				PoolJob.addJob(confReader.getDispositivo().getIpAdress() + "_" + confReader.getIdDispositivo(), jobRfidImpinj);
+				logger.info("Start Impinj " + confReader.getDispositivo().getNome() + " ip:" + confReader.getDispositivo().getIpAdress());
 				jobRfidImpinj.start();
 			}
 
@@ -70,15 +72,17 @@ public class TunnelJob extends Job {
 
 			for (Iterator iterator = this.listBarcode.iterator(); iterator.hasNext();) {
 				Dispositivo dispositivo = (Dispositivo) iterator.next();
-				JobScannerBarcode jobScannerBarcode = (JobScannerBarcode) PoolJob.getJob(dispositivo.getId());
+				JobScannerBarcode jobScannerBarcode = (JobScannerBarcode) PoolJob.getJob(dispositivo.getIpAdress() + "_" + dispositivo.getId());
 				jobScannerBarcode.closeSocket();
-				PoolJob.removeJob(dispositivo.getId());
+				logger.info("Stop Barcode " + dispositivo.getNome() + " ip:" + dispositivo.getIpAdress());
+				PoolJob.removeJob(dispositivo.getIpAdress() + "_" + dispositivo.getId());
 			}
 			for (Iterator iterator = this.listReaderImpinj.iterator(); iterator.hasNext();) {
 				ConfReader confReader = (ConfReader) iterator.next();
-				JobRfidImpinj jobRfidImpinj = (JobRfidImpinj) PoolJob.getJob(confReader.getId());
+				JobRfidImpinj jobRfidImpinj = (JobRfidImpinj) PoolJob.getJob(confReader.getDispositivo().getIpAdress() + "_" + confReader.getDispositivo().getId());
 				jobRfidImpinj.stop();
-				PoolJob.removeJob(confReader.getId());
+				logger.info("Stop Impinj " + confReader.getDispositivo().getNome() + " ip:" + confReader.getDispositivo().getIpAdress());
+				PoolJob.removeJob(confReader.getDispositivo().getIpAdress() + "_" + confReader.getDispositivo().getId());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

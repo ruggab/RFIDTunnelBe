@@ -97,7 +97,7 @@ public class JobRfidImpinj extends Job implements JobImpinjInterface {
 			antennas.disableAll();
 			List<ConfAntenna> listaAntenna = confReader.getAntennas();
 			for (Iterator iterator = listaAntenna.iterator(); iterator.hasNext();) {
-				Antenna antenna = (Antenna) iterator.next();
+				ConfAntenna antenna = (ConfAntenna) iterator.next();
 				if (antenna.isEnable()) {
 					antennas.enableById(new short[] { antenna.getPosition().shortValue() });
 					antennas.getAntenna(antenna.getPosition()).setIsMaxRxSensitivity(Boolean.valueOf(antenna.isMaxRxSensitivity()));
