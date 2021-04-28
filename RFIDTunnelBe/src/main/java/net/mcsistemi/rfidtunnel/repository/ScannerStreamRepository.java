@@ -13,10 +13,16 @@ import net.mcsistemi.rfidtunnel.entity.ScannerStream;
 public interface ScannerStreamRepository extends JpaRepository<ScannerStream, Long> {
 	
 	@Query(value="select s.id, s.pack_id , s.time_stamp, count(distinct(epc)) epc_count from scanner s\n" + 
-			"join wirama w on s.pack_id = w.pack_id\n" + 
+			"join reader_stream w on s.pack_id = w.pack_id\n" + 
 			"group by s.id, s.pack_id, s.time_stamp order by s.time_stamp desc ", 
 			  nativeQuery = true)
-	List<ScannerStream> getScanner();
+	List<ScannerStream> getStreamCountEpc();
+	
+	@Query(value="select s.id, s.pack_id , s.time_stamp, count(distinct(tid)) epc_count from scanner s\n" + 
+			"join reader_stream w on s.pack_id = w.pack_id\n" + 
+			"group by s.id, s.pack_id, s.time_stamp order by s.time_stamp desc ", 
+			  nativeQuery = true)
+	List<ScannerStream> getStreamCountTid();
 	
 	@Modifying
 	@Transactional

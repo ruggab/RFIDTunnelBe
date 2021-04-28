@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,11 +15,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import net.mcsistemi.rfidtunnel.entity.Antenna;
 import net.mcsistemi.rfidtunnel.entity.Dispositivo;
 import net.mcsistemi.rfidtunnel.entity.Reader;
+import net.mcsistemi.rfidtunnel.entity.ReaderStreamAtteso;
 import net.mcsistemi.rfidtunnel.entity.Tipologica;
 import net.mcsistemi.rfidtunnel.entity.Tunnel;
 import net.mcsistemi.rfidtunnel.exception.ResourceNotFoundException;
@@ -57,7 +61,6 @@ public class TunnelRestAPIs {
 	
 	
 	@GetMapping("/allTunnel")
-	
 	public List<Tunnel> getAllTunnel() throws Exception, ResourceNotFoundException {
 		try {
 			List<Tunnel> listTunnel = tunnelService.getAllTunnel();
@@ -120,7 +123,25 @@ public class TunnelRestAPIs {
 		} catch (Exception e) {
 			throw e;
 		}
-
+	}
+	
+	
+	@GetMapping("/readerStreamAtteso/{packId}")
+	public List<ReaderStreamAtteso> getReaderStreamAtteso(@PathVariable(value = "packId") String packId) throws Exception {
+		try {
+			return tunnelService.getReaderStreamAtteso(packId);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	@PutMapping ("/createStreamAtteso")
+	public  ReaderStreamAtteso createStreamAtteso(@RequestParam String collo,  @RequestParam String epc,  @RequestParam String tid) throws Exception {
+		try {
+			return tunnelService.createReaderStreamAtteso(collo, epc, tid);
+		} catch (Exception e) {
+			throw e;
+		}
 	}
 	
 }

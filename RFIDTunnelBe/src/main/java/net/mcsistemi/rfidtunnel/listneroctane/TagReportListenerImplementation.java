@@ -5,6 +5,7 @@ import com.impinj.octane.Tag;
 import com.impinj.octane.TagReport;
 import com.impinj.octane.TagReportListener;
 
+import net.mcsistemi.rfidtunnel.job2.TunnelJob;
 import net.mcsistemi.rfidtunnel.services.ConfReaderService;
 import net.mcsistemi.rfidtunnel.services.DispositivoService;
 import net.mcsistemi.rfidtunnel.services.ReaderService;
@@ -37,7 +38,7 @@ public class TagReportListenerImplementation implements TagReportListener {
 			for (Tag t : tags) {
 				logger.info("IMPINJ ---->>>> EPC: " + t.getEpc().toString());
 				logger.info("IMPINJ ---->>>> TID: " + t.getTid().toString());
-				readerService.createReaderStream(reader.getAddress(), "", "",  t);
+				tunnelService.createReaderStream(reader.getAddress(), "", TunnelJob.packId,  t);
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

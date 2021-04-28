@@ -39,6 +39,7 @@ public class ConfReader {
 	private Boolean keepAlive;
 	private Integer readerMode;
 	private Integer searchMode;
+	private Integer session;
 
 	// Ports
 	private Integer autoStartMode;
@@ -249,6 +250,14 @@ public class ConfReader {
 
 	public void setDispositivo(Dispositivo dispositivo) {
 		this.dispositivo = dispositivo;
+	}
+
+	public Integer getSession() {
+		return session;
+	}
+
+	public void setSession(Integer session) {
+		this.session = session;
 	}
 	
 	

@@ -2,6 +2,7 @@ package net.mcsistemi.rfidtunnel.services;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +25,8 @@ import net.mcsistemi.rfidtunnel.entity.Reader;
 import net.mcsistemi.rfidtunnel.entity.ReaderRfidInpinj;
 import net.mcsistemi.rfidtunnel.entity.ReaderRfidWirama;
 import net.mcsistemi.rfidtunnel.entity.ReaderStream;
+import net.mcsistemi.rfidtunnel.entity.ReaderStreamAtteso;
+import net.mcsistemi.rfidtunnel.entity.ScannerStream;
 import net.mcsistemi.rfidtunnel.entity.Tipologica;
 import net.mcsistemi.rfidtunnel.entity.Tunnel;
 import net.mcsistemi.rfidtunnel.job.JobImpinj;
@@ -37,7 +40,9 @@ import net.mcsistemi.rfidtunnel.repository.ConfAntennaRepository;
 import net.mcsistemi.rfidtunnel.repository.ConfPortRepository;
 import net.mcsistemi.rfidtunnel.repository.ConfReaderRepository;
 import net.mcsistemi.rfidtunnel.repository.DispositivoRepository;
+import net.mcsistemi.rfidtunnel.repository.ReaderStreamAttesoRepository;
 import net.mcsistemi.rfidtunnel.repository.ReaderStreamRepository;
+import net.mcsistemi.rfidtunnel.repository.ScannerStreamRepository;
 import net.mcsistemi.rfidtunnel.repository.TipologicaRepository;
 import net.mcsistemi.rfidtunnel.repository.TunnelRepository;
 
@@ -58,12 +63,18 @@ public class TunnelService implements ITunnelService {
 
 	@Autowired
 	private ConfPortRepository confPortRepository;
-	
+
 	@Autowired
 	private ConfReaderRepository confReaderRepository;
 
 	@Autowired
 	private ReaderStreamRepository readerStreamRepository;
+
+	@Autowired
+	private ScannerStreamRepository scannerStreamRepository;
+
+	@Autowired
+	private ReaderStreamAttesoRepository readerStreamAttesoRepository;
 
 	public Tunnel getTunnelById(Long id) throws Exception {
 		Optional<Tunnel> tunnel = tunnelRepository.findById(id);
@@ -184,7 +195,6 @@ public class TunnelService implements ITunnelService {
 			TunnelJob tunnelJob = new TunnelJob(tunnel, listReaderImpinj, listReaderWirama, listBarcode, this);
 			PoolJob.addJob(tunnelJob.getTunnel().getNome() + "_" + tunnelJob.getTunnel().getId(), tunnelJob);
 			tunnelJob.startTunnel();
-			
 
 			tunnel.setStato(true);
 			tunnelRepository.save(tunnel);
@@ -252,6 +262,28 @@ public class TunnelService implements ITunnelService {
 		readerStream.setFirstSeenTime(tag.getFirstSeenTime() + "");
 		readerStream.setLastSeenTime(tag.getLastSeenTime() + "");
 		readerStreamRepository.save(readerStream);
+	}
+
+	public void createScannerStream(String packId) throws Exception {
+		ScannerStream ss = new ScannerStream();
+		ss.setPackId(packId);
+		ss.setTimeStamp(new Date());
+		scannerStreamRepository.save(ss);
+	}
+
+	public ReaderStreamAtteso  createReaderStreamAtteso(String collo, String epc, String tid) throws Exception {
+		ReaderStreamAtteso rsa = new ReaderStreamAtteso();
+		rsa.setPackId(collo);
+		rsa.setEpc(epc);
+		rsa.setTid(tid);
+		ReaderStreamAtteso readerStreamAtteso =  readerStreamAttesoRepository.save(rsa);
+		return readerStreamAtteso;
+	}
+
+	public List<ReaderStreamAtteso> getReaderStreamAtteso(String collo) throws Exception {
+
+		List<ReaderStreamAtteso> listStreamAtteso = readerStreamAttesoRepository.getReaderStreamAttesoByCollo(collo);
+		return listStreamAtteso;
 	}
 
 }

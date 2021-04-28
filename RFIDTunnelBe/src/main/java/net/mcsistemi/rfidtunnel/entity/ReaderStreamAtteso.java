@@ -13,61 +13,64 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotBlank;
 
 @Entity
-@Table(name = "scanner_stream")
-public class ScannerStream {
+@Table(name = "reader_stream_atteso")
+public class ReaderStreamAtteso {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	private Long id;
 
-	// @NotBlank
 	private String packId;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date timeStamp;
+	private String epc;
 
-	@Column(nullable = true)
-	private long epcCount;
+	private String tid;
 
-	public ScannerStream() {
+
+	public ReaderStreamAtteso() {
 	}
 
-	public ScannerStream(String packId, Date timeStamp) {
-		this.packId = packId;
-		this.timeStamp = timeStamp;
-	}
 
 	public Long getId() {
 		return id;
 	}
 
+
 	public void setId(Long id) {
 		this.id = id;
 	}
+
 
 	public String getPackId() {
 		return packId;
 	}
 
+
 	public void setPackId(String packId) {
 		this.packId = packId;
 	}
 
-	public Date getTimeStamp() {
-		return timeStamp;
+
+	public String getEpc() {
+		return epc;
 	}
 
-	public void setTimeStamp(Date timeStamp) {
-		this.timeStamp = timeStamp;
+
+	public void setEpc(String epc) {
+		this.epc = epc;
 	}
 
-	public long getEpcCount() {
-		return epcCount;
+
+	public String getTid() {
+		return tid;
 	}
 
-	public void setEpcCount(long epcCount) {
-		this.epcCount = epcCount;
+
+	public void setTid(String tid) {
+		this.tid = tid;
 	}
+
+	
 
 }

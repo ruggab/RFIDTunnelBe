@@ -1,7 +1,5 @@
 package net.mcsistemi.rfidtunnel.job2;
 
-import java.io.FileOutputStream;
-import java.io.PrintStream;
 import java.util.Iterator;
 import java.util.List;
 
@@ -10,7 +8,6 @@ import org.springframework.util.StringUtils;
 import com.impinj.octane.AntennaConfigGroup;
 import com.impinj.octane.AutoStartMode;
 import com.impinj.octane.AutoStopMode;
-import com.impinj.octane.BitPointers;
 import com.impinj.octane.GpoConfigGroup;
 import com.impinj.octane.GpoMode;
 import com.impinj.octane.ImpinjReader;
@@ -21,28 +18,16 @@ import com.impinj.octane.ReportConfig;
 import com.impinj.octane.ReportMode;
 import com.impinj.octane.SearchMode;
 import com.impinj.octane.Settings;
-import com.impinj.octane.TagFilter;
-import com.impinj.octane.TagFilterMode;
-import com.impinj.octane.TagFilterOp;
 import com.impinj.octane.TagReadOp;
 
-import net.mcsistemi.rfidtunnel.entity.Antenna;
 import net.mcsistemi.rfidtunnel.entity.ConfAntenna;
 import net.mcsistemi.rfidtunnel.entity.ConfPorta;
 import net.mcsistemi.rfidtunnel.entity.ConfReader;
-import net.mcsistemi.rfidtunnel.entity.Dispositivo;
-import net.mcsistemi.rfidtunnel.entity.ReaderRfidInpinj;
 import net.mcsistemi.rfidtunnel.entity.Tunnel;
 import net.mcsistemi.rfidtunnel.listneroctane.ConnectionLostListenerImplement;
-import net.mcsistemi.rfidtunnel.listneroctane.FilteredTagReportListenerImplementation;
 import net.mcsistemi.rfidtunnel.listneroctane.KeepAliveListenerImplementation;
-import net.mcsistemi.rfidtunnel.listneroctane.ReaderStartListenerImplementation;
-import net.mcsistemi.rfidtunnel.listneroctane.ReaderStopListenerImplementation;
 import net.mcsistemi.rfidtunnel.listneroctane.TagOpCompleteListenerImplementation;
 import net.mcsistemi.rfidtunnel.listneroctane.TagReportListenerImplementation;
-import net.mcsistemi.rfidtunnel.services.ConfReaderService;
-import net.mcsistemi.rfidtunnel.services.DispositivoService;
-import net.mcsistemi.rfidtunnel.services.ReaderService;
 import net.mcsistemi.rfidtunnel.services.TunnelService;
 import net.mcsistemi.rfidtunnel.util.DateFunction;
 
@@ -90,7 +75,8 @@ public class JobRfidImpinj extends Job implements JobImpinjInterface {
 			// The following mode, AutoSetDenseReader, monitors RF noise and interference and then automatically
 			// and continuously optimizes the reader configuration
 			settings.setReaderMode(getReaderMode(confReader.getReaderMode()));
-
+			settings.setSearchMode(getSearchMode(confReader.getSearchMode()));
+			settings.setSession(confReader.getSession());
 			// set some special settings for antenna 1
 
 			AntennaConfigGroup antennas = settings.getAntennas();
@@ -349,6 +335,31 @@ public class JobRfidImpinj extends Job implements JobImpinjInterface {
 			break;
 		default:
 			ret = GpoMode.Normal;
+			break;
+		}
+		return ret;
+	}
+	
+	
+	
+	private SearchMode getSearchMode(Integer idSearchMode) throws OctaneSdkException {
+
+		SearchMode ret = null;
+		switch (idSearchMode) {
+		case 1:
+			ret = SearchMode.DualTarget;
+			break;
+		case 2:
+			ret = SearchMode.DualTargetBtoASelect;
+			break;
+		case 3:
+			ret = SearchMode.ReaderSelected;
+			break;
+		case 4:
+			ret = SearchMode.SingleTargetReset;
+			break;
+		default:
+			ret = SearchMode.SingleTargetReset;
 			break;
 		}
 		return ret;

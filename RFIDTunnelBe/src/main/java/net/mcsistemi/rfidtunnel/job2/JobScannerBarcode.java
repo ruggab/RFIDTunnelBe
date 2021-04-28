@@ -19,16 +19,13 @@ import net.mcsistemi.rfidtunnel.services.TunnelService;
 public class JobScannerBarcode extends Job implements Runnable {
 
 	Logger logger = LoggerFactory.getLogger(JobScannerBarcode.class);
-	
-	private Tunnel tunnel; 
+
+	private Tunnel tunnel;
 	private Dispositivo dispositivo;
 	private TunnelService tunnelService;
-	
 
 	Socket echoSocket = null;
 	boolean running = true;
-
-	
 
 	public JobScannerBarcode(Tunnel tunnel, Dispositivo dispositivo, TunnelService tunnelService) {
 		this.tunnel = tunnel;
@@ -55,7 +52,7 @@ public class JobScannerBarcode extends Job implements Runnable {
 					if (packId.equals(tunnel.getMsgNoRead())) {
 						// Ping
 					} else {
-						//logRep.save(new TunnelLog(new Date(), packId));
+						// logRep.save(new TunnelLog(new Date(), packId));
 					}
 				} catch (NullPointerException ex) {
 					logger.info("Waiting for JobScannerBarcode streams ... ");
@@ -72,23 +69,20 @@ public class JobScannerBarcode extends Job implements Runnable {
 						TunnelJob.packId = packId;
 
 						// delete old wirama / scanner
-						//repository.deleteWiramaByPackId(packId);
-						//repository.deleteScannerByPackId(packId);
+						// repository.deleteWiramaByPackId(packId);
+						// repository.deleteScannerByPackId(packId);
 
 						System.out.println("****************");
 						System.out.println(packId);
 						System.out.println("****************");
 
-						ScannerStream ss = new ScannerStream();
-						ss.setPackId(packId);
-						ss.setTimeStamp(new Date());
+						
 
-						// repository.save(new ScannerStream(packId, new Date()));
-						//repository.save(ss);
+						tunnelService.createScannerStream(packId);
 					}
 				} catch (Exception e) {
 					// e.printStackTrace();
-					System.out.println(e.getMessage());
+					logger.error(e.toString() + " - " + e.getMessage());
 				}
 
 				logger.info("Barcode received " + packId);
@@ -118,7 +112,7 @@ public class JobScannerBarcode extends Job implements Runnable {
 	public BufferedReader connect() {
 		BufferedReader in = null;
 		// connect
-		logger.info("connecting to: "+ this.dispositivo.getIpAdress() + ":" + this.dispositivo.getPorta());
+		logger.info("connecting to: " + this.dispositivo.getIpAdress() + ":" + this.dispositivo.getPorta());
 		// logger.info("repository count (JobScannerBarcode): "+repository.count());
 
 		try {
