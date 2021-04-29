@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import net.mcsistemi.rfidtunnel.entity.ReaderStreamAtteso;
 import net.mcsistemi.rfidtunnel.entity.Tunnel;
 import net.mcsistemi.rfidtunnel.exception.ResourceNotFoundException;
-import net.mcsistemi.rfidtunnel.repository.ReaderStreamAttesoRepository.ReaderStreamDifference;
+import net.mcsistemi.rfidtunnel.repository.ReaderStreamAttesoRepository.StreamEPCDifference;
 import net.mcsistemi.rfidtunnel.services.TunnelService;
 
 @RestController
@@ -128,7 +128,7 @@ public class TunnelRestAPIs {
 	}
 	
 	@PutMapping ("/createStreamAtteso")
-	public  ReaderStreamAtteso createStreamAtteso(@RequestParam String collo,  @RequestParam String epc,  @RequestParam String tid) throws Exception {
+	public  ReaderStreamAtteso createStreamAtteso(@RequestParam String collo,  @RequestParam(required = false) String epc,  @RequestParam(required = false) String tid) throws Exception {
 		try {
 			return tunnelService.createReaderStreamAtteso(collo, epc, tid);
 		} catch (Exception e) {
@@ -136,28 +136,58 @@ public class TunnelRestAPIs {
 		}
 	}
 	
-	@GetMapping("/compareReadAndExpected/{packId}")
-	public String compareReadAndExpected(@PathVariable(value = "packId") String packId) throws Exception {
+	@GetMapping("/compareEPCByPackage/{packId}")
+	public String compareEPCByPackage(@PathVariable(value = "packId") String packId) throws Exception {
 		try {
-			return tunnelService.compareReadAndExpected(packId);
+			return tunnelService.compareEPCByPackage(packId);
 		} catch (Exception e) {
 			throw e;
 		}
 	}
 	
-	@GetMapping("/diffFromReadAndExpectedAnd")
-	public List<ReaderStreamDifference> getDiffFromReadAndExpectedAnd() throws Exception {
+	@GetMapping("/compareTIDByPackage/{packId}")
+	public String compareTIDByPackage(@PathVariable(value = "packId") String packId) throws Exception {
 		try {
-			return tunnelService.getDiffFromReadAndExpectedAnd();
+			return tunnelService.compareTIDByPackage(packId);
 		} catch (Exception e) {
 			throw e;
 		}
 	}
 	
-	@GetMapping("/diffFromExpectedAndRead")
-	public List<ReaderStreamDifference> getDiffFromExpectedAndRead() throws Exception {
+	
+	
+	@GetMapping("/getDiffEPCExpectedRead")
+	public List<StreamEPCDifference> getDiffEPCExpectedRead() throws Exception {
 		try {
-			return tunnelService.getDiffFromExpectedAndRead();
+			return tunnelService.getDiffEPCExpectedRead();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	@GetMapping("/getDiffEPCReadExpected")
+	public List<StreamEPCDifference> getDiffEPCReadExpected() throws Exception {
+		try {
+			return tunnelService.getDiffEPCReadExpected();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	
+	@GetMapping("/getDiffTIDExpectedRead")
+	public List<StreamEPCDifference> getDiffTIDExpectedRead() throws Exception {
+		try {
+			return tunnelService.getDiffEPCExpectedRead();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	@GetMapping("/getDiffTIDReadExpected")
+	public List<StreamEPCDifference> getDiffTIDReadExpected() throws Exception {
+		try {
+			return tunnelService.getDiffEPCReadExpected();
 		} catch (Exception e) {
 			throw e;
 		}
