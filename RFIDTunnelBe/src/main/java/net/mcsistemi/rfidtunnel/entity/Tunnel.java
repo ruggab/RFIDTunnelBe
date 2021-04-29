@@ -34,9 +34,10 @@ public class Tunnel {
 	private Long idReaderRfidSelected;
 	private Long idReaderBarcodeSelected;
 	private Long idTipoFormatoEPC;
+	private Long idBarcodeType;
 	private String formatoEPC;
 	private Long idTipoReaderSelected;
-	private String mascheraBarcode;
+	private String msgEnd;
 	private String msgNoRead;
 	private String descSceltaGestColli;
 	private String descSceltaTipoColli;
@@ -112,14 +113,6 @@ public class Tunnel {
 
 	public void setFormatoEPC(String formatoEPC) {
 		this.formatoEPC = formatoEPC;
-	}
-
-	public String getMascheraBarcode() {
-		return mascheraBarcode;
-	}
-
-	public void setMascheraBarcode(String mascheraBarcode) {
-		this.mascheraBarcode = mascheraBarcode;
 	}
 
 	public String getDescSceltaGestColli() {
@@ -200,6 +193,22 @@ public class Tunnel {
 
 	public void setStato(boolean stato) {
 		this.stato = stato;
+	}
+
+	public Long getIdBarcodeType() {
+		return idBarcodeType;
+	}
+
+	public void setIdBarcodeType(Long idBarcodeType) {
+		this.idBarcodeType = idBarcodeType;
+	}
+
+	public String getMsgEnd() {
+		return msgEnd;
+	}
+
+	public void setMsgEnd(String msgEnd) {
+		this.msgEnd = msgEnd;
 	}
 
 	
