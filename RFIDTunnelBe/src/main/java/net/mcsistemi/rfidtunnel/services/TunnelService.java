@@ -11,36 +11,27 @@ import java.util.Set;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
-import com.impinj.octane.OctaneSdkException;
 import com.impinj.octane.Tag;
 
-import net.mcsistemi.rfidtunnel.entity.Antenna;
 import net.mcsistemi.rfidtunnel.entity.ConfAntenna;
 import net.mcsistemi.rfidtunnel.entity.ConfReader;
 import net.mcsistemi.rfidtunnel.entity.Dispositivo;
-import net.mcsistemi.rfidtunnel.entity.Reader;
-import net.mcsistemi.rfidtunnel.entity.ReaderRfidInpinj;
-import net.mcsistemi.rfidtunnel.entity.ReaderRfidWirama;
 import net.mcsistemi.rfidtunnel.entity.ReaderStream;
 import net.mcsistemi.rfidtunnel.entity.ReaderStreamAtteso;
 import net.mcsistemi.rfidtunnel.entity.ScannerStream;
 import net.mcsistemi.rfidtunnel.entity.Tipologica;
 import net.mcsistemi.rfidtunnel.entity.Tunnel;
-import net.mcsistemi.rfidtunnel.job.JobImpinj;
-import net.mcsistemi.rfidtunnel.job.JobWiramaReader;
-import net.mcsistemi.rfidtunnel.job.PoolImpinjReader;
-import net.mcsistemi.rfidtunnel.job.PoolWiramaReader;
 import net.mcsistemi.rfidtunnel.job2.PoolJob;
 import net.mcsistemi.rfidtunnel.job2.TunnelJob;
-import net.mcsistemi.rfidtunnel.repository.AntennaRepository;
 import net.mcsistemi.rfidtunnel.repository.ConfAntennaRepository;
 import net.mcsistemi.rfidtunnel.repository.ConfPortRepository;
 import net.mcsistemi.rfidtunnel.repository.ConfReaderRepository;
 import net.mcsistemi.rfidtunnel.repository.DispositivoRepository;
 import net.mcsistemi.rfidtunnel.repository.ReaderStreamAttesoRepository;
+import net.mcsistemi.rfidtunnel.repository.ReaderStreamAttesoRepository.ReaderStreamDifference;
 import net.mcsistemi.rfidtunnel.repository.ReaderStreamRepository;
 import net.mcsistemi.rfidtunnel.repository.ScannerStreamRepository;
 import net.mcsistemi.rfidtunnel.repository.TipologicaRepository;
@@ -282,8 +273,40 @@ public class TunnelService implements ITunnelService {
 
 	public List<ReaderStreamAtteso> getReaderStreamAtteso(String collo) throws Exception {
 
-		List<ReaderStreamAtteso> listStreamAtteso = readerStreamAttesoRepository.getReaderStreamAttesoByCollo(collo);
+		List<ReaderStreamAtteso> listStreamAtteso = readerStreamAttesoRepository.getReaderStreamExpectedByCollo(collo);
 		return listStreamAtteso;
 	}
+	
+	
+	public String compareReadAndExpected(String packid) throws Exception {
+		String ret = "OK";
+		List<ReaderStreamDifference> listDiffFromAttesoAndRead = readerStreamAttesoRepository.getDiffFromExpectedAndRead(packid);
+		if (listDiffFromAttesoAndRead.size() > 0) {
+			String tid = listDiffFromAttesoAndRead.get(0).getTid();
+			ret = "KO - Expected > Read";
+		}
+		List<ReaderStreamDifference> listDiffFromReadAndAtteso = readerStreamAttesoRepository.getDiffFromExpectedAndRead(packid);
+		if (listDiffFromReadAndAtteso.size() > 0) {
+			if (!StringUtils.isEmpty(ret)) ret = ret + " AND ";
+			ret = ret + " KO - Read > Expected";
+		}
+		return ret;
+	}
+	
+	public List<ReaderStreamDifference> getDiffFromExpectedAndRead() throws Exception {
+		
+		List<ReaderStreamDifference> listDiffFromExpectedAndRead = readerStreamAttesoRepository.getDiffFromExpectedAndRead();
+		
+		return listDiffFromExpectedAndRead;
+	}
+	
+	public List<ReaderStreamDifference> getDiffFromReadAndExpectedAnd() throws Exception {
+		
+		List<ReaderStreamDifference> listDiffFromReadAndExpected = readerStreamAttesoRepository.getDiffFromReadAndExpected();
+		
+		return listDiffFromReadAndExpected;
+	}
+	
+	
 
 }
