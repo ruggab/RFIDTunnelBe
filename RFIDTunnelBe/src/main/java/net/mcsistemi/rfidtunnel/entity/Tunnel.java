@@ -47,6 +47,13 @@ public class Tunnel {
 	private String descReaderBarcodeSelected;
 	private boolean stato;
 	
+	private Long idSceltaGestAtteso;;
+	private Boolean attesoEpc;
+	private Boolean attesoUser;
+	private Boolean attesoTid;
+	private Boolean attesoBarcode;
+	private Boolean attesoQuantita;
+	
 	@ManyToMany
 	private Set<Dispositivo> dispositivi;
 	
@@ -209,6 +216,54 @@ public class Tunnel {
 
 	public void setMsgEnd(String msgEnd) {
 		this.msgEnd = msgEnd;
+	}
+
+	public Long getIdSceltaGestAtteso() {
+		return idSceltaGestAtteso;
+	}
+
+	public void setIdSceltaGestAtteso(Long idSceltaGestAtteso) {
+		this.idSceltaGestAtteso = idSceltaGestAtteso;
+	}
+
+	public Boolean getAttesoEpc() {
+		return attesoEpc;
+	}
+
+	public void setAttesoEpc(Boolean attesoEpc) {
+		this.attesoEpc = attesoEpc;
+	}
+
+	public Boolean getAttesoUser() {
+		return attesoUser;
+	}
+
+	public void setAttesoUser(Boolean attesoUser) {
+		this.attesoUser = attesoUser;
+	}
+
+	public Boolean getAttesoTid() {
+		return attesoTid;
+	}
+
+	public void setAttesoTid(Boolean attesoTid) {
+		this.attesoTid = attesoTid;
+	}
+
+	public Boolean getAttesoBarcode() {
+		return attesoBarcode;
+	}
+
+	public void setAttesoBarcode(Boolean attesoBarcode) {
+		this.attesoBarcode = attesoBarcode;
+	}
+
+	public Boolean getAttesoQuantita() {
+		return attesoQuantita;
+	}
+
+	public void setAttesoQuantita(Boolean attesoQuantita) {
+		this.attesoQuantita = attesoQuantita;
 	}
 
 	
