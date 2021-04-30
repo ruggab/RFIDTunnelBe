@@ -31,6 +31,7 @@ import net.mcsistemi.rfidtunnel.repository.ConfPortRepository;
 import net.mcsistemi.rfidtunnel.repository.ConfReaderRepository;
 import net.mcsistemi.rfidtunnel.repository.DispositivoRepository;
 import net.mcsistemi.rfidtunnel.repository.ReaderStreamAttesoRepository;
+import net.mcsistemi.rfidtunnel.repository.ReaderStreamAttesoRepository.StreamDifference;
 import net.mcsistemi.rfidtunnel.repository.ReaderStreamAttesoRepository.StreamEPCDifference;
 import net.mcsistemi.rfidtunnel.repository.ReaderStreamAttesoRepository.StreamTIDDifference;
 import net.mcsistemi.rfidtunnel.repository.ReaderStreamRepository;
@@ -281,11 +282,11 @@ public class TunnelService implements ITunnelService {
 	
 	public String compareEPCByPackage(String packId) throws Exception {
 		String ret = "OK";
-		List<StreamEPCDifference> listDiffFromAttesoAndRead = readerStreamAttesoRepository.getDiffEPCExpectedRead(packId);
+		List<StreamDifference> listDiffFromAttesoAndRead = readerStreamAttesoRepository.getDiffEPCExpectedRead(packId);
 		if (listDiffFromAttesoAndRead.size() > 0) {
 			ret = "KO - Expected > Read";
 		}
-		List<StreamEPCDifference> listDiffFromReadAndAtteso = readerStreamAttesoRepository.getDiffEPCReadExpected(packId);
+		List<StreamDifference> listDiffFromReadAndAtteso = readerStreamAttesoRepository.getDiffEPCReadExpected(packId);
 		if (listDiffFromReadAndAtteso.size() > 0) {
 			if (!StringUtils.isEmpty(ret)) ret = ret + " AND ";
 			ret = ret + " KO - Read > Expected";
@@ -295,12 +296,12 @@ public class TunnelService implements ITunnelService {
 	
 	public String compareTIDByPackage(String packId) throws Exception {
 		String ret = "OK";
-		List<StreamTIDDifference> listDiffFromAttesoAndRead = readerStreamAttesoRepository.getDiffTIDExpectedRead(packId);
+		List<StreamDifference> listDiffFromAttesoAndRead = readerStreamAttesoRepository.getDiffTIDExpectedRead(packId);
 		if (listDiffFromAttesoAndRead.size() > 0) {
 			String tid = listDiffFromAttesoAndRead.get(0).getTid();
 			ret = "KO - Expected > Read";
 		}
-		List<StreamTIDDifference> listDiffFromReadAndAtteso = readerStreamAttesoRepository.getDiffTIDReadExpected(packId);
+		List<StreamDifference> listDiffFromReadAndAtteso = readerStreamAttesoRepository.getDiffTIDReadExpected(packId);
 		if (listDiffFromReadAndAtteso.size() > 0) {
 			if (!StringUtils.isEmpty(ret)) ret = ret + " AND ";
 			ret = ret + " KO - Read > Expected";
@@ -308,33 +309,33 @@ public class TunnelService implements ITunnelService {
 		return ret;
 	}
 	
-	public List<StreamEPCDifference> getDiffEPCExpectedRead() throws Exception {
-		
-		List<StreamEPCDifference> listDiffFromExpectedAndRead = readerStreamAttesoRepository.getDiffEPCExpectedRead();
-		
-		return listDiffFromExpectedAndRead;
-	}
-	
-	public List<StreamEPCDifference> getDiffEPCReadExpected() throws Exception {
-		
-		List<StreamEPCDifference> listDiffFromReadAndExpected = readerStreamAttesoRepository.getDiffEPCReadExpected();
-		
-		return listDiffFromReadAndExpected;
-	}
-	
-	public List<StreamTIDDifference> getDiffTIDExpectedRead() throws Exception {
-		
-		List<StreamTIDDifference> listDiffFromExpectedAndRead = readerStreamAttesoRepository.getDiffTIDExpectedRead();
-		
-		return listDiffFromExpectedAndRead;
-	}
-	
-	public List<StreamTIDDifference> getDiffTIDReadExpected() throws Exception {
-		
-		List<StreamTIDDifference> listDiffFromReadAndExpected = readerStreamAttesoRepository.getDiffTIDReadExpected();
-		
-		return listDiffFromReadAndExpected;
-	}
+//	public List<StreamEPCDifference> getDiffEPCExpectedRead() throws Exception {
+//		
+//		List<StreamEPCDifference> listDiffFromExpectedAndRead = readerStreamAttesoRepository.getDiffEPCExpectedRead();
+//		
+//		return listDiffFromExpectedAndRead;
+//	}
+//	
+//	public List<StreamEPCDifference> getDiffEPCReadExpected() throws Exception {
+//		
+//		List<StreamEPCDifference> listDiffFromReadAndExpected = readerStreamAttesoRepository.getDiffEPCReadExpected();
+//		
+//		return listDiffFromReadAndExpected;
+//	}
+//	
+//	public List<StreamTIDDifference> getDiffTIDExpectedRead() throws Exception {
+//		
+//		List<StreamTIDDifference> listDiffFromExpectedAndRead = readerStreamAttesoRepository.getDiffTIDExpectedRead();
+//		
+//		return listDiffFromExpectedAndRead;
+//	}
+//	
+//	public List<StreamTIDDifference> getDiffTIDReadExpected() throws Exception {
+//		
+//		List<StreamTIDDifference> listDiffFromReadAndExpected = readerStreamAttesoRepository.getDiffTIDReadExpected();
+//		
+//		return listDiffFromReadAndExpected;
+//	}
 	
 	
 
