@@ -20,6 +20,8 @@ public class ScannerStream {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	private Long id;
+	
+	private Long idTunnel;
 
 	// @NotBlank
 	private String packId;
@@ -70,4 +72,14 @@ public class ScannerStream {
 		this.epcCount = epcCount;
 	}
 
+	public Long getIdTunnel() {
+		return idTunnel;
+	}
+
+	public void setIdTunnel(Long idTunnel) {
+		this.idTunnel = idTunnel;
+	}
+
+	
+	
 }

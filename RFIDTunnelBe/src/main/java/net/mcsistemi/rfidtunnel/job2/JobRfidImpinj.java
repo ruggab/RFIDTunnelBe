@@ -3,6 +3,8 @@ package net.mcsistemi.rfidtunnel.job2;
 import java.util.Iterator;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import com.impinj.octane.AntennaConfigGroup;
@@ -23,6 +25,7 @@ import com.impinj.octane.TagReadOp;
 import net.mcsistemi.rfidtunnel.entity.ConfAntenna;
 import net.mcsistemi.rfidtunnel.entity.ConfPorta;
 import net.mcsistemi.rfidtunnel.entity.ConfReader;
+import net.mcsistemi.rfidtunnel.entity.Dispositivo;
 import net.mcsistemi.rfidtunnel.entity.Tunnel;
 import net.mcsistemi.rfidtunnel.listneroctane.ConnectionLostListenerImplement;
 import net.mcsistemi.rfidtunnel.listneroctane.KeepAliveListenerImplementation;
@@ -41,21 +44,20 @@ import net.mcsistemi.rfidtunnel.util.DateFunction;
  */
 
 public class JobRfidImpinj extends Job implements JobImpinjInterface {
-
+	Logger logger = LoggerFactory.getLogger(JobRfidImpinj.class);
+	
 	static DateFunction myDate = new DateFunction();
-	public static String PACKAGE_BARCODE = "";
 	private ImpinjReader reader = null;
 	private Settings settings = null;
 	
 	private ConfReader confReader;
-	private TunnelService tunnelService;
-
-	public JobRfidImpinj(Tunnel tunnel, ConfReader confReader,  TunnelService tunnelService) throws Exception {
+	
+	public JobRfidImpinj(TunnelJob tunnelJob,  ConfReader confReader) throws Exception {
 
 		// Istanzia l'oggetto Reader
 		this.reader = new ImpinjReader();
 		this.confReader = confReader;
-		this.tunnelService = tunnelService;
+		
 
 		try {
 
@@ -165,7 +167,7 @@ public class JobRfidImpinj extends Job implements JobImpinjInterface {
 				settings.getReport().getOptimizedReadOps().add(readUser);
 				settings.getReport().getOptimizedReadOps().add(readTid);
 				// set up listeners for user and TID also
-				reader.setTagOpCompleteListener(new TagOpCompleteListenerImplementation(confReader, this.tunnelService));
+				reader.setTagOpCompleteListener(new TagOpCompleteListenerImplementation(confReader, tunnelJob.getTunnelService()));
 			} else {
 				// set up listeners just for EPC
 				// reader.setAntennaChangeListener( new AntennaChangeListenerImplementation());
@@ -184,7 +186,7 @@ public class JobRfidImpinj extends Job implements JobImpinjInterface {
 				r.setIncludeSeenCount(true);
 				settings.setReport(r);
 
-				reader.setTagReportListener(new TagReportListenerImplementation(this.tunnelService));
+				reader.setTagReportListener(new TagReportListenerImplementation(tunnelJob));
 
 			} 
 
@@ -192,12 +194,12 @@ public class JobRfidImpinj extends Job implements JobImpinjInterface {
 				// Configurazione controllo KEEP ALIVE
 				settings.getKeepalives().setPeriodInMs(5000); // Tempo di Attesa prima di attivare evento di
 				settings.getKeepalives().setEnabled(true); // Abilita il Controllo Disconnessione
-				reader.setKeepaliveListener(new KeepAliveListenerImplementation(confReader,this.tunnelService));
+				reader.setKeepaliveListener(new KeepAliveListenerImplementation(confReader,tunnelJob.getTunnelService()));
 			}
-			reader.setConnectionLostListener(new ConnectionLostListenerImplement(confReader,this.tunnelService));
+			reader.setConnectionLostListener(new ConnectionLostListenerImplement(confReader,tunnelJob.getTunnelService()));
 
 			myDate.RefreshDate();
-			System.out.println(myDate.getFullDate() + " READER STARTING ........");
+			logger.info(myDate.getFullDate() + " READER STARTING ........");
 
 		} catch (Exception e) {
 			this.reader.stop();
@@ -210,7 +212,7 @@ public class JobRfidImpinj extends Job implements JobImpinjInterface {
 	public void start() throws OctaneSdkException {
 		if (!reader.isConnected()) {
 			this.reader.connect(this.confReader.getDispositivo().getIpAdress());
-			System.out.println(" Reader Already RE - Connected");
+			logger.info(" Reader Already RE - Connected");
 		} else {
 			System.out.println(" Reader Already Connected");
 		}
@@ -219,18 +221,20 @@ public class JobRfidImpinj extends Job implements JobImpinjInterface {
 			// Switch all led 0
 		
 			reader.start();
-			System.out.println(myDate.getFullDate() + " Reader Start Success");
+			logger.info(myDate.getFullDate() + " Reader Start Success");
 		} else {
-			System.out.println(myDate.getFullDate() + " Reader Start Failed");
+			logger.info(myDate.getFullDate() + " Reader Start Failed");
 		}
 
 	}
 
 	public void stop() throws OctaneSdkException {
+		if (reader!= null) {
+			reader.stop();
+			reader.disconnect();
+			logger.info("TUNNEL DISCONNECTED, NO OPERATION AVAILABLE !");
+		}
 		
-		reader.stop();
-		reader.disconnect();
-		System.out.println("TUNNEL DISCONNECTED, NO OPERATION AVAILABLE !");
 	}
 
 	private ReaderMode getReaderMode(Integer idMode) throws OctaneSdkException {

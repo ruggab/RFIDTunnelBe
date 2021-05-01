@@ -20,17 +20,17 @@ public class JobScannerBarcode extends Job implements Runnable {
 
 	Logger logger = LoggerFactory.getLogger(JobScannerBarcode.class);
 
-	private Tunnel tunnel;
+	private TunnelJob tunnelJob;
 	private Dispositivo dispositivo;
-	private TunnelService tunnelService;
+
 
 	Socket echoSocket = null;
 	boolean running = true;
 
-	public JobScannerBarcode(Tunnel tunnel, Dispositivo dispositivo, TunnelService tunnelService) {
-		this.tunnel = tunnel;
+	public JobScannerBarcode(TunnelJob tunnelJob, Dispositivo dispositivo) {
+		this.tunnelJob = tunnelJob;
 		this.dispositivo = dispositivo;
-		this.tunnelService = tunnelService;
+	
 	}
 
 	// @Override
@@ -49,8 +49,8 @@ public class JobScannerBarcode extends Job implements Runnable {
 				try {
 					packId = in.readLine().toString();
 
-					if (packId.equals(tunnel.getMsgNoRead())) {
-						// Ping
+					if (packId.equals(tunnelJob.getTunnel().getMsgNoRead())) {
+						packId = tunnelJob.getTunnel().getMsgNoRead() + "-" + tunnelJob.getTunnelService().getSeqNextVal();
 					} else {
 						// logRep.save(new TunnelLog(new Date(), packId));
 					}
@@ -65,20 +65,20 @@ public class JobScannerBarcode extends Job implements Runnable {
 
 				try {
 
-					if (!packId.equals(tunnel.getMsgNoRead())) {
-						TunnelJob.packId = packId;
+					if (!packId.equals(tunnelJob.getTunnel().getMsgNoRead())) {
+						tunnelJob.setPackId(packId);
 
 						// delete old wirama / scanner
 						// repository.deleteWiramaByPackId(packId);
 						// repository.deleteScannerByPackId(packId);
 
-						System.out.println("****************");
-						System.out.println(packId);
-						System.out.println("****************");
+						logger.info("****************");
+						logger.info(packId);
+						logger.info("****************");
 
 						
 
-						tunnelService.createScannerStream(packId);
+						tunnelJob.getTunnelService().createScannerStream(tunnelJob.getTunnel().getId(), packId);
 					}
 				} catch (Exception e) {
 					// e.printStackTrace();
@@ -90,21 +90,19 @@ public class JobScannerBarcode extends Job implements Runnable {
 			}
 		} catch (Exception e) {
 			running = false;
-			// e.printStackTrace();
 		} finally {
 			try {
 				if (in != null)
 					in.close();
-				System.out.println("disconnecting from: " + this.dispositivo.getIpAdress() + ":" + this.dispositivo.getPorta());
+				logger.info("disconnecting from: " + this.dispositivo.getIpAdress() + ":" + this.dispositivo.getPorta());
 
 				try {
 					echoSocket.close();
 				} catch (Exception e) {
-					// e.printStackTrace();
+					logger.error(e.toString() + " - " + e.getMessage());
 				}
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error(e.toString() + " - " + e.getMessage());
 			}
 		}
 	}

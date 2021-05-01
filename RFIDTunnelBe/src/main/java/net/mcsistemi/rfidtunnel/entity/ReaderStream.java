@@ -1,5 +1,6 @@
 package net.mcsistemi.rfidtunnel.entity;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -10,8 +11,13 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
 
+/**
+ * @author Gabriele
+ *
+ */
 @Entity
 @Table(name = "reader_stream")
 public class ReaderStream {
@@ -20,6 +26,8 @@ public class ReaderStream {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	private Long id;
+	
+	private Long idTunnel;
 
 	private String packId;
 
@@ -28,10 +36,10 @@ public class ReaderStream {
 	private String userData;
 
 	private String tid;
+	
+	private String barcode;
 
 	private String ipAdress;
-
-	private String port;
 
 	private String antennaPortNumber;
 
@@ -50,21 +58,18 @@ public class ReaderStream {
 	private String phaseAngleInRadians;
 
 	private String modelName;
-	
-	
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date timeStamp;
+	
+	@Transient
+	private String dataForm;
+	
 
 	public ReaderStream() {
 	}
 
-	public ReaderStream(String packId, String epc, String tid, Date timeStamp) {
-		this.packId = packId;
-		this.epc = epc;
-		this.tid = tid;
-		this.timeStamp = timeStamp;
-	}
+	
 
 	public String getAntennaPortNumber() {
 		return antennaPortNumber;
@@ -186,13 +191,6 @@ public class ReaderStream {
 		this.ipAdress = ipAdress;
 	}
 
-	public String getPort() {
-		return port;
-	}
-
-	public void setPort(String port) {
-		this.port = port;
-	}
 
 	public String getUserData() {
 		return userData;
@@ -201,5 +199,36 @@ public class ReaderStream {
 	public void setUserData(String userData) {
 		this.userData = userData;
 	}
+
+	public String getBarcode() {
+		return barcode;
+	}
+
+	public void setBarcode(String barcode) {
+		this.barcode = barcode;
+	}
+
+	public Long getIdTunnel() {
+		return idTunnel;
+	}
+
+	public void setIdTunnel(Long idTunnel) {
+		this.idTunnel = idTunnel;
+	}
+
+	public String getDataForm() {
+		Date date = new Date();
+		date.setTime(this.timeStamp.getTime());
+		String formattedDate = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").format(date);
+		return formattedDate;
+	}
+
+	public void setDataForm(String dataForm) {
+		this.dataForm = dataForm;
+	}
+
+	
+	
+	
 
 }

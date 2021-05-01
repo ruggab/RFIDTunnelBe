@@ -14,47 +14,52 @@ public interface ReaderStreamAttesoRepository extends JpaRepository<ReaderStream
 	List<ReaderStreamAtteso> getReaderStreamExpectedByCollo(String packId);
 
 	
-	
+	//SOLO EPC
 	@Query(value = "select pack_id,epc  from reader_stream_atteso where pack_id = ?1 "
 			+ "except select pack_id,epc from reader_stream where pack_id = ?1", nativeQuery = true)
-	List<StreamDifference> getDiffEPCExpectedRead(String packId);
+	List<StreamEPCDifference> getDiffEPCExpectedRead(String packId);
 
 	@Query(value = "select pack_id,epc from reader_stream where pack_id = ?1 "
 			+ "except select pack_id,epc from reader_stream_atteso where pack_id = ?1", nativeQuery = true)
-	List<StreamDifference> getDiffEPCReadExpected(String packId);
+	List<StreamEPCDifference> getDiffEPCReadExpected(String packId);
 	
+	//SOLO TID
 	@Query(value = "select pack_id,tid  from reader_stream_atteso where pack_id = ?1 "
 			+ "except select pack_id,tid from reader_stream where pack_id = ?1", nativeQuery = true)
-	List<StreamDifference> getDiffTIDExpectedRead(String packId);
+	List<StreamTIDDifference> getDiffTIDExpectedRead(String packId);
 
 	@Query(value = "select pack_id,tid from reader_stream where pack_id = ?1 "
 			+ "except select pack_id,tid from reader_stream_atteso where pack_id = ?1", nativeQuery = true)
-	List<StreamDifference> getDiffTIDReadExpected(String packId);
+	List<StreamTIDDifference> getDiffTIDReadExpected(String packId);
+	
+	//SOLO USER
+	@Query(value = "select pack_id,user_data  from reader_stream_atteso where pack_id = ?1 "
+			+ "except select pack_id,user_data from reader_stream where pack_id = ?1", nativeQuery = true)
+	List<StreamUserDifference> getDiffUSERExpectedRead(String packId);
 
-//	@Query(value = "select pack_id, epc from reader_stream_atteso "
-//			+ "except select pack_id,epc from reader_stream", nativeQuery = true)
-//	List<StreamEPCDifference> getDiffEPCExpectedRead();
-//
-//	@Query(value = "select pack_id,tid from reader_stream_atteso "
-//			+ "except select pack_id,tid from reader_stream", nativeQuery = true)
-//	List<StreamTIDDifference> getDiffTIDExpectedRead();
-//
-//	@Query(value = "select pack_id,epc from reader_stream where pack_id = ?1 "
-//			+ "except select pack_id,epc from reader_stream_atteso where pack_id = ?1", nativeQuery = true)
-//	List<StreamEPCDifference> getDiffEPCReadExpected();
-//
-//	@Query(value = "select pack_id,tid from reader_stream where pack_id = ?1 "
-//			+ "except select pack_id,tid from reader_stream_atteso where pack_id = ?1", nativeQuery = true)
-//	List<StreamTIDDifference> getDiffTIDReadExpected();
+	@Query(value = "select pack_id,user_data from reader_stream where pack_id = ?1 "
+			+ "except select pack_id,user_data from reader_stream_atteso where pack_id = ?1", nativeQuery = true)
+	List<StreamUserDifference> getDiffUSERReadExpected(String packId);
+	
+	//SOLO BARCODE
+	@Query(value = "select pack_id,barcode  from reader_stream_atteso where pack_id = ?1 "
+			+ "except select pack_id,barcode from reader_stream where pack_id = ?1", nativeQuery = true)
+	List<StreamBarcodeDifference> getDiffBCExpectedRead(String packId);
+	
+	@Query(value = "select pack_id,barcode from reader_stream where pack_id = ?1 "
+			+ "except select pack_id,barcode from reader_stream_atteso where pack_id = ?1", nativeQuery = true)
+	List<StreamBarcodeDifference> getDiffBCReadExpected(String packId);
+	
+	//QUANTITA
+	@Query(value = "select count (*) from reader_stream where pack_id = ?1 ", nativeQuery = true)
+	Integer getCountLetto(String packId);
+	
+	@Query(value = "select count (*) from reader_stream_atteso where pack_id = ?1 ", nativeQuery = true)
+	Integer getCountExpected(String packId);
+	
+
 
 	
-	public static interface StreamDifference {
-		public String getPackId();
-
-		public String getEpc();
-		
-		public String getTid();
-	}
 	
 	
 	public static interface StreamEPCDifference {
@@ -68,5 +73,21 @@ public interface ReaderStreamAttesoRepository extends JpaRepository<ReaderStream
 
 		public String getTid();
 	}
+	
+	public static interface StreamUserDifference {
+		public String getPackId();
+
+		public String getUserData();
+		
+	}
+	
+	
+	public static interface StreamBarcodeDifference {
+		public String getPackId();
+
+		public String getBarcode();
+		
+	}
+	
 
 }

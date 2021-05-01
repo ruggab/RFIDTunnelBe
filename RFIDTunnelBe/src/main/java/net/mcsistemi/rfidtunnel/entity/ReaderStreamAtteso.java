@@ -26,6 +26,10 @@ public class ReaderStreamAtteso {
 	private String epc;
 
 	private String tid;
+	
+	private String userData;
+	
+	private String barcode;
 
 
 	public ReaderStreamAtteso() {
@@ -69,6 +73,26 @@ public class ReaderStreamAtteso {
 
 	public void setTid(String tid) {
 		this.tid = tid;
+	}
+
+
+	public String getUserData() {
+		return userData;
+	}
+
+
+	public void setUserData(String userData) {
+		this.userData = userData;
+	}
+
+
+	public String getBarcode() {
+		return barcode;
+	}
+
+
+	public void setBarcode(String barcode) {
+		this.barcode = barcode;
 	}
 
 	

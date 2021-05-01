@@ -213,7 +213,6 @@ public class ReaderService implements IReaderService {
 		readerStream.setTimeStamp(time);
 		readerStream.setTid(tid);
 		readerStream.setIpAdress(ipAdress);
-		readerStream.setPort(port);
 		readerStream.setPackId(packId);
 		readerStream.setUserData(user);
 		readerStreamRepository.save(readerStream);
@@ -227,7 +226,6 @@ public class ReaderService implements IReaderService {
 		readerStream.setTimeStamp(new Timestamp(System.currentTimeMillis()));
 		readerStream.setTid(tag.getTid().toHexString());
 		readerStream.setIpAdress(ipAdress);
-		readerStream.setPort(port);
 		readerStream.setPackId(packId);
 		readerStream.setUserData("");
 		readerStream.setAntennaPortNumber(tag.getAntennaPortNumber()+"");

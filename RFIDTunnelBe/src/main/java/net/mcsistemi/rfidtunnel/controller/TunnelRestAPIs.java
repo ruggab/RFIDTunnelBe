@@ -2,6 +2,8 @@ package net.mcsistemi.rfidtunnel.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import net.mcsistemi.rfidtunnel.entity.ReaderStream;
 import net.mcsistemi.rfidtunnel.entity.ReaderStreamAtteso;
 import net.mcsistemi.rfidtunnel.entity.Tunnel;
 import net.mcsistemi.rfidtunnel.exception.ResourceNotFoundException;
@@ -136,19 +139,11 @@ public class TunnelRestAPIs {
 		}
 	}
 	
-	@GetMapping("/compareEPCByPackage/{packId}")
-	public String compareEPCByPackage(@PathVariable(value = "packId") String packId) throws Exception {
+	@GetMapping("/compareByPackage")
+	public int compareEPCByPackage(@RequestParam String packId,  @RequestParam boolean epc,
+			@RequestParam boolean tid, @RequestParam boolean user, @RequestParam boolean barcode, @RequestParam boolean quantita) throws Exception {
 		try {
-			return tunnelService.compareEPCByPackage(packId);
-		} catch (Exception e) {
-			throw e;
-		}
-	}
-	
-	@GetMapping("/compareTIDByPackage/{packId}")
-	public String compareTIDByPackage(@PathVariable(value = "packId") String packId) throws Exception {
-		try {
-			return tunnelService.compareTIDByPackage(packId);
+			return tunnelService.compareByPackage(packId, epc, tid, user, barcode, quantita);
 		} catch (Exception e) {
 			throw e;
 		}
@@ -156,41 +151,28 @@ public class TunnelRestAPIs {
 	
 	
 	
-	@GetMapping("/getDiffEPCExpectedRead")
-	public List<StreamEPCDifference> getDiffEPCExpectedRead() throws Exception {
-		try {
-			return tunnelService.getDiffEPCExpectedRead();
-		} catch (Exception e) {
-			throw e;
-		}
-	}
 	
-	@GetMapping("/getDiffEPCReadExpected")
-	public List<StreamEPCDifference> getDiffEPCReadExpected() throws Exception {
+	@GetMapping("/getSeqNextVal")
+	public Integer getSeqNextVal() throws Exception {
 		try {
-			return tunnelService.getDiffEPCReadExpected();
+			return tunnelService.getSeqNextVal();
 		} catch (Exception e) {
 			throw e;
 		}
 	}
 	
 	
-	@GetMapping("/getDiffTIDExpectedRead")
-	public List<StreamEPCDifference> getDiffTIDExpectedRead() throws Exception {
+	@GetMapping("/allDataStream")
+	public List<ReaderStream> getAllReaderStream() throws Exception, ResourceNotFoundException {
 		try {
-			return tunnelService.getDiffEPCExpectedRead();
+			return tunnelService.getAllDataStream();
 		} catch (Exception e) {
 			throw e;
 		}
 	}
 	
-	@GetMapping("/getDiffTIDReadExpected")
-	public List<StreamEPCDifference> getDiffTIDReadExpected() throws Exception {
-		try {
-			return tunnelService.getDiffEPCReadExpected();
-		} catch (Exception e) {
-			throw e;
-		}
-	}
+	
+	
+	
 	
 }

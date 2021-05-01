@@ -24,7 +24,7 @@ public class TunnelJob extends Job {
 	// @Autowired
 	// private TunnelLogRepository logRep;
 
-	public static String packId = null; // <-- JobScannerBarcode
+	public String packId; // <-- JobScannerBarcode
 
 	//
 	private Tunnel tunnel;
@@ -45,7 +45,7 @@ public class TunnelJob extends Job {
 		try {
 			for (Iterator iterator = this.listBarcode.iterator(); iterator.hasNext();) {
 				Dispositivo dispositivo = (Dispositivo) iterator.next();
-				JobScannerBarcode scanner = new JobScannerBarcode(this.tunnel, dispositivo, tunnelService);
+				JobScannerBarcode scanner = new JobScannerBarcode(this, dispositivo);
 				PoolJob.addJob(dispositivo.getIpAdress() + "_" + dispositivo.getId(), scanner);
 				Thread scannerThread = new Thread(scanner);
 				logger.info("Start Barcode " + dispositivo.getNome() + " ip:" + dispositivo.getIpAdress());
@@ -54,7 +54,7 @@ public class TunnelJob extends Job {
 
 			for (Iterator iterator = this.listReaderImpinj.iterator(); iterator.hasNext();) {
 				ConfReader confReader = (ConfReader) iterator.next();
-				JobRfidImpinj jobRfidImpinj = new JobRfidImpinj(this.tunnel, confReader, tunnelService);
+				JobRfidImpinj jobRfidImpinj = new JobRfidImpinj(this, confReader);
 				PoolJob.addJob(confReader.getDispositivo().getIpAdress() + "_" + confReader.getIdDispositivo(), jobRfidImpinj);
 				logger.info("Start Impinj " + confReader.getDispositivo().getNome() + " ip:" + confReader.getDispositivo().getIpAdress());
 				jobRfidImpinj.start();
@@ -121,6 +121,38 @@ public class TunnelJob extends Job {
 
 	public void setListBarcode(List<Dispositivo> listBarcode) {
 		this.listBarcode = listBarcode;
+	}
+
+	public String getPackId() {
+		return packId;
+	}
+
+	public void setPackId(String packId) {
+		this.packId = packId;
+	}
+
+	public TunnelService getTunnelService() {
+		return tunnelService;
+	}
+
+	public void setTunnelService(TunnelService tunnelService) {
+		this.tunnelService = tunnelService;
+	}
+	
+	public ConfReader getConfReader(String ipAdress) {
+		for (Iterator iterator = this.getListReaderImpinj().iterator(); iterator.hasNext();) {
+			ConfReader confReader = (ConfReader) iterator.next();
+			if (confReader.getDispositivo().getIpAdress().equals(ipAdress)) {
+				return confReader;
+			}
+		}
+		for (Iterator iterator = this.getListReaderWirama().iterator(); iterator.hasNext();) {
+			ConfReader confReader = (ConfReader) iterator.next();
+			if (confReader.getDispositivo().getIpAdress().equals(ipAdress)) {
+				return confReader;
+			}
+		}
+		return null;
 	}
 
 }

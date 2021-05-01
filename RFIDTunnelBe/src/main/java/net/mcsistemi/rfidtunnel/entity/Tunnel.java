@@ -48,11 +48,11 @@ public class Tunnel {
 	private boolean stato;
 	
 	private Long idSceltaGestAtteso;;
-	private Boolean attesoEpc;
-	private Boolean attesoUser;
-	private Boolean attesoTid;
-	private Boolean attesoBarcode;
-	private Boolean attesoQuantita;
+	private boolean attesoEpc;
+	private boolean attesoUser;
+	private boolean attesoTid;
+	private boolean attesoBarcode;
+	private boolean attesoQuantita;
 	
 	@ManyToMany
 	private Set<Dispositivo> dispositivi;
@@ -226,45 +226,47 @@ public class Tunnel {
 		this.idSceltaGestAtteso = idSceltaGestAtteso;
 	}
 
-	public Boolean getAttesoEpc() {
+	public boolean isAttesoEpc() {
 		return attesoEpc;
 	}
 
-	public void setAttesoEpc(Boolean attesoEpc) {
+	public void setAttesoEpc(boolean attesoEpc) {
 		this.attesoEpc = attesoEpc;
 	}
 
-	public Boolean getAttesoUser() {
+	public boolean isAttesoUser() {
 		return attesoUser;
 	}
 
-	public void setAttesoUser(Boolean attesoUser) {
+	public void setAttesoUser(boolean attesoUser) {
 		this.attesoUser = attesoUser;
 	}
 
-	public Boolean getAttesoTid() {
+	public boolean isAttesoTid() {
 		return attesoTid;
 	}
 
-	public void setAttesoTid(Boolean attesoTid) {
+	public void setAttesoTid(boolean attesoTid) {
 		this.attesoTid = attesoTid;
 	}
 
-	public Boolean getAttesoBarcode() {
+	public boolean isAttesoBarcode() {
 		return attesoBarcode;
 	}
 
-	public void setAttesoBarcode(Boolean attesoBarcode) {
+	public void setAttesoBarcode(boolean attesoBarcode) {
 		this.attesoBarcode = attesoBarcode;
 	}
 
-	public Boolean getAttesoQuantita() {
+	public boolean isAttesoQuantita() {
 		return attesoQuantita;
 	}
 
-	public void setAttesoQuantita(Boolean attesoQuantita) {
+	public void setAttesoQuantita(boolean attesoQuantita) {
 		this.attesoQuantita = attesoQuantita;
 	}
+
+	
 
 	
 	

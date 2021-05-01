@@ -10,7 +10,10 @@ import java.util.Set;
 
 import javax.transaction.Transactional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -31,9 +34,10 @@ import net.mcsistemi.rfidtunnel.repository.ConfPortRepository;
 import net.mcsistemi.rfidtunnel.repository.ConfReaderRepository;
 import net.mcsistemi.rfidtunnel.repository.DispositivoRepository;
 import net.mcsistemi.rfidtunnel.repository.ReaderStreamAttesoRepository;
-import net.mcsistemi.rfidtunnel.repository.ReaderStreamAttesoRepository.StreamDifference;
+import net.mcsistemi.rfidtunnel.repository.ReaderStreamAttesoRepository.StreamBarcodeDifference;
 import net.mcsistemi.rfidtunnel.repository.ReaderStreamAttesoRepository.StreamEPCDifference;
 import net.mcsistemi.rfidtunnel.repository.ReaderStreamAttesoRepository.StreamTIDDifference;
+import net.mcsistemi.rfidtunnel.repository.ReaderStreamAttesoRepository.StreamUserDifference;
 import net.mcsistemi.rfidtunnel.repository.ReaderStreamRepository;
 import net.mcsistemi.rfidtunnel.repository.ScannerStreamRepository;
 import net.mcsistemi.rfidtunnel.repository.TipologicaRepository;
@@ -41,6 +45,8 @@ import net.mcsistemi.rfidtunnel.repository.TunnelRepository;
 
 @Service
 public class TunnelService implements ITunnelService {
+
+	Logger logger = LoggerFactory.getLogger(TunnelService.class);
 
 	@Autowired
 	private DispositivoRepository dispositivoRepository;
@@ -138,9 +144,9 @@ public class TunnelService implements ITunnelService {
 	@Transactional
 	public void save(Tunnel tunnel) throws Exception {
 
-		if (tunnel.getId() != null) {
-			tunnelRepository.deleteById(tunnel.getId());
-		}
+//		if (tunnel.getId() != null) {
+//			tunnelRepository.deleteById(tunnel.getId());
+//		}
 		tunnelRepository.save(tunnel);
 	}
 
@@ -186,15 +192,18 @@ public class TunnelService implements ITunnelService {
 
 			}
 			TunnelJob tunnelJob = new TunnelJob(tunnel, listReaderImpinj, listReaderWirama, listBarcode, this);
-			PoolJob.addJob(tunnelJob.getTunnel().getNome() + "_" + tunnelJob.getTunnel().getId(), tunnelJob);
 			tunnelJob.startTunnel();
+			PoolJob.addJob(tunnelJob.getTunnel().getNome() + "_" + tunnelJob.getTunnel().getId(), tunnelJob);
+			
 
 			tunnel.setStato(true);
 			tunnelRepository.save(tunnel);
 			listTunnel = tunnelRepository.findAll();
 		} catch (Exception ex) {
-			listTunnel = this.stop(tunnel);
-			System.out.println(ex.getMessage());
+			if (tunnel.isStato()) {
+				listTunnel = this.stop(tunnel);
+			}
+			logger.info(ex.getMessage());
 			throw ex;
 		}
 		return listTunnel;
@@ -204,10 +213,13 @@ public class TunnelService implements ITunnelService {
 		List<Tunnel> listTunnel = null;
 		try {
 			TunnelJob tunnelJob = (TunnelJob) PoolJob.getJob(tunnel.getNome() + "_" + tunnel.getId());
-			tunnelJob.stopTunnel();
-			PoolJob.removeJob(tunnelJob.getTunnel().getNome() + "_" + tunnelJob.getTunnel().getId());
+			if (tunnelJob != null) {
+				tunnelJob.stopTunnel();
+				PoolJob.removeJob(tunnelJob.getTunnel().getNome() + "_" + tunnelJob.getTunnel().getId());
+			}
+
 		} catch (Exception ex) {
-			System.out.println(ex.getMessage());
+			logger.error(ex.getMessage());
 			throw ex;
 		} finally {
 			// PoolJob.removeJob(reader.getId());
@@ -219,27 +231,25 @@ public class TunnelService implements ITunnelService {
 
 	}
 
-	public void createReaderStream(String ipAdress, String port, String epc, String tid, String user, String packId, Timestamp time) throws Exception {
+	public void createReaderStream(String ipAdress, String epc, String tid, String user, String packId, Timestamp time) throws Exception {
 		ReaderStream readerStream = new ReaderStream();
 
 		readerStream.setEpc(epc);
 		readerStream.setTimeStamp(time);
 		readerStream.setTid(tid);
 		readerStream.setIpAdress(ipAdress);
-		readerStream.setPort(port);
 		readerStream.setPackId(packId);
 		readerStream.setUserData(user);
 		readerStreamRepository.save(readerStream);
 	}
 
-	public void createReaderStream(String ipAdress, String port, String packId, Tag tag) throws Exception {
+	public void createReaderStream(Long idTunnel, String ipAdress, String packId, Tag tag) throws Exception {
 		ReaderStream readerStream = new ReaderStream();
-
+		readerStream.setIdTunnel(idTunnel);
 		readerStream.setEpc(tag.getEpc().toHexString());
 		readerStream.setTimeStamp(new Timestamp(System.currentTimeMillis()));
 		readerStream.setTid(tag.getTid().toHexString());
 		readerStream.setIpAdress(ipAdress);
-		readerStream.setPort(port);
 		readerStream.setPackId(packId);
 		readerStream.setUserData("");
 		readerStream.setAntennaPortNumber(tag.getAntennaPortNumber() + "");
@@ -257,19 +267,20 @@ public class TunnelService implements ITunnelService {
 		readerStreamRepository.save(readerStream);
 	}
 
-	public void createScannerStream(String packId) throws Exception {
+	public void createScannerStream(Long tunnelId, String packId) throws Exception {
 		ScannerStream ss = new ScannerStream();
+		ss.setIdTunnel(tunnelId);
 		ss.setPackId(packId);
 		ss.setTimeStamp(new Date());
 		scannerStreamRepository.save(ss);
 	}
 
-	public ReaderStreamAtteso  createReaderStreamAtteso(String collo, String epc, String tid) throws Exception {
+	public ReaderStreamAtteso createReaderStreamAtteso(String collo, String epc, String tid) throws Exception {
 		ReaderStreamAtteso rsa = new ReaderStreamAtteso();
 		rsa.setPackId(collo);
 		rsa.setEpc(epc);
 		rsa.setTid(tid);
-		ReaderStreamAtteso readerStreamAtteso =  readerStreamAttesoRepository.save(rsa);
+		ReaderStreamAtteso readerStreamAtteso = readerStreamAttesoRepository.save(rsa);
 		return readerStreamAtteso;
 	}
 
@@ -278,65 +289,127 @@ public class TunnelService implements ITunnelService {
 		List<ReaderStreamAtteso> listStreamAtteso = readerStreamAttesoRepository.getReaderStreamExpectedByCollo(collo);
 		return listStreamAtteso;
 	}
-	
-	
+
+	public Integer getSeqNextVal() throws Exception {
+		Integer nextVal = tunnelRepository.getSeqNextVal();
+		return nextVal;
+	}
+
+	public int compareByPackage(String packId, Boolean epc, Boolean tid, Boolean user, Boolean barcode, Boolean quantita) throws Exception {
+		int ret = 2;
+		if (epc) {
+			String comp = compareEPCByPackage(packId);
+			if (comp.equals("OK")) {
+				ret = 1;
+			}
+		}
+		if (tid) {
+			String comp = compareTIDByPackage(packId);
+			if (comp.equals("OK")) {
+				ret = 1;
+			}
+		}
+		if (user) {
+			String comp = compareUserByPackage(packId);
+			if (comp.equals("OK")) {
+				ret = 1;
+			}
+		}
+		if (barcode) {
+			String comp = compareBarcodeByPackage(packId);
+			if (comp.equals("OK")) {
+				ret = 1;
+			}
+		}
+		if (quantita) {
+			String comp = compareQuantitaByPackage(packId);
+			if (comp.equals("OK")) {
+				ret = 1;
+			}
+		}
+
+		return ret;
+	}
+
 	public String compareEPCByPackage(String packId) throws Exception {
 		String ret = "OK";
-		List<StreamDifference> listDiffFromAttesoAndRead = readerStreamAttesoRepository.getDiffEPCExpectedRead(packId);
+		List<StreamEPCDifference> listDiffFromAttesoAndRead = readerStreamAttesoRepository.getDiffEPCExpectedRead(packId);
 		if (listDiffFromAttesoAndRead.size() > 0) {
 			ret = "KO - Expected > Read";
 		}
-		List<StreamDifference> listDiffFromReadAndAtteso = readerStreamAttesoRepository.getDiffEPCReadExpected(packId);
+		List<StreamEPCDifference> listDiffFromReadAndAtteso = readerStreamAttesoRepository.getDiffEPCReadExpected(packId);
 		if (listDiffFromReadAndAtteso.size() > 0) {
-			if (!StringUtils.isEmpty(ret)) ret = ret + " AND ";
+			if (!StringUtils.isEmpty(ret))
+				ret = ret + " AND ";
 			ret = ret + " KO - Read > Expected";
 		}
 		return ret;
 	}
-	
+
 	public String compareTIDByPackage(String packId) throws Exception {
 		String ret = "OK";
-		List<StreamDifference> listDiffFromAttesoAndRead = readerStreamAttesoRepository.getDiffTIDExpectedRead(packId);
+		List<StreamTIDDifference> listDiffFromAttesoAndRead = readerStreamAttesoRepository.getDiffTIDExpectedRead(packId);
 		if (listDiffFromAttesoAndRead.size() > 0) {
-			String tid = listDiffFromAttesoAndRead.get(0).getTid();
 			ret = "KO - Expected > Read";
 		}
-		List<StreamDifference> listDiffFromReadAndAtteso = readerStreamAttesoRepository.getDiffTIDReadExpected(packId);
+		List<StreamTIDDifference> listDiffFromReadAndAtteso = readerStreamAttesoRepository.getDiffTIDReadExpected(packId);
 		if (listDiffFromReadAndAtteso.size() > 0) {
-			if (!StringUtils.isEmpty(ret)) ret = ret + " AND ";
+			if (!StringUtils.isEmpty(ret))
+				ret = ret + " AND ";
+			ret = ret + " KO - Read > Expected";
+		}
+		return ret;
+	}
+
+	public String compareBarcodeByPackage(String packId) throws Exception {
+		String ret = "OK";
+		List<StreamBarcodeDifference> listDiffFromAttesoAndRead = readerStreamAttesoRepository.getDiffBCExpectedRead(packId);
+		if (listDiffFromAttesoAndRead.size() > 0) {
+			ret = "KO - Expected > Read";
+		}
+		List<StreamBarcodeDifference> listDiffFromReadAndAtteso = readerStreamAttesoRepository.getDiffBCReadExpected(packId);
+		if (listDiffFromReadAndAtteso.size() > 0) {
+			if (!StringUtils.isEmpty(ret))
+				ret = ret + " AND ";
+			ret = ret + " KO - Read > Expected";
+		}
+		return ret;
+	}
+
+	public String compareUserByPackage(String packId) throws Exception {
+		String ret = "OK";
+		List<StreamUserDifference> listDiffFromAttesoAndRead = readerStreamAttesoRepository.getDiffUSERExpectedRead(packId);
+		if (listDiffFromAttesoAndRead.size() > 0) {
+			ret = "KO - Expected > Read";
+		}
+		List<StreamUserDifference> listDiffFromReadAndAtteso = readerStreamAttesoRepository.getDiffUSERReadExpected(packId);
+		if (listDiffFromReadAndAtteso.size() > 0) {
+			if (!StringUtils.isEmpty(ret))
+				ret = ret + " AND ";
+			ret = ret + " KO - Read > Expected";
+		}
+		return ret;
+	}
+
+	public String compareQuantitaByPackage(String packId) throws Exception {
+		String ret = "OK";
+		List<StreamUserDifference> listDiffFromAttesoAndRead = readerStreamAttesoRepository.getDiffUSERExpectedRead(packId);
+		if (listDiffFromAttesoAndRead.size() > 0) {
+			ret = "KO - Expected > Read";
+		}
+		List<StreamUserDifference> listDiffFromReadAndAtteso = readerStreamAttesoRepository.getDiffUSERReadExpected(packId);
+		if (listDiffFromReadAndAtteso.size() > 0) {
+			if (!StringUtils.isEmpty(ret))
+				ret = ret + " AND ";
 			ret = ret + " KO - Read > Expected";
 		}
 		return ret;
 	}
 	
-//	public List<StreamEPCDifference> getDiffEPCExpectedRead() throws Exception {
-//		
-//		List<StreamEPCDifference> listDiffFromExpectedAndRead = readerStreamAttesoRepository.getDiffEPCExpectedRead();
-//		
-//		return listDiffFromExpectedAndRead;
-//	}
-//	
-//	public List<StreamEPCDifference> getDiffEPCReadExpected() throws Exception {
-//		
-//		List<StreamEPCDifference> listDiffFromReadAndExpected = readerStreamAttesoRepository.getDiffEPCReadExpected();
-//		
-//		return listDiffFromReadAndExpected;
-//	}
-//	
-//	public List<StreamTIDDifference> getDiffTIDExpectedRead() throws Exception {
-//		
-//		List<StreamTIDDifference> listDiffFromExpectedAndRead = readerStreamAttesoRepository.getDiffTIDExpectedRead();
-//		
-//		return listDiffFromExpectedAndRead;
-//	}
-//	
-//	public List<StreamTIDDifference> getDiffTIDReadExpected() throws Exception {
-//		
-//		List<StreamTIDDifference> listDiffFromReadAndExpected = readerStreamAttesoRepository.getDiffTIDReadExpected();
-//		
-//		return listDiffFromReadAndExpected;
-//	}
-	
-	
+	public List<ReaderStream> getAllDataStream() throws Exception {
+		//
+		List<ReaderStream> readerDataList = readerStreamRepository.findAll(Sort.by(Sort.Direction.ASC, "packId"));
+		return readerDataList;
+	}
 
 }
