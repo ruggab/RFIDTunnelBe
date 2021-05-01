@@ -33,6 +33,7 @@ import net.mcsistemi.rfidtunnel.listneroctane.TagOpCompleteListenerImplementatio
 import net.mcsistemi.rfidtunnel.listneroctane.TagReportListenerImplementation;
 import net.mcsistemi.rfidtunnel.services.TunnelService;
 import net.mcsistemi.rfidtunnel.util.DateFunction;
+import net.mcsistemi.rfidtunnel.util.Utils;
 
 /**
  * 
@@ -76,8 +77,9 @@ public class JobRfidImpinj extends Job implements JobImpinjInterface {
 			// dynamics are optimized for specific regions and environments.
 			// The following mode, AutoSetDenseReader, monitors RF noise and interference and then automatically
 			// and continuously optimizes the reader configuration
-			settings.setReaderMode(getReaderMode(confReader.getReaderMode()));
-			settings.setSearchMode(getSearchMode(confReader.getSearchMode()));
+			
+			settings.setReaderMode(Utils.getReaderMode(confReader.getReaderMode()));
+			settings.setSearchMode(Utils.getSearchMode(confReader.getSearchMode()));
 			settings.setSession(confReader.getSession());
 			// set some special settings for antenna 1
 
@@ -111,7 +113,7 @@ public class JobRfidImpinj extends Job implements JobImpinjInterface {
 				settings.getGpis().get(confReader.getGpiPortStart()).setPortNumber(confReader.getGpiPortStart());
 				settings.getGpis().get(confReader.getGpiPortStart()).setDebounceInMs(confReader.getDebGpiPortStart());
 			}
-			settings.getAutoStart().setMode(getAutoStartMode(confReader.getAutoStartMode()));
+			settings.getAutoStart().setMode(Utils.getAutoStartMode(confReader.getAutoStartMode()));
 			settings.getAutoStart().setGpiPortNumber(confReader.getGpiPortStart());
 			settings.getAutoStart().setGpiLevel(confReader.isStateGpiPortStart());
 
@@ -124,7 +126,7 @@ public class JobRfidImpinj extends Job implements JobImpinjInterface {
 			// if you set start, you have to set stop
 			settings.getAutoStop().setGpiPortNumber(confReader.getGpiPortStop());
 			settings.getAutoStop().setGpiLevel(confReader.isStateGpiPortStop());
-			settings.getAutoStop().setMode(getAutoStopMode(confReader.getAutoStopMode()));
+			settings.getAutoStop().setMode(Utils.getAutoStopMode(confReader.getAutoStopMode()));
 			// settings.getAutoStop().setTimeout(60000);
 
 			// Maitenance port
@@ -140,8 +142,8 @@ public class JobRfidImpinj extends Job implements JobImpinjInterface {
 			//
 			for (Iterator iterator = listConfPort.iterator(); iterator.hasNext();) {
 				ConfPorta confPorta = (ConfPorta) iterator.next();
-				gpos.getGpo(confPorta.getNumPorta().shortValue()).setMode(getGpoMode(confPorta.getIdPortMode()));
-				if (getGpoMode(confPorta.getIdPortMode()) == GpoMode.Pulsed) {
+				gpos.getGpo(confPorta.getNumPorta().shortValue()).setMode(Utils.getGpoMode(confPorta.getIdPortMode()));
+				if (Utils.getGpoMode(confPorta.getIdPortMode()) == GpoMode.Pulsed) {
 					 gpos.getGpo(confPorta.getNumPorta().shortValue()).setGpoPulseDurationMsec(confPorta.getPulsedDurMls());
 				}
 			}
@@ -237,137 +239,7 @@ public class JobRfidImpinj extends Job implements JobImpinjInterface {
 		
 	}
 
-	private ReaderMode getReaderMode(Integer idMode) throws OctaneSdkException {
-
-		ReaderMode ret = null;
-		switch (idMode) {
-		case 1:
-			ret = ReaderMode.AutoSetDenseReader;
-			break;
-		case 2:
-			ret = ReaderMode.AutoSetCustom;
-			break;
-		case 3:
-			ret = ReaderMode.AutoSetDenseReaderDeepScan;
-			break;
-		case 4:
-			ret = ReaderMode.AutoSetStaticDRM;
-			break;
-		case 5:
-			ret = ReaderMode.AutoSetStaticFast;
-			break;
-		case 6:
-			ret = ReaderMode.DenseReaderM4;
-			break;
-		case 7:
-			ret = ReaderMode.DenseReaderM4Two;
-			break;
-		case 8:
-			ret = ReaderMode.DenseReaderM8;
-			break;
-		case 9:
-			ret = ReaderMode.Hybrid;
-			break;
-		case 10:
-			ret = ReaderMode.MaxMiller;
-			break;
-		case 11:
-			ret = ReaderMode.MaxThroughput;
-			break;
-		default:
-			ret = ReaderMode.AutoSetDenseReader;
-			break;
-		}
-		return ret;
-	}
-
-	private AutoStartMode getAutoStartMode(Integer idAutoStartMode) throws OctaneSdkException {
-
-		AutoStartMode ret = null;
-		switch (idAutoStartMode) {
-		case 1:
-			ret = AutoStartMode.GpiTrigger;
-			break;
-		case 2:
-			ret = AutoStartMode.Immediate;
-			break;
-		case 3:
-			ret = AutoStartMode.Periodic;
-			break;
-		default:
-			ret = AutoStartMode.GpiTrigger;
-			break;
-		}
-		return ret;
-	}
-
-	private AutoStopMode getAutoStopMode(Integer idAutoStopMode) throws OctaneSdkException {
-		AutoStopMode ret = null;
-
-		switch (idAutoStopMode) {
-		case 1:
-			ret = AutoStopMode.GpiTrigger;
-			break;
-		case 2:
-			ret = AutoStopMode.Duration;
-			break;
-		case 3:
-			ret = AutoStopMode.None;
-			break;
-		default:
-			ret = AutoStopMode.GpiTrigger;
-			break;
-		}
-		return ret;
-	}
 	
-	private GpoMode getGpoMode(Long idGpoMode) throws OctaneSdkException {
-		GpoMode ret = null;
-
-		switch (idGpoMode.intValue()) {
-		case 1:
-			ret = GpoMode.LLRPConnectionStatus;
-			break;
-		case 2:
-			ret = GpoMode.NetworkConnectionStatus;
-			break;
-		case 3:
-			ret = GpoMode.Normal;
-			break;
-		case 4:
-			ret = GpoMode.Pulsed;
-			break;
-		default:
-			ret = GpoMode.Normal;
-			break;
-		}
-		return ret;
-	}
-	
-	
-	
-	private SearchMode getSearchMode(Integer idSearchMode) throws OctaneSdkException {
-
-		SearchMode ret = null;
-		switch (idSearchMode) {
-		case 1:
-			ret = SearchMode.DualTarget;
-			break;
-		case 2:
-			ret = SearchMode.DualTargetBtoASelect;
-			break;
-		case 3:
-			ret = SearchMode.ReaderSelected;
-			break;
-		case 4:
-			ret = SearchMode.SingleTargetReset;
-			break;
-		default:
-			ret = SearchMode.SingleTargetReset;
-			break;
-		}
-		return ret;
-	}
 
 
 }

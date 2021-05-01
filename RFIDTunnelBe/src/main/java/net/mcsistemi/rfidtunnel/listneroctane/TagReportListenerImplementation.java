@@ -1,10 +1,13 @@
 package net.mcsistemi.rfidtunnel.listneroctane;
 
+import com.impinj.octane.GpoConfigGroup;
+import com.impinj.octane.GpoMode;
 import com.impinj.octane.ImpinjReader;
 import com.impinj.octane.Tag;
 import com.impinj.octane.TagReport;
 import com.impinj.octane.TagReportListener;
 
+import net.mcsistemi.rfidtunnel.entity.ConfPorta;
 import net.mcsistemi.rfidtunnel.entity.ConfReader;
 import net.mcsistemi.rfidtunnel.entity.Tunnel;
 import net.mcsistemi.rfidtunnel.job2.TunnelJob;
@@ -15,6 +18,7 @@ import net.mcsistemi.rfidtunnel.services.TunnelService;
 
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,6 +63,10 @@ public class TagReportListenerImplementation implements TagReportListener {
 						this.tunnelJob.getTunnel().isAttesoBarcode(), 
 						this.tunnelJob.getTunnel().isAttesoQuantita());
 			}
+			
+			
+			reader.disconnect();
+			reader.connect();
 			if (result == 1) {
 				reader.setGpo(1, false);
 				reader.setGpo(2, false);
