@@ -98,16 +98,16 @@ public class Utils {
 
 		switch (idGpoMode.intValue()) {
 		case 1:
-			ret = GpoMode.LLRPConnectionStatus;
-			break;
-		case 2:
-			ret = GpoMode.NetworkConnectionStatus;
-			break;
-		case 3:
 			ret = GpoMode.Normal;
 			break;
-		case 4:
+		case 2:
 			ret = GpoMode.Pulsed;
+			break;
+		case 3:
+			ret = GpoMode.ReaderInventoryStatus;
+			break;
+		case 4:
+			ret = GpoMode.LLRPConnectionStatus;
 			break;
 		default:
 			ret = GpoMode.Normal;

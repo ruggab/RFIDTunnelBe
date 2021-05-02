@@ -297,37 +297,33 @@ public class TunnelService implements ITunnelService {
 
 	public int compareByPackage(String packId, Boolean epc, Boolean tid, Boolean user, Boolean barcode, Boolean quantita) throws Exception {
 		int ret = 2;
-		if (epc) {
-			String comp = compareEPCByPackage(packId);
-			if (comp.equals("OK")) {
-				ret = 1;
-			}
-		}
-		if (tid) {
-			String comp = compareTIDByPackage(packId);
-			if (comp.equals("OK")) {
-				ret = 1;
-			}
-		}
-		if (user) {
-			String comp = compareUserByPackage(packId);
-			if (comp.equals("OK")) {
-				ret = 1;
-			}
-		}
-		if (barcode) {
-			String comp = compareBarcodeByPackage(packId);
-			if (comp.equals("OK")) {
-				ret = 1;
-			}
+		String comp = compareQuantitaByPackage(packId);
+		if (comp.equals("OK")) {
+			ret = 1;
 		}
 		if (quantita) {
-			String comp = compareQuantitaByPackage(packId);
-			if (comp.equals("OK")) {
-				ret = 1;
+			return ret;
+		}
+		//Se la quantita è OK allora controllo anche il contenuto in caso di selezione diversa da quantita
+		if (ret == 1) {
+			if (epc) {
+				comp = compareEPCByPackage(packId);
+			}
+			if (tid) {
+				comp = compareTIDByPackage(packId);
+			}
+			if (user) {
+				comp = compareUserByPackage(packId);
+			}
+			if (barcode) {
+				comp = compareBarcodeByPackage(packId);
 			}
 		}
-
+		if (comp.equals("OK")) {
+			ret = 1;
+		} else {
+			ret = 2;
+		}
 		return ret;
 	}
 
@@ -393,15 +389,11 @@ public class TunnelService implements ITunnelService {
 
 	public String compareQuantitaByPackage(String packId) throws Exception {
 		String ret = "OK";
-		List<StreamUserDifference> listDiffFromAttesoAndRead = readerStreamAttesoRepository.getDiffUSERExpectedRead(packId);
-		if (listDiffFromAttesoAndRead.size() > 0) {
-			ret = "KO - Expected > Read";
-		}
-		List<StreamUserDifference> listDiffFromReadAndAtteso = readerStreamAttesoRepository.getDiffUSERReadExpected(packId);
-		if (listDiffFromReadAndAtteso.size() > 0) {
-			if (!StringUtils.isEmpty(ret))
-				ret = ret + " AND ";
-			ret = ret + " KO - Read > Expected";
+		Integer letto = readerStreamAttesoRepository.getCountLetto(packId);
+		
+		Integer atteso = readerStreamAttesoRepository.getCountExpected(packId);
+		if (letto.intValue() != atteso.intValue()) {
+			ret = "KO";
 		}
 		return ret;
 	}

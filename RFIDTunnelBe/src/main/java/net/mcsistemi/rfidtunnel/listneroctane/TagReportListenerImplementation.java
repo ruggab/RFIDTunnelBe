@@ -3,6 +3,7 @@ package net.mcsistemi.rfidtunnel.listneroctane;
 import com.impinj.octane.GpoConfigGroup;
 import com.impinj.octane.GpoMode;
 import com.impinj.octane.ImpinjReader;
+import com.impinj.octane.Settings;
 import com.impinj.octane.Tag;
 import com.impinj.octane.TagReport;
 import com.impinj.octane.TagReportListener;
@@ -15,6 +16,7 @@ import net.mcsistemi.rfidtunnel.services.ConfReaderService;
 import net.mcsistemi.rfidtunnel.services.DispositivoService;
 import net.mcsistemi.rfidtunnel.services.ReaderService;
 import net.mcsistemi.rfidtunnel.services.TunnelService;
+import net.mcsistemi.rfidtunnel.util.Utils;
 
 import java.sql.Timestamp;
 import java.util.Date;
@@ -54,32 +56,29 @@ public class TagReportListenerImplementation implements TagReportListener {
 				}
 				this.tunnelJob.getTunnelService().createReaderStream(tunnelJob.getTunnel().getId(), reader.getAddress(), packid, t);
 			}
-			int result = 0;
+			
+			//Gestioen Atteso
 			if (this.tunnelJob.getTunnel().getIdSceltaGestAtteso() == 7) {
-				result = this.tunnelJob.getTunnelService().compareByPackage(packid, 
-						this.tunnelJob.getTunnel().isAttesoEpc(), 
-						this.tunnelJob.getTunnel().isAttesoTid(), 
-						this.tunnelJob.getTunnel().isAttesoUser(), 
-						this.tunnelJob.getTunnel().isAttesoBarcode(), 
-						this.tunnelJob.getTunnel().isAttesoQuantita());
-			}
-			
-			
-			reader.disconnect();
-			reader.connect();
-			if (result == 1) {
+				int result = this.tunnelJob.getTunnelService().compareByPackage(packid, this.tunnelJob.getTunnel().isAttesoEpc(), this.tunnelJob.getTunnel().isAttesoTid(), this.tunnelJob.getTunnel().isAttesoUser(), this.tunnelJob.getTunnel().isAttesoBarcode(), this.tunnelJob.getTunnel().isAttesoQuantita());
+
 				reader.setGpo(1, false);
 				reader.setGpo(2, false);
-				reader.setGpo(1, true);
-				reader.setGpo(2, true);
+				reader.setGpo(3, false);
+				reader.setGpo(4, false);
+
+				// Se OK
+				if (result == 1) {
+					reader.setGpo(1, true);
+					reader.setGpo(2, true);
+					logger.info("ATTESO OK");
+				}
+				// Se KO
+				if (result == 2) {
+					reader.setGpo(3, true);
+					reader.setGpo(4, true);
+					logger.info("ATTESO KO");
+				}
 			}
-			if (result == 2) {
-				reader.setGpo(1, false);
-				reader.setGpo(2, false);
-				reader.setGpo(2, true);
-				
-			}
-			// this.tunnelJob.getConfReader(reader.getAddress()).getPorts()
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
