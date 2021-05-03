@@ -1,23 +1,24 @@
 package net.mcsistemi.rfidtunnel.listneroctane;
 
 import java.sql.Timestamp;
-import java.util.Date;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
-import com.impinj.octane.*;
+import com.impinj.octane.ImpinjReader;
+import com.impinj.octane.ReadResultStatus;
+import com.impinj.octane.TagOpCompleteListener;
+import com.impinj.octane.TagOpReport;
+import com.impinj.octane.TagOpResult;
+import com.impinj.octane.TagReadOpResult;
 
 import net.mcsistemi.rfidtunnel.entity.ConfReader;
 import net.mcsistemi.rfidtunnel.entity.ReaderRfidInpinj;
-import net.mcsistemi.rfidtunnel.services.ConfReaderService;
-import net.mcsistemi.rfidtunnel.services.DispositivoService;
 import net.mcsistemi.rfidtunnel.services.ReaderService;
 import net.mcsistemi.rfidtunnel.services.TunnelService;
 
 public class TagOpCompleteListenerImplementation implements TagOpCompleteListener {
 
-	Logger logger = LoggerFactory.getLogger(TagReportListenerImplementation.class);
+	Logger logger = Logger.getLogger(TagReportListenerImplementation.class);
 	private ReaderService readerService;
 	private TunnelService tunnelService;
 	private ReaderRfidInpinj readerRfidInpinj;

@@ -5,20 +5,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.Date;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import net.mcsistemi.rfidtunnel.entity.Dispositivo;
-import net.mcsistemi.rfidtunnel.entity.ScannerStream;
-import net.mcsistemi.rfidtunnel.entity.Tunnel;
-import net.mcsistemi.rfidtunnel.services.TunnelService;
-//import net.mcsistemi.rfidtunnel.repository.TunnelLogRepository;
 
 public class JobScannerBarcode extends Job implements Runnable {
 
-	Logger logger = LoggerFactory.getLogger(JobScannerBarcode.class);
+	Logger logger = Logger.getLogger(JobScannerBarcode.class);
 
 	private TunnelJob tunnelJob;
 	private Dispositivo dispositivo;

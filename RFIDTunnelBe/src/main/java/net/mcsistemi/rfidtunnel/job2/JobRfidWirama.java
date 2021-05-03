@@ -8,11 +8,9 @@ import java.net.UnknownHostException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 
 import net.mcsistemi.rfidtunnel.entity.ReaderRfidWirama;
-import net.mcsistemi.rfidtunnel.services.DispositivoService;
 import net.mcsistemi.rfidtunnel.services.ReaderService;
 
 public class JobRfidWirama extends Job implements Runnable {
@@ -25,7 +23,7 @@ public class JobRfidWirama extends Job implements Runnable {
 
 	boolean running = true;
 
-	private static final Logger LOGGER = LogManager.getLogger(JobRfidWirama.class);
+	private static final Logger LOGGER = Logger.getLogger(JobRfidWirama.class);
 
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
 	ReaderService readerService = null;

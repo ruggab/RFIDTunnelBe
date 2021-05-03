@@ -3,8 +3,7 @@ package net.mcsistemi.rfidtunnel.job2;
 import java.util.Iterator;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import net.mcsistemi.rfidtunnel.entity.ConfReader;
 import net.mcsistemi.rfidtunnel.entity.Dispositivo;
@@ -13,7 +12,7 @@ import net.mcsistemi.rfidtunnel.services.TunnelService;
 
 public class TunnelJob extends Job {
 
-	Logger logger = LoggerFactory.getLogger(TunnelJob.class);
+	Logger logger = Logger.getLogger(TunnelJob.class);
 
 	// @Autowired
 	// private ScannerStreamRepository scannerRep;

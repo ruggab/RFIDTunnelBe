@@ -3,35 +3,27 @@ package net.mcsistemi.rfidtunnel.job2;
 import java.util.Iterator;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.util.StringUtils;
 
 import com.impinj.octane.AntennaConfigGroup;
-import com.impinj.octane.AutoStartMode;
-import com.impinj.octane.AutoStopMode;
 import com.impinj.octane.GpoConfigGroup;
 import com.impinj.octane.GpoMode;
 import com.impinj.octane.ImpinjReader;
 import com.impinj.octane.MemoryBank;
 import com.impinj.octane.OctaneSdkException;
-import com.impinj.octane.ReaderMode;
 import com.impinj.octane.ReportConfig;
 import com.impinj.octane.ReportMode;
-import com.impinj.octane.SearchMode;
 import com.impinj.octane.Settings;
 import com.impinj.octane.TagReadOp;
 
 import net.mcsistemi.rfidtunnel.entity.ConfAntenna;
 import net.mcsistemi.rfidtunnel.entity.ConfPorta;
 import net.mcsistemi.rfidtunnel.entity.ConfReader;
-import net.mcsistemi.rfidtunnel.entity.Dispositivo;
-import net.mcsistemi.rfidtunnel.entity.Tunnel;
 import net.mcsistemi.rfidtunnel.listneroctane.ConnectionLostListenerImplement;
 import net.mcsistemi.rfidtunnel.listneroctane.KeepAliveListenerImplementation;
 import net.mcsistemi.rfidtunnel.listneroctane.TagOpCompleteListenerImplementation;
 import net.mcsistemi.rfidtunnel.listneroctane.TagReportListenerImplementation;
-import net.mcsistemi.rfidtunnel.services.TunnelService;
 import net.mcsistemi.rfidtunnel.util.DateFunction;
 import net.mcsistemi.rfidtunnel.util.Utils;
 
@@ -45,7 +37,8 @@ import net.mcsistemi.rfidtunnel.util.Utils;
  */
 
 public class JobRfidImpinj extends Job implements JobImpinjInterface {
-	Logger logger = LoggerFactory.getLogger(JobRfidImpinj.class);
+	Logger logger = Logger.getLogger(JobRfidImpinj.class);
+	
 	
 	static DateFunction myDate = new DateFunction();
 	private ImpinjReader reader = null;

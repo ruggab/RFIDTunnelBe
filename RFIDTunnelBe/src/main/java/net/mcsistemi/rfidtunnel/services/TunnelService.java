@@ -10,8 +10,7 @@ import java.util.Set;
 
 import javax.transaction.Transactional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -46,7 +45,7 @@ import net.mcsistemi.rfidtunnel.repository.TunnelRepository;
 @Service
 public class TunnelService implements ITunnelService {
 
-	Logger logger = LoggerFactory.getLogger(TunnelService.class);
+	Logger logger = Logger.getLogger(TunnelService.class);
 
 	@Autowired
 	private DispositivoRepository dispositivoRepository;

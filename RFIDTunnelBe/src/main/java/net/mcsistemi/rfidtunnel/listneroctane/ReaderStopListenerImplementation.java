@@ -1,7 +1,7 @@
 package net.mcsistemi.rfidtunnel.listneroctane;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import org.apache.log4j.Logger;
 
 import com.impinj.octane.ImpinjReader;
 import com.impinj.octane.ReaderStopEvent;
@@ -11,7 +11,7 @@ import net.mcsistemi.rfidtunnel.services.DispositivoService;
 
 public class ReaderStopListenerImplementation implements ReaderStopListener {
 
-	Logger logger = LoggerFactory.getLogger(TagReportListenerImplementation.class);
+	Logger logger = Logger.getLogger(TagReportListenerImplementation.class);
 	private DispositivoService readerService;
 	
 	public ReaderStopListenerImplementation(DispositivoService readerService) {

@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,8 @@ import net.mcsistemi.rfidtunnel.repository.UtenteRepository;
 
 @Service
 public class UtenteService implements IUtenteService {
+	
+	Logger logger = Logger.getLogger(UtenteService.class);
 
 	@Autowired
 	private UtenteRepository utenteRepository;
@@ -60,9 +63,10 @@ public class UtenteService implements IUtenteService {
 			}
 		
 		} else {
+			logger.error("User o password errati");
 			throw new Exception("User o password errati");
 		}
-		
+		logger.info("User collegato correttamente");
 		return utente;
 	}
 
