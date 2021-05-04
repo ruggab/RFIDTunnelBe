@@ -427,7 +427,7 @@ public class TunnelService implements ITunnelService {
 		String ret = "OK";
 		Integer letto = readerStreamAttesoRepository.getCountLetto(packId, packageData);
 
-		Integer atteso = readerStreamAttesoRepository.getCountExpected(packId, packageData);
+		Integer atteso = readerStreamAttesoRepository.getCountExpected(packageData);
 		if (letto.intValue() != atteso.intValue()) {
 			ret = "KO";
 		}

@@ -54,7 +54,7 @@ public interface ReaderStreamAttesoRepository extends JpaRepository<ReaderStream
 	Integer getCountLetto(@Param ("packId") Long packId, @Param ("packageData") String packageData);
 	
 	@Query(value = "select count (*) from reader_stream_atteso a where a.package_data = :packageData ", nativeQuery = true)
-	Integer getCountExpected(@Param ("packId") Long packId, @Param ("packageData") String packageData);
+	Integer getCountExpected(@Param ("packageData") String packageData);
 	
 	
 	public static interface StreamEPCDifference {
