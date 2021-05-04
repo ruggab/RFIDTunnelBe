@@ -50,7 +50,7 @@ public class TagReportListenerImplementation implements TagReportListener {
 					}
 					
 				}
-				
+				s
 			}
 
 			// Gestioen Atteso
