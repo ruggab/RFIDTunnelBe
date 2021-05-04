@@ -28,7 +28,7 @@ public interface ReaderStreamAttesoRepository extends JpaRepository<ReaderStream
 	List<StreamTIDDifference> getDiffTIDExpectedRead(@Param ("packId") Long packId, @Param ("packageData") String packageData);
 
 	@Query(value = "select s.package_data, s.tid from reader_stream s where  s.pack_id = :packId and s.package_data = :packageData "
-			+ "except select a.package_data, a.tid from reader_stream_atteso a where a where a.package_data = :packageData", nativeQuery = true)
+			+ "except select a.package_data, a.tid from reader_stream_atteso a where a.package_data = :packageData", nativeQuery = true)
 	List<StreamTIDDifference> getDiffTIDReadExpected(@Param ("packId") Long packId, @Param ("packageData") String packageData);
 	
 	//SOLO USER

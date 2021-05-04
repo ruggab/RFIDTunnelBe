@@ -259,7 +259,5 @@ public class ConfReader {
 	public void setSession(Integer session) {
 		this.session = session;
 	}
-	
-	
 
 }

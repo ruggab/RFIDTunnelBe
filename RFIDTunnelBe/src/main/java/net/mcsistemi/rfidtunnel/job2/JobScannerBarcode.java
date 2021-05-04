@@ -44,24 +44,30 @@ public class JobScannerBarcode extends Job implements Runnable {
 				try {
 					stream = in.readLine().toString();
 
-					if (stream.contains(tunnelJob.getTunnel().getMsgEnd())) {
-						
-						packId = stream.substring(stream.indexOf(tunnelJob.getTunnel().getMsgEnd()), stream.length());
-						
-						if (packId.equals(tunnelJob.getTunnel().getMsgNoRead())) {
-							packId = tunnelJob.getTunnel().getMsgNoRead() + "-" + tunnelJob.getTunnelService().getSeqNextVal();
-						} else {
-							tunnelJob.setPackId(packId);
-							logger.info("****************");
-							logger.info(packId);
-							logger.info("****************");
-							tunnelJob.getTunnelService().createScannerStream(tunnelJob.getTunnel().getId(), packId, false);
-						}
-					}
-				} catch (Exception e) {
+				} catch (NullPointerException e) {
 					// e.printStackTrace();
-					logger.error(e.toString() + " - " + e.getMessage());
+					
+					logger.info("Waiting for JobScannerBarcode streams ... ");
+					Thread.sleep(1000);
+					in = connect();
+					continue;
 				}
+				
+				if (stream.contains(tunnelJob.getTunnel().getMsgEnd())) {
+					
+					packId = stream.substring(stream.indexOf(tunnelJob.getTunnel().getMsgEnd()), stream.length());
+					
+					if (packId.equals(tunnelJob.getTunnel().getMsgNoRead())) {
+						packId = tunnelJob.getTunnel().getMsgNoRead() + "-" + tunnelJob.getTunnelService().getSeqNextVal();
+					} else {
+						tunnelJob.setPackId(packId);
+						logger.info("****************");
+						logger.info(packId);
+						logger.info("****************");
+						tunnelJob.getTunnelService().createScannerStream(tunnelJob.getTunnel().getId(), packId, false);
+					}
+				}
+
 
 				logger.info("STREAM received " + stream);
 
@@ -97,7 +103,7 @@ public class JobScannerBarcode extends Job implements Runnable {
 		} catch (UnknownHostException e) {
 			logger.error("Unknown host: " + this.dispositivo.getIpAdress());
 		} catch (IOException e) {
-			logger.error("Unable to get streams from JobScannerBarcode");
+			logger.error("Connection error to BARCODE " + this.dispositivo.getIpAdress() + " port: " +  this.dispositivo.getPorta().intValue());
 		}
 
 		return in;

@@ -277,6 +277,8 @@ public class TunnelService implements ITunnelService {
 		readerStream.setTid(tag.getTid().toHexString());
 		readerStream.setIpAdress(ipAdress);
 		readerStream.setUserData("");
+		readerStream.setPackId(ss.getId());
+		readerStream.setPackageData(ss.getPackageData());
 		readerStream.setAntennaPortNumber(tag.getAntennaPortNumber() + "");
 		readerStream.setChannelInMhz(tag.getChannelInMhz() + "");
 		readerStream.setFirstSeenTime(tag.getFirstSeenTime() + "");

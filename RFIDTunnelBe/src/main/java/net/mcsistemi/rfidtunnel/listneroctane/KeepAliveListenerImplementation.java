@@ -55,7 +55,7 @@ public class KeepAliveListenerImplementation implements KeepaliveListener {
 
 			} else {
 				LOGGER.info("READER CONNESSO");
-				if (!this.confReader.getDispositivo().getStato()) {
+				if (!this.confReader.getDispositivo().isStato()) {
 					this.confReader.getDispositivo().setStato(true);
 					tunnelService.aggiornaDispositivo(this.confReader.getDispositivo());
 				}

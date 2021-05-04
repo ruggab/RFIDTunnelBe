@@ -46,9 +46,9 @@ public class Dispositivo {
 	@Column(length = 4)
 	private Long porta;
 
-	private Boolean monitorEnable;
+	private boolean monitorEnable;
 
-	private Boolean logEnable;
+	private boolean logEnable;
 
 	private Integer freqLogMs;
 
@@ -58,7 +58,7 @@ public class Dispositivo {
 
 	private Integer numPortInput;
 	
-	private Boolean stato;
+	private boolean stato;
 
 	
 	public Dispositivo() {
@@ -74,15 +74,6 @@ public class Dispositivo {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
-	public Boolean getStato() {
-		return stato;
-	}
-
-	public void setStato(Boolean stato) {
-		this.stato = stato;
-	}
-
 
 	public Long getIdTipoDispositivo() {
 		return idTipoDispositivo;
@@ -99,27 +90,7 @@ public class Dispositivo {
 	public void setIpAdress(String ipAdress) {
 		this.ipAdress = ipAdress;
 	}
-
 	
-
-	public Boolean getMonitorEnable() {
-		return monitorEnable;
-	}
-
-	public void setMonitorEnable(Boolean monitorEnable) {
-		this.monitorEnable = monitorEnable;
-	}
-
-	public Boolean getLogEnable() {
-		return logEnable;
-	}
-
-	public void setLogEnable(Boolean logEnable) {
-		this.logEnable = logEnable;
-	}
-
-	
-
 	public String getDescTipoDispositivo() {
 		return descTipoDispositivo;
 	}
@@ -200,9 +171,28 @@ public class Dispositivo {
 		this.numPortInput = numPortInput;
 	}
 
-	
+	public boolean isMonitorEnable() {
+		return monitorEnable;
+	}
 
-	
-	
+	public void setMonitorEnable(boolean monitorEnable) {
+		this.monitorEnable = monitorEnable;
+	}
+
+	public boolean isLogEnable() {
+		return logEnable;
+	}
+
+	public void setLogEnable(boolean logEnable) {
+		this.logEnable = logEnable;
+	}
+
+	public boolean isStato() {
+		return stato;
+	}
+
+	public void setStato(boolean stato) {
+		this.stato = stato;
+	}
 
 }

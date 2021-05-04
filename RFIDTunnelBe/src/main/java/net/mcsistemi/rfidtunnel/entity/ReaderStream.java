@@ -213,7 +213,7 @@ public class ReaderStream {
 	public String getDataForm() {
 		Date date = new Date();
 		date.setTime(this.timeStamp.getTime());
-		String formattedDate = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").format(date);
+		String formattedDate = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(date);
 		return formattedDate;
 	}
 
