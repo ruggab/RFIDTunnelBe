@@ -37,11 +37,12 @@ public class TagReportListenerImplementation implements TagReportListener {
 
 			// Gestioen Atteso
 			if (this.tunnelJob.getTunnel().getIdSceltaGestAtteso() == 7) {
-				int result = this.tunnelJob.getTunnelService().compareByPackage(scannerStream.getId(), scannerStream.getPackageData(), this.tunnelJob.getTunnel().isAttesoEpc(), 
-				this.tunnelJob.getTunnel().isAttesoTid(), 
-				this.tunnelJob.getTunnel().isAttesoUser(), 
-				this.tunnelJob.getTunnel().isAttesoBarcode(), 
-				this.tunnelJob.getTunnel().isAttesoQuantita());
+				int result = this.tunnelJob.getTunnelService().compareByPackage(scannerStream.getId(), scannerStream.getPackageData(), 
+																				this.tunnelJob.getTunnel().isAttesoEpc(), 
+																				this.tunnelJob.getTunnel().isAttesoTid(), 
+																				this.tunnelJob.getTunnel().isAttesoUser(), 
+																				this.tunnelJob.getTunnel().isAttesoBarcode(), 
+																				this.tunnelJob.getTunnel().isAttesoQuantita());
 
 				impinjReader.setGpo(1, false);
 				impinjReader.setGpo(2, false);
@@ -60,6 +61,9 @@ public class TagReportListenerImplementation implements TagReportListener {
 					impinjReader.setGpo(4, true);
 					logger.info("ATTESO KO");
 				}
+				//
+				scannerStream.setEsito(result+"");
+				this.tunnelJob.getTunnelService().saveScannerStream(scannerStream);
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

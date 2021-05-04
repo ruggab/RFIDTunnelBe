@@ -35,11 +35,12 @@ public class JobScannerBarcode extends Job implements Runnable {
 
 		try {
 			in = connect();
+			String packId = "";
+			String stream = "";
 
 			while (running) {
 
-				String packId = null;
-				String stream = null;
+				
 
 				try {
 					stream = in.readLine().toString();
@@ -53,10 +54,11 @@ public class JobScannerBarcode extends Job implements Runnable {
 					continue;
 				}
 				
-				if (stream.contains(tunnelJob.getTunnel().getMsgEnd())) {
+				packId = packId + stream;
+				if (packId.contains(tunnelJob.getTunnel().getMsgEnd())) {
 					
-					packId = stream.substring(stream.indexOf(tunnelJob.getTunnel().getMsgEnd()), stream.length());
-					
+					packId = packId.substring(0, packId.indexOf(tunnelJob.getTunnel().getMsgEnd()));
+					//SE il package è noread
 					if (packId.equals(tunnelJob.getTunnel().getMsgNoRead())) {
 						packId = tunnelJob.getTunnel().getMsgNoRead() + "-" + tunnelJob.getTunnelService().getSeqNextVal();
 					} else {
@@ -65,7 +67,11 @@ public class JobScannerBarcode extends Job implements Runnable {
 						logger.info(packId);
 						logger.info("****************");
 						tunnelJob.getTunnelService().createScannerStream(tunnelJob.getTunnel().getId(), packId, false);
+						packId = "";
+						stream = "";
 					}
+				} else {
+					continue;
 				}
 
 

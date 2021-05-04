@@ -302,6 +302,12 @@ public class TunnelService implements ITunnelService {
 		ss.setDettaglio(dettaglio);
 		scannerStreamRepository.save(ss);
 	}
+	
+	
+	public void saveScannerStream(ScannerStream ss) throws Exception {
+	
+		scannerStreamRepository.save(ss);
+	}
 
 	public ReaderStreamAtteso createReaderStreamAtteso(String collo, String epc, String tid) throws Exception {
 		ReaderStreamAtteso rsa = new ReaderStreamAtteso();
