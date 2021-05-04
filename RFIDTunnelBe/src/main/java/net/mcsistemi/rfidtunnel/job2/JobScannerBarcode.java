@@ -58,14 +58,16 @@ public class JobScannerBarcode extends Job implements Runnable {
 				if (packId.contains(tunnelJob.getTunnel().getMsgEnd())) {
 					
 					packId = packId.substring(0, packId.indexOf(tunnelJob.getTunnel().getMsgEnd()));
+					
+					logger.info("****************");
+					logger.info(packId);
+					logger.info("****************");
 					//SE il package è noread
 					if (packId.equals(tunnelJob.getTunnel().getMsgNoRead())) {
 						packId = tunnelJob.getTunnel().getMsgNoRead() + "-" + tunnelJob.getTunnelService().getSeqNextVal();
+						tunnelJob.getTunnelService().createScannerStream(tunnelJob.getTunnel().getId(), packId, false);
 					} else {
 						tunnelJob.setPackId(packId);
-						logger.info("****************");
-						logger.info(packId);
-						logger.info("****************");
 						tunnelJob.getTunnelService().createScannerStream(tunnelJob.getTunnel().getId(), packId, false);
 						packId = "";
 						stream = "";
