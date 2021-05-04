@@ -12,29 +12,25 @@ import net.mcsistemi.rfidtunnel.entity.ScannerStream;
 
 public interface ScannerStreamRepository extends JpaRepository<ScannerStream, Long> {
 	
-	@Query(value="select s.id, s.pack_id , s.time_stamp, count(distinct(epc)) epc_count from scanner s\n" + 
-			"join reader_stream w on s.pack_id = w.pack_id\n" + 
-			"group by s.id, s.pack_id, s.time_stamp order by s.time_stamp desc ", 
-			  nativeQuery = true)
-	List<ScannerStream> getStreamCountEpc();
-	
-	@Query(value="select s.id, s.pack_id , s.time_stamp, count(distinct(tid)) epc_count from scanner s\n" + 
-			"join reader_stream w on s.pack_id = w.pack_id\n" + 
-			"group by s.id, s.pack_id, s.time_stamp order by s.time_stamp desc ", 
-			  nativeQuery = true)
-	List<ScannerStream> getStreamCountTid();
+//	@Query(value="select s.id, s.pack_id , s.time_stamp, count(distinct(epc)) epc_count from scanner_stream s\n" + 
+//			"join reader_stream w on s.pack_id = w.pack_id\n" + 
+//			"group by s.id, s.pack_id, s.time_stamp order by s.time_stamp desc ", 
+//			  nativeQuery = true)
+//	List<ScannerStream> getStreamCountEpc();
+//	
+//	@Query(value="select s.id, s.pack_id , s.time_stamp, count(distinct(tid)) epc_count from scanner_stream s\n" + 
+//			"join reader_stream w on s.pack_id = w.pack_id\n" + 
+//			"group by s.id, s.pack_id, s.time_stamp order by s.time_stamp desc ", 
+//			  nativeQuery = true)
+//	List<ScannerStream> getStreamCountTid();
 	
 	@Modifying
 	@Transactional
-	@Query(value="delete from scanner where pack_id = ?1 ", 
-			  nativeQuery = true)
+	@Query(value="delete from scanner_stream where pack_id = ?1 ", nativeQuery = true)
 	void deleteScannerByPackId(String packId);
 	
-	@Modifying
-	@Transactional
-	@Query(value="delete from wirama where pack_id = ?1 ", 
-			  nativeQuery = true)
-	void deleteWiramaByPackId(String packId);
 	
+	@Query(value="select * from scanner_stream where dettaglio = false order by time_stamp desc fetch first 1 rows only ", nativeQuery = true)
+    ScannerStream getLastScanner();
 	
 }

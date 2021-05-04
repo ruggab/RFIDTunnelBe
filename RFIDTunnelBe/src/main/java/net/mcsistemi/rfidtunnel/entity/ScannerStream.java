@@ -20,24 +20,26 @@ public class ScannerStream {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	private Long id;
-	
+
 	private Long idTunnel;
 
 	// @NotBlank
-	private String packId;
+	private String packageData;
+	
+	// @NotBlank
+	@Column(nullable = true)
+	private String esito;
+
+	// @NotBlank
+	private boolean dettaglio;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date timeStamp;
 
 	@Column(nullable = true)
-	private long epcCount;
+	private long quantita;
 
 	public ScannerStream() {
-	}
-
-	public ScannerStream(String packId, Date timeStamp) {
-		this.packId = packId;
-		this.timeStamp = timeStamp;
 	}
 
 	public Long getId() {
@@ -48,14 +50,6 @@ public class ScannerStream {
 		this.id = id;
 	}
 
-	public String getPackId() {
-		return packId;
-	}
-
-	public void setPackId(String packId) {
-		this.packId = packId;
-	}
-
 	public Date getTimeStamp() {
 		return timeStamp;
 	}
@@ -64,12 +58,28 @@ public class ScannerStream {
 		this.timeStamp = timeStamp;
 	}
 
-	public long getEpcCount() {
-		return epcCount;
+	public String getEsito() {
+		return esito;
 	}
 
-	public void setEpcCount(long epcCount) {
-		this.epcCount = epcCount;
+	public void setEsito(String esito) {
+		this.esito = esito;
+	}
+
+	public boolean isDettaglio() {
+		return dettaglio;
+	}
+
+	public void setDettaglio(boolean dettaglio) {
+		this.dettaglio = dettaglio;
+	}
+
+	public long getQuantita() {
+		return quantita;
+	}
+
+	public void setQuantita(long quantita) {
+		this.quantita = quantita;
 	}
 
 	public Long getIdTunnel() {
@@ -80,6 +90,14 @@ public class ScannerStream {
 		this.idTunnel = idTunnel;
 	}
 
+	public String getPackageData() {
+		return packageData;
+	}
+
+	public void setPackageData(String packageData) {
+		this.packageData = packageData;
+	}
 	
 	
+
 }

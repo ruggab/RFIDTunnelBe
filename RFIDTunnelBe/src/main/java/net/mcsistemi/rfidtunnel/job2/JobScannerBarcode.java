@@ -39,47 +39,31 @@ public class JobScannerBarcode extends Job implements Runnable {
 			while (running) {
 
 				String packId = null;
+				String stream = null;
 
 				try {
-					packId = in.readLine().toString();
+					stream = in.readLine().toString();
 
-					if (packId.equals(tunnelJob.getTunnel().getMsgNoRead())) {
-						packId = tunnelJob.getTunnel().getMsgNoRead() + "-" + tunnelJob.getTunnelService().getSeqNextVal();
-					} else {
-						// logRep.save(new TunnelLog(new Date(), packId));
-					}
-				} catch (NullPointerException ex) {
-					logger.info("Waiting for JobScannerBarcode streams ... ");
-					Thread.sleep(1000);
-					in = connect();
-					continue;
-				}
-
-				// TunnelJob.packId = packId;
-
-				try {
-
-					if (!packId.equals(tunnelJob.getTunnel().getMsgNoRead())) {
-						tunnelJob.setPackId(packId);
-
-						// delete old wirama / scanner
-						// repository.deleteWiramaByPackId(packId);
-						// repository.deleteScannerByPackId(packId);
-
-						logger.info("****************");
-						logger.info(packId);
-						logger.info("****************");
-
+					if (stream.contains(tunnelJob.getTunnel().getMsgEnd())) {
 						
-
-						tunnelJob.getTunnelService().createScannerStream(tunnelJob.getTunnel().getId(), packId);
+						packId = stream.substring(stream.indexOf(tunnelJob.getTunnel().getMsgEnd()), stream.length());
+						
+						if (packId.equals(tunnelJob.getTunnel().getMsgNoRead())) {
+							packId = tunnelJob.getTunnel().getMsgNoRead() + "-" + tunnelJob.getTunnelService().getSeqNextVal();
+						} else {
+							tunnelJob.setPackId(packId);
+							logger.info("****************");
+							logger.info(packId);
+							logger.info("****************");
+							tunnelJob.getTunnelService().createScannerStream(tunnelJob.getTunnel().getId(), packId, false);
+						}
 					}
 				} catch (Exception e) {
 					// e.printStackTrace();
 					logger.error(e.toString() + " - " + e.getMessage());
 				}
 
-				logger.info("Barcode received " + packId);
+				logger.info("STREAM received " + stream);
 
 			}
 		} catch (Exception e) {

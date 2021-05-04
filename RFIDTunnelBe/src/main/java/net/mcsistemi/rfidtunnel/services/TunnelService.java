@@ -229,27 +229,36 @@ public class TunnelService implements ITunnelService {
 		return listTunnel;
 
 	}
-
-	public void createReaderStream(String ipAdress, String epc, String tid, String user, String packId, Timestamp time) throws Exception {
-		ReaderStream readerStream = new ReaderStream();
-
-		readerStream.setEpc(epc);
-		readerStream.setTimeStamp(time);
-		readerStream.setTid(tid);
-		readerStream.setIpAdress(ipAdress);
-		readerStream.setPackId(packId);
-		readerStream.setUserData(user);
-		readerStreamRepository.save(readerStream);
+	
+	
+	public ScannerStream getLastScanner() throws Exception {
+		ScannerStream scannerStream = scannerStreamRepository.getLastScanner();
+		return scannerStream;
 	}
 
-	public void createReaderStream(Long idTunnel, String ipAdress, String packId, Tag tag) throws Exception {
+	
+    @Transactional
+	public void saveStream(Long idTunnel, String ipAdress, ScannerStream ss , Tag tag) throws Exception {
 		ReaderStream readerStream = new ReaderStream();
+		if (ss != null) {
+			
+			//Update dello scanner stream per dire che il dettaglio è stato salvato con setDettaglio a true
+			ss.setDettaglio(true);
+			scannerStreamRepository.save(ss);
+			readerStream.setPackId(ss.getId());
+			readerStream.setPackageData(ss.getPackageData());
+		} else {
+			//In caso di start/stop senza barcode genero un NOBARCODE e lo salviamo sia in scanner stream che in reader stream
+			String packageData = "NO_BARCODE-" + this.getSeqNextVal();
+			this.createScannerStream(idTunnel, packageData, true);
+		}
+		
 		readerStream.setIdTunnel(idTunnel);
 		readerStream.setEpc(tag.getEpc().toHexString());
 		readerStream.setTimeStamp(new Timestamp(System.currentTimeMillis()));
 		readerStream.setTid(tag.getTid().toHexString());
 		readerStream.setIpAdress(ipAdress);
-		readerStream.setPackId(packId);
+		
 		readerStream.setUserData("");
 		readerStream.setAntennaPortNumber(tag.getAntennaPortNumber() + "");
 		readerStream.setChannelInMhz(tag.getChannelInMhz() + "");
@@ -260,17 +269,18 @@ public class TunnelService implements ITunnelService {
 		readerStream.setPhaseAngleInRadians(tag.getPhaseAngleInRadians() + "");
 		readerStream.setRfDopplerFrequency(tag.getRfDopplerFrequency() + "");
 		readerStream.setTagSeenCount(tag.getTagSeenCount() + "");
-		readerStream.setUserData("");
 		readerStream.setFirstSeenTime(tag.getFirstSeenTime() + "");
 		readerStream.setLastSeenTime(tag.getLastSeenTime() + "");
 		readerStreamRepository.save(readerStream);
+		
 	}
 
-	public void createScannerStream(Long tunnelId, String packId) throws Exception {
+	public void createScannerStream(Long tunnelId, String packageData, boolean dettaglio) throws Exception {
 		ScannerStream ss = new ScannerStream();
 		ss.setIdTunnel(tunnelId);
-		ss.setPackId(packId);
+		ss.setPackageData(packageData);
 		ss.setTimeStamp(new Date());
+		ss.setDettaglio(dettaglio);
 		scannerStreamRepository.save(ss);
 	}
 
@@ -399,7 +409,7 @@ public class TunnelService implements ITunnelService {
 	
 	public List<ReaderStream> getAllDataStream() throws Exception {
 		//
-		List<ReaderStream> readerDataList = readerStreamRepository.findAll(Sort.by(Sort.Direction.ASC, "packId"));
+		List<ReaderStream> readerDataList = readerStreamRepository.findAll(Sort.by(Sort.Direction.DESC, "timeStamp"));
 		return readerDataList;
 	}
 

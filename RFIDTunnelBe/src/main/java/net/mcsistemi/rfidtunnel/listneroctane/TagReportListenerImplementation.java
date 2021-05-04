@@ -10,6 +10,7 @@ import com.impinj.octane.Tag;
 import com.impinj.octane.TagReport;
 import com.impinj.octane.TagReportListener;
 
+import net.mcsistemi.rfidtunnel.entity.ScannerStream;
 import net.mcsistemi.rfidtunnel.job2.TunnelJob;
 import net.mcsistemi.rfidtunnel.services.ReaderService;
 
@@ -33,25 +34,32 @@ public class TagReportListenerImplementation implements TagReportListener {
 	public void onTagReported(ImpinjReader reader, TagReport report) {
 		List<Tag> tags = report.getTags();
 		try {
-			String packid = tunnelJob.getPackId();
-			logger.info("Intestazione packid: " + packid);
+			
 			for (Tag t : tags) {
 				logger.info("IMPINJ ---->>>> EPC: " + t.getEpc().toString());
 				logger.info("IMPINJ ---->>>> TID: " + t.getTid().toString());
 
-				if (this.tunnelJob.getTunnel().getIdSceltaGestColli() == 7 && StringUtils.isEmpty(packid)) {
-					packid = "NO_BARCODE-" + this.tunnelJob.getTunnelService().getSeqNextVal();
+				if (this.tunnelJob.getTunnel().getIdSceltaGestColli() == 7 ) {
+					ScannerStream scannerStream = this.tunnelJob.getTunnelService().getLastScanner();
+					if (scannerStream != null) {
+						logger.info("Package: " + scannerStream.getPackageData());
+						this.tunnelJob.getTunnelService().saveStream(tunnelJob.getTunnel().getId(), reader.getAddress(), scannerStream, t);
+					} else {
+						//String packageData = "NO_BARCODE-" + this.tunnelJob.getTunnelService().getSeqNextVal();
+						this.tunnelJob.getTunnelService().saveStream(tunnelJob.getTunnel().getId(), reader.getAddress(), null, t);
+					}
+					
 				}
-				this.tunnelJob.getTunnelService().createReaderStream(tunnelJob.getTunnel().getId(), reader.getAddress(),
-						packid, t);
+				
 			}
 
 			// Gestioen Atteso
 			if (this.tunnelJob.getTunnel().getIdSceltaGestAtteso() == 7) {
-				int result = this.tunnelJob.getTunnelService().compareByPackage(packid,
-						this.tunnelJob.getTunnel().isAttesoEpc(), this.tunnelJob.getTunnel().isAttesoTid(),
-						this.tunnelJob.getTunnel().isAttesoUser(), this.tunnelJob.getTunnel().isAttesoBarcode(),
-						this.tunnelJob.getTunnel().isAttesoQuantita());
+				int result = this.tunnelJob.getTunnelService().compareByPackage(packid, this.tunnelJob.getTunnel().isAttesoEpc(), 
+				this.tunnelJob.getTunnel().isAttesoTid(), 
+				this.tunnelJob.getTunnel().isAttesoUser(), 
+				this.tunnelJob.getTunnel().isAttesoBarcode(), 
+				this.tunnelJob.getTunnel().isAttesoQuantita());
 
 				reader.setGpo(1, false);
 				reader.setGpo(2, false);

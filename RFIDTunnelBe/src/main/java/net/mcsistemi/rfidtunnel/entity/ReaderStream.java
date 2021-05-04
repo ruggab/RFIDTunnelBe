@@ -29,7 +29,9 @@ public class ReaderStream {
 	
 	private Long idTunnel;
 
-	private String packId;
+	private Long packId;
+	
+	private String packageData;
 
 	private String epc;
 
@@ -151,14 +153,6 @@ public class ReaderStream {
 		this.id = id;
 	}
 
-	public String getPackId() {
-		return packId;
-	}
-
-	public void setPackId(String packId) {
-		this.packId = packId;
-	}
-
 	public String getEpc() {
 		return epc;
 	}
@@ -225,6 +219,30 @@ public class ReaderStream {
 
 	public void setDataForm(String dataForm) {
 		this.dataForm = dataForm;
+	}
+
+
+
+	public Long getPackId() {
+		return packId;
+	}
+
+
+
+	public void setPackId(Long packId) {
+		this.packId = packId;
+	}
+
+
+
+	public String getPackageData() {
+		return packageData;
+	}
+
+
+
+	public void setPackageData(String packageData) {
+		this.packageData = packageData;
 	}
 
 	
