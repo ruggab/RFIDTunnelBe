@@ -206,14 +206,14 @@ public class ReaderService implements IReaderService {
 		return list;
 	}
 	
-	public void createReaderStream(String ipAdress, String port, String epc, String tid, String user, String packId,Timestamp time) throws Exception {
+	public void createReaderStream(String ipAdress, String port, String epc, String tid, String user, String packageData,Timestamp time) throws Exception {
 		ReaderStream readerStream = new ReaderStream();
 		
 		readerStream.setEpc(epc);
 		readerStream.setTimeStamp(time);
 		readerStream.setTid(tid);
 		readerStream.setIpAdress(ipAdress);
-		readerStream.setPackId(packId);
+		readerStream.setPackageData(packageData);
 		readerStream.setUserData(user);
 		readerStreamRepository.save(readerStream);
 	}
@@ -226,7 +226,7 @@ public class ReaderService implements IReaderService {
 		readerStream.setTimeStamp(new Timestamp(System.currentTimeMillis()));
 		readerStream.setTid(tag.getTid().toHexString());
 		readerStream.setIpAdress(ipAdress);
-		readerStream.setPackId(packId);
+		//readerStream.setPackageData(packageData);
 		readerStream.setUserData("");
 		readerStream.setAntennaPortNumber(tag.getAntennaPortNumber()+"");
 		readerStream.setChannelInMhz(tag.getChannelInMhz()+"");

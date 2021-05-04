@@ -4,62 +4,57 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import net.mcsistemi.rfidtunnel.entity.ReaderStreamAtteso;
 
 public interface ReaderStreamAttesoRepository extends JpaRepository<ReaderStreamAtteso, Long> {
 
-	@Query(value = "select s.id, s.packId, epc,tid from \n"
-			+ " reader_stream_atteso s where s.packId = ?1", nativeQuery = true)
-	List<ReaderStreamAtteso> getReaderStreamExpectedByCollo(String packId);
-
+	@Query(value = "select s.id, s.packId, epc,tid from reader_stream_atteso s where s.packId = ?1", nativeQuery = true)
+	List<ReaderStreamAtteso> getReaderStreamExpectedByCollo(String packageData);
 	
 	//SOLO EPC
-	@Query(value = "select pack_id,epc  from reader_stream_atteso where pack_id = ?1 "
-			+ "except select pack_id,epc from reader_stream where pack_id = ?1", nativeQuery = true)
-	List<StreamEPCDifference> getDiffEPCExpectedRead(String packId);
+	@Query(value = "select a.package_data, a.epc  from reader_stream_atteso a where a.package_data = :packageData  "
+			+ "except select s.package_data, s.epc from reader_stream s where s.pack_id = :packId and s.package_data = :packageData", nativeQuery = true)
+	List<StreamEPCDifference> getDiffEPCExpectedRead(@Param ("packId") Long packId, @Param ("packageData") String packageData);
 
-	@Query(value = "select pack_id,epc from reader_stream where pack_id = ?1 "
-			+ "except select pack_id,epc from reader_stream_atteso where pack_id = ?1", nativeQuery = true)
-	List<StreamEPCDifference> getDiffEPCReadExpected(String packId);
+	@Query(value = "select s.package_data, s.epc from reader_stream s where s.pack_id = :packId and s.package_data = :packageData "
+			+ "except select a.package_data, a.epc from reader_stream_atteso a where a.package_data = :packageData" , nativeQuery = true)
+	List<StreamEPCDifference> getDiffEPCReadExpected(@Param ("packId") Long packId, @Param ("packageData") String packageData);
 	
 	//SOLO TID
-	@Query(value = "select pack_id,tid  from reader_stream_atteso where pack_id = ?1 "
-			+ "except select pack_id,tid from reader_stream where pack_id = ?1", nativeQuery = true)
-	List<StreamTIDDifference> getDiffTIDExpectedRead(String packId);
+	@Query(value = "select a.package_data, a.tid  from reader_stream_atteso a where a.package_data = :packageData "
+			+ "except select s.package_data, s.tid from reader_stream s where s.pack_id = :packId and s.package_data = :packageData ", nativeQuery = true)
+	List<StreamTIDDifference> getDiffTIDExpectedRead(@Param ("packId") Long packId, @Param ("packageData") String packageData);
 
-	@Query(value = "select pack_id,tid from reader_stream where pack_id = ?1 "
-			+ "except select pack_id,tid from reader_stream_atteso where pack_id = ?1", nativeQuery = true)
-	List<StreamTIDDifference> getDiffTIDReadExpected(String packId);
+	@Query(value = "select s.package_data, s.tid from reader_stream s where  s.pack_id = :packId and s.package_data = :packageData "
+			+ "except select a.package_data, a.tid from reader_stream_atteso a where a where a.package_data = :packageData", nativeQuery = true)
+	List<StreamTIDDifference> getDiffTIDReadExpected(@Param ("packId") Long packId, @Param ("packageData") String packageData);
 	
 	//SOLO USER
-	@Query(value = "select pack_id,user_data  from reader_stream_atteso where pack_id = ?1 "
-			+ "except select pack_id,user_data from reader_stream where pack_id = ?1", nativeQuery = true)
-	List<StreamUserDifference> getDiffUSERExpectedRead(String packId);
+	@Query(value = "select a.package_data, a.user_data from reader_stream_atteso a where a.package_data = :packageData "
+			+ "except select s.package_data, s.user_data from reader_stream where s.pack_id = :packId and s.package_data = :packageData ", nativeQuery = true)
+	List<StreamUserDifference> getDiffUSERExpectedRead(@Param ("packId") Long packId, @Param ("packageData") String packageData);
 
-	@Query(value = "select pack_id,user_data from reader_stream where pack_id = ?1 "
-			+ "except select pack_id,user_data from reader_stream_atteso where pack_id = ?1", nativeQuery = true)
-	List<StreamUserDifference> getDiffUSERReadExpected(String packId);
+	@Query(value = "select s.package_data, s.user_data from reader_stream s where s.pack_id = :packId and s.package_data = :packageData  "
+			+ "except select a.package_data, a.user_data from reader_stream_atteso where a.package_data = :packageData", nativeQuery = true)
+	List<StreamUserDifference> getDiffUSERReadExpected(@Param ("packId") Long packId, @Param ("packageData") String packageData);
 	
 	//SOLO BARCODE
-	@Query(value = "select pack_id,barcode  from reader_stream_atteso where pack_id = ?1 "
-			+ "except select pack_id,barcode from reader_stream where pack_id = ?1", nativeQuery = true)
-	List<StreamBarcodeDifference> getDiffBCExpectedRead(String packId);
+	@Query(value = "select a.package_data, a.barcode  from reader_stream_atteso a where a.package_data = :packageData "
+			+ "except select s.package_data, s.barcode from reader_stream s where s.pack_id = :packId and s.package_data = :packageData", nativeQuery = true)
+	List<StreamBarcodeDifference> getDiffBCExpectedRead(@Param ("packId") Long packId, @Param ("packageData") String packageData);
 	
-	@Query(value = "select pack_id,barcode from reader_stream where pack_id = ?1 "
-			+ "except select pack_id,barcode from reader_stream_atteso where pack_id = ?1", nativeQuery = true)
-	List<StreamBarcodeDifference> getDiffBCReadExpected(String packId);
+	@Query(value = "select s.package_data, s.barcode from reader_stream s where s.pack_id = :packId and s.package_data = :packageData "
+			+ "except select a.package_data, a.barcode from reader_stream_atteso a where a.package_data = :packageData ", nativeQuery = true)
+	List<StreamBarcodeDifference> getDiffBCReadExpected(@Param ("packId") Long packId, @Param ("packageData") String packageData);
 	
 	//QUANTITA
-	@Query(value = "select count (*) from reader_stream where pack_id = ?1 ", nativeQuery = true)
-	Integer getCountLetto(String packId);
+	@Query(value = "select count (*) from reader_stream s where s.pack_id = :packId and s.package_data = :packageData ", nativeQuery = true)
+	Integer getCountLetto(@Param ("packId") Long packId, @Param ("packageData") String packageData);
 	
-	@Query(value = "select count (*) from reader_stream_atteso where pack_id = ?1 ", nativeQuery = true)
-	Integer getCountExpected(String packId);
-	
-
-
-	
+	@Query(value = "select count (*) from reader_stream_atteso a where a.package_data = :packageData ", nativeQuery = true)
+	Integer getCountExpected(@Param ("packId") Long packId, @Param ("packageData") String packageData);
 	
 	
 	public static interface StreamEPCDifference {

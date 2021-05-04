@@ -16,11 +16,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.impinj.octane.ImpinjReader;
 import com.impinj.octane.Tag;
 
 import net.mcsistemi.rfidtunnel.entity.ConfAntenna;
 import net.mcsistemi.rfidtunnel.entity.ConfReader;
 import net.mcsistemi.rfidtunnel.entity.Dispositivo;
+import net.mcsistemi.rfidtunnel.entity.Reader;
 import net.mcsistemi.rfidtunnel.entity.ReaderStream;
 import net.mcsistemi.rfidtunnel.entity.ReaderStreamAtteso;
 import net.mcsistemi.rfidtunnel.entity.ScannerStream;
@@ -170,17 +172,21 @@ public class TunnelService implements ITunnelService {
 			List<Dispositivo> listBarcode = new ArrayList<Dispositivo>();
 			for (Iterator iterator = dispoSet.iterator(); iterator.hasNext();) {
 				Dispositivo dispositivo = (Dispositivo) iterator.next();
-				// Se il tipo dispositivo è un reader rfid Impinj recuper la configurazione annessa
+				// Se il tipo dispositivo è un reader rfid Impinj recuper la configurazione
+				// annessa
 				if (dispositivo.getIdTipoDispositivo() == 1 && dispositivo.getIdModelloReader() == 5) {
-					ConfReader confReader = confReaderRepository.findByIdTunnelAndIdDispositivo(tunnel.getId(), dispositivo.getId()).get(0);
+					ConfReader confReader = confReaderRepository
+							.findByIdTunnelAndIdDispositivo(tunnel.getId(), dispositivo.getId()).get(0);
 					confReader.getAntennas().addAll(confAntennaRepository.findByIdReader(confReader.getId()));
 					confReader.getPorts().addAll(confPortRepository.findByIdReader(confReader.getId()));
 					confReader.setDispositivo(dispositivo);
 					listReaderImpinj.add(confReader);
 				}
-				// Se il tipo dispositivo è un reader rfid Wiram recuper la configurazione annessa
+				// Se il tipo dispositivo è un reader rfid Wiram recuper la configurazione
+				// annessa
 				if (dispositivo.getIdTipoDispositivo() == 1 && dispositivo.getIdModelloReader() == 6) {
-					ConfReader confReader = confReaderRepository.findByIdTunnelAndIdDispositivo(tunnel.getId(), dispositivo.getId()).get(0);
+					ConfReader confReader = confReaderRepository
+							.findByIdTunnelAndIdDispositivo(tunnel.getId(), dispositivo.getId()).get(0);
 					confReader.setDispositivo(dispositivo);
 					listReaderWirama.add(confReader);
 				}
@@ -193,7 +199,6 @@ public class TunnelService implements ITunnelService {
 			TunnelJob tunnelJob = new TunnelJob(tunnel, listReaderImpinj, listReaderWirama, listBarcode, this);
 			tunnelJob.startTunnel();
 			PoolJob.addJob(tunnelJob.getTunnel().getNome() + "_" + tunnelJob.getTunnel().getId(), tunnelJob);
-			
 
 			tunnel.setStato(true);
 			tunnelRepository.save(tunnel);
@@ -229,36 +234,48 @@ public class TunnelService implements ITunnelService {
 		return listTunnel;
 
 	}
-	
-	
-	public ScannerStream getLastScanner() throws Exception {
+
+	private ScannerStream getLastScanner() throws Exception {
 		ScannerStream scannerStream = scannerStreamRepository.getLastScanner();
 		return scannerStream;
 	}
 
-	
-    @Transactional
-	public void saveStream(Long idTunnel, String ipAdress, ScannerStream ss , Tag tag) throws Exception {
-		ReaderStream readerStream = new ReaderStream();
-		if (ss != null) {
-			
-			//Update dello scanner stream per dire che il dettaglio è stato salvato con setDettaglio a true
-			ss.setDettaglio(true);
-			scannerStreamRepository.save(ss);
-			readerStream.setPackId(ss.getId());
-			readerStream.setPackageData(ss.getPackageData());
+	@Transactional
+	public ScannerStream gestioneStream(TunnelJob tunnelJob, ImpinjReader reader, List<Tag> tags) throws Exception {
+		// Salva il package nello Scanner Stream
+		// if (tunnelJob.getTunnel().getIdSceltaGestColli() == 7 ) {
+		ScannerStream scannerStream = scannerStreamRepository.getLastScanner();
+		if (scannerStream != null) {
+			logger.info("Package: " + scannerStream.getPackageData());
+			scannerStream.setDettaglio(true);
+			scannerStream = scannerStreamRepository.save(scannerStream);
 		} else {
-			//In caso di start/stop senza barcode genero un NOBARCODE e lo salviamo sia in scanner stream che in reader stream
-			String packageData = "NO_BARCODE-" + this.getSeqNextVal();
-			this.createScannerStream(idTunnel, packageData, true);
+			scannerStream = new ScannerStream();
+			String packageData = "NO_BARCODE-" + tunnelRepository.getSeqNextVal();
+			scannerStream.setIdTunnel(tunnelJob.getTunnel().getId());
+			scannerStream.setPackageData(packageData);
+			scannerStream.setDettaglio(true);
+			scannerStream.setTimeStamp(new Date());
+			scannerStream = scannerStreamRepository.save(scannerStream);
+			logger.info("Package: " + scannerStream.getPackageData());
 		}
-		
+		// }
+		// Salvo il reader stream
+		for (Tag t : tags) {
+			logger.info("IMPINJ ---->>>> EPC: " + t.getEpc().toString());
+			logger.info("IMPINJ ---->>>> TID: " + t.getTid().toString());
+			this.createReadStream(tunnelJob.getTunnel().getId(), reader.getAddress(), scannerStream, t);
+		}
+		return scannerStream;
+	}
+
+	private void createReadStream(Long idTunnel, String ipAdress, ScannerStream ss, Tag tag) throws Exception {
+		ReaderStream readerStream = new ReaderStream();
 		readerStream.setIdTunnel(idTunnel);
 		readerStream.setEpc(tag.getEpc().toHexString());
 		readerStream.setTimeStamp(new Timestamp(System.currentTimeMillis()));
 		readerStream.setTid(tag.getTid().toHexString());
 		readerStream.setIpAdress(ipAdress);
-		
 		readerStream.setUserData("");
 		readerStream.setAntennaPortNumber(tag.getAntennaPortNumber() + "");
 		readerStream.setChannelInMhz(tag.getChannelInMhz() + "");
@@ -272,7 +289,7 @@ public class TunnelService implements ITunnelService {
 		readerStream.setFirstSeenTime(tag.getFirstSeenTime() + "");
 		readerStream.setLastSeenTime(tag.getLastSeenTime() + "");
 		readerStreamRepository.save(readerStream);
-		
+
 	}
 
 	public void createScannerStream(Long tunnelId, String packageData, boolean dettaglio) throws Exception {
@@ -286,7 +303,7 @@ public class TunnelService implements ITunnelService {
 
 	public ReaderStreamAtteso createReaderStreamAtteso(String collo, String epc, String tid) throws Exception {
 		ReaderStreamAtteso rsa = new ReaderStreamAtteso();
-		rsa.setPackId(collo);
+		rsa.setPackageData(collo);
 		rsa.setEpc(epc);
 		rsa.setTid(tid);
 		ReaderStreamAtteso readerStreamAtteso = readerStreamAttesoRepository.save(rsa);
@@ -304,28 +321,30 @@ public class TunnelService implements ITunnelService {
 		return nextVal;
 	}
 
-	public int compareByPackage(String packId, Boolean epc, Boolean tid, Boolean user, Boolean barcode, Boolean quantita) throws Exception {
+	public int compareByPackage(Long packId, String packageData, Boolean epc, Boolean tid, Boolean user,
+			Boolean barcode, Boolean quantita) throws Exception {
 		int ret = 2;
-		String comp = compareQuantitaByPackage(packId);
+		String comp = compareQuantitaByPackage(packId, packageData);
 		if (comp.equals("OK")) {
 			ret = 1;
 		}
 		if (quantita) {
 			return ret;
 		}
-		//Se la quantita è OK allora controllo anche il contenuto in caso di selezione diversa da quantita
+		// Se la quantita è OK allora controllo anche il contenuto in caso di selezione
+		// diversa da quantita
 		if (ret == 1) {
 			if (epc) {
-				comp = compareEPCByPackage(packId);
+				comp = compareEPCByPackage(packId, packageData);
 			}
 			if (tid) {
-				comp = compareTIDByPackage(packId);
+				comp = compareTIDByPackage(packId, packageData);
 			}
 			if (user) {
-				comp = compareUserByPackage(packId);
+				comp = compareUserByPackage(packId, packageData);
 			}
 			if (barcode) {
-				comp = compareBarcodeByPackage(packId);
+				comp = compareBarcodeByPackage(packId, packageData);
 			}
 		}
 		if (comp.equals("OK")) {
@@ -336,13 +355,15 @@ public class TunnelService implements ITunnelService {
 		return ret;
 	}
 
-	public String compareEPCByPackage(String packId) throws Exception {
+	public String compareEPCByPackage(Long packId, String packageData) throws Exception {
 		String ret = "OK";
-		List<StreamEPCDifference> listDiffFromAttesoAndRead = readerStreamAttesoRepository.getDiffEPCExpectedRead(packId);
+		List<StreamEPCDifference> listDiffFromAttesoAndRead = readerStreamAttesoRepository
+				.getDiffEPCExpectedRead(packId, packageData);
 		if (listDiffFromAttesoAndRead.size() > 0) {
 			ret = "KO - Expected > Read";
 		}
-		List<StreamEPCDifference> listDiffFromReadAndAtteso = readerStreamAttesoRepository.getDiffEPCReadExpected(packId);
+		List<StreamEPCDifference> listDiffFromReadAndAtteso = readerStreamAttesoRepository
+				.getDiffEPCReadExpected(packId, packageData);
 		if (listDiffFromReadAndAtteso.size() > 0) {
 			if (!StringUtils.isEmpty(ret))
 				ret = ret + " AND ";
@@ -351,13 +372,15 @@ public class TunnelService implements ITunnelService {
 		return ret;
 	}
 
-	public String compareTIDByPackage(String packId) throws Exception {
+	public String compareTIDByPackage(Long packId, String packageData) throws Exception {
 		String ret = "OK";
-		List<StreamTIDDifference> listDiffFromAttesoAndRead = readerStreamAttesoRepository.getDiffTIDExpectedRead(packId);
+		List<StreamTIDDifference> listDiffFromAttesoAndRead = readerStreamAttesoRepository
+				.getDiffTIDExpectedRead(packId, packageData);
 		if (listDiffFromAttesoAndRead.size() > 0) {
 			ret = "KO - Expected > Read";
 		}
-		List<StreamTIDDifference> listDiffFromReadAndAtteso = readerStreamAttesoRepository.getDiffTIDReadExpected(packId);
+		List<StreamTIDDifference> listDiffFromReadAndAtteso = readerStreamAttesoRepository
+				.getDiffTIDReadExpected(packId, packageData);
 		if (listDiffFromReadAndAtteso.size() > 0) {
 			if (!StringUtils.isEmpty(ret))
 				ret = ret + " AND ";
@@ -366,13 +389,15 @@ public class TunnelService implements ITunnelService {
 		return ret;
 	}
 
-	public String compareBarcodeByPackage(String packId) throws Exception {
+	public String compareBarcodeByPackage(Long packId, String packageData) throws Exception {
 		String ret = "OK";
-		List<StreamBarcodeDifference> listDiffFromAttesoAndRead = readerStreamAttesoRepository.getDiffBCExpectedRead(packId);
+		List<StreamBarcodeDifference> listDiffFromAttesoAndRead = readerStreamAttesoRepository
+				.getDiffBCExpectedRead(packId, packageData);
 		if (listDiffFromAttesoAndRead.size() > 0) {
 			ret = "KO - Expected > Read";
 		}
-		List<StreamBarcodeDifference> listDiffFromReadAndAtteso = readerStreamAttesoRepository.getDiffBCReadExpected(packId);
+		List<StreamBarcodeDifference> listDiffFromReadAndAtteso = readerStreamAttesoRepository
+				.getDiffBCReadExpected(packId, packageData);
 		if (listDiffFromReadAndAtteso.size() > 0) {
 			if (!StringUtils.isEmpty(ret))
 				ret = ret + " AND ";
@@ -381,13 +406,15 @@ public class TunnelService implements ITunnelService {
 		return ret;
 	}
 
-	public String compareUserByPackage(String packId) throws Exception {
+	public String compareUserByPackage(Long packId, String packageData) throws Exception {
 		String ret = "OK";
-		List<StreamUserDifference> listDiffFromAttesoAndRead = readerStreamAttesoRepository.getDiffUSERExpectedRead(packId);
+		List<StreamUserDifference> listDiffFromAttesoAndRead = readerStreamAttesoRepository
+				.getDiffUSERExpectedRead(packId, packageData);
 		if (listDiffFromAttesoAndRead.size() > 0) {
 			ret = "KO - Expected > Read";
 		}
-		List<StreamUserDifference> listDiffFromReadAndAtteso = readerStreamAttesoRepository.getDiffUSERReadExpected(packId);
+		List<StreamUserDifference> listDiffFromReadAndAtteso = readerStreamAttesoRepository
+				.getDiffUSERReadExpected(packId, packageData);
 		if (listDiffFromReadAndAtteso.size() > 0) {
 			if (!StringUtils.isEmpty(ret))
 				ret = ret + " AND ";
@@ -396,17 +423,17 @@ public class TunnelService implements ITunnelService {
 		return ret;
 	}
 
-	public String compareQuantitaByPackage(String packId) throws Exception {
+	public String compareQuantitaByPackage(Long packId, String packageData) throws Exception {
 		String ret = "OK";
-		Integer letto = readerStreamAttesoRepository.getCountLetto(packId);
-		
-		Integer atteso = readerStreamAttesoRepository.getCountExpected(packId);
+		Integer letto = readerStreamAttesoRepository.getCountLetto(packId, packageData);
+
+		Integer atteso = readerStreamAttesoRepository.getCountExpected(packId, packageData);
 		if (letto.intValue() != atteso.intValue()) {
 			ret = "KO";
 		}
 		return ret;
 	}
-	
+
 	public List<ReaderStream> getAllDataStream() throws Exception {
 		//
 		List<ReaderStream> readerDataList = readerStreamRepository.findAll(Sort.by(Sort.Direction.DESC, "timeStamp"));

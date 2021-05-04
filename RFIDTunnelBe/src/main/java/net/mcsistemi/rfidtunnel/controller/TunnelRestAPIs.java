@@ -139,15 +139,15 @@ public class TunnelRestAPIs {
 		}
 	}
 	
-	@GetMapping("/compareByPackage")
-	public int compareEPCByPackage(@RequestParam String packId,  @RequestParam boolean epc,
-			@RequestParam boolean tid, @RequestParam boolean user, @RequestParam boolean barcode, @RequestParam boolean quantita) throws Exception {
-		try {
-			return tunnelService.compareByPackage(packId, epc, tid, user, barcode, quantita);
-		} catch (Exception e) {
-			throw e;
-		}
-	}
+//	@GetMapping("/compareByPackage")
+//	public int compareEPCByPackage(@RequestParam String packId,  @RequestParam boolean epc,
+//			@RequestParam boolean tid, @RequestParam boolean user, @RequestParam boolean barcode, @RequestParam boolean quantita) throws Exception {
+//		try {
+//			return tunnelService.compareByPackage(packId, epc, tid, user, barcode, quantita);
+//		} catch (Exception e) {
+//			throw e;
+//		}
+//	}
 	
 	
 	

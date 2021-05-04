@@ -21,7 +21,7 @@ public class ReaderStreamAtteso {
 	@Column(name = "id")
 	private Long id;
 
-	private String packId;
+	private String packageData;
 
 	private String epc;
 
@@ -46,13 +46,15 @@ public class ReaderStreamAtteso {
 	}
 
 
-	public String getPackId() {
-		return packId;
+	
+
+	public String getPackageData() {
+		return packageData;
 	}
 
 
-	public void setPackId(String packId) {
-		this.packId = packId;
+	public void setPackageData(String packageData) {
+		this.packageData = packageData;
 	}
 
 

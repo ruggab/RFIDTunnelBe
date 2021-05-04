@@ -97,7 +97,7 @@ public class TagOpCompleteListenerImplementation implements TagOpCompleteListene
 						epc = confReader.isEnableEpc() ?  epc : "";
 						tid = confReader.isEnableTid() ? tid : "";
 						user = confReader.isEnableUser() ? user : "";
-						tunnelService.createReaderStream(this.ipAdress, epc, tid, user, "",new Timestamp(System.currentTimeMillis()));
+						//tunnelService.createReaderStream(this.ipAdress, epc, tid, user, "",new Timestamp(System.currentTimeMillis()));
 					}
 				}
 			}
