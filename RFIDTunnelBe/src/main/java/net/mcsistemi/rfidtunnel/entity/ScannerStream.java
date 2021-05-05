@@ -1,5 +1,6 @@
 package net.mcsistemi.rfidtunnel.entity;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -10,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
 
 @Entity
@@ -38,7 +40,13 @@ public class ScannerStream {
 
 	@Column(nullable = true)
 	private long quantita;
+	
+	@Transient
+	private String dataForm;
+	
+	
 
+	
 	public ScannerStream() {
 	}
 
@@ -98,6 +106,17 @@ public class ScannerStream {
 		this.packageData = packageData;
 	}
 	
+	public String getDataForm() {
+		Date date = new Date();
+		date.setTime(this.timeStamp.getTime());
+		String formattedDate = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(date);
+		return formattedDate;
+	}
+
+	public void setDataForm(String dataForm) {
+		this.dataForm = dataForm;
+	}
+
 	
 
 }
