@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import net.mcsistemi.rfidtunnel.entity.ReaderStream;
 import net.mcsistemi.rfidtunnel.entity.ReaderStreamAtteso;
+import net.mcsistemi.rfidtunnel.entity.ScannerStream;
 import net.mcsistemi.rfidtunnel.entity.Tunnel;
 import net.mcsistemi.rfidtunnel.exception.ResourceNotFoundException;
 import net.mcsistemi.rfidtunnel.repository.ReaderStreamAttesoRepository.StreamEPCDifference;
@@ -162,10 +163,20 @@ public class TunnelRestAPIs {
 	}
 	
 	
-	@GetMapping("/allDataStream")
+	@GetMapping("/allReaderStream")
 	public List<ReaderStream> getAllReaderStream() throws Exception, ResourceNotFoundException {
 		try {
-			return tunnelService.getAllDataStream();
+			return tunnelService.getAllReaderStream();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	
+	@GetMapping("/allScannerStream")
+	public List<ScannerStream> getAllScannerStream() throws Exception, ResourceNotFoundException {
+		try {
+			return tunnelService.getAllScannerStream();
 		} catch (Exception e) {
 			throw e;
 		}

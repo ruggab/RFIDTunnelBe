@@ -442,10 +442,17 @@ public class TunnelService implements ITunnelService {
 		return ret;
 	}
 
-	public List<ReaderStream> getAllDataStream() throws Exception {
+	public List<ReaderStream> getAllReaderStream() throws Exception {
 		//
-		List<ReaderStream> readerDataList = readerStreamRepository.findAll(Sort.by(Sort.Direction.DESC, "timeStamp"));
-		return readerDataList;
+		List<ReaderStream> listReaderStream = readerStreamRepository.findAll(Sort.by(Sort.Direction.DESC, "timeStamp"));
+		return listReaderStream;
+	}
+	
+	
+	public List<ScannerStream> getAllScannerStream() throws Exception {
+		//
+		List<ScannerStream> listScannerStream = scannerStreamRepository.findAll(Sort.by(Sort.Direction.DESC, "timeStamp"));
+		return listScannerStream;
 	}
 
 }
