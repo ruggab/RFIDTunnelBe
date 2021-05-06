@@ -22,7 +22,6 @@ import com.impinj.octane.Tag;
 import net.mcsistemi.rfidtunnel.entity.ConfAntenna;
 import net.mcsistemi.rfidtunnel.entity.ConfReader;
 import net.mcsistemi.rfidtunnel.entity.Dispositivo;
-import net.mcsistemi.rfidtunnel.entity.Reader;
 import net.mcsistemi.rfidtunnel.entity.ReaderStream;
 import net.mcsistemi.rfidtunnel.entity.ReaderStreamAtteso;
 import net.mcsistemi.rfidtunnel.entity.ScannerStream;

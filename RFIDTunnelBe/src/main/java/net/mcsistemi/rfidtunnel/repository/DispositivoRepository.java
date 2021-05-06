@@ -7,8 +7,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 import net.mcsistemi.rfidtunnel.entity.Dispositivo;
-import net.mcsistemi.rfidtunnel.entity.Reader;
-import net.mcsistemi.rfidtunnel.entity.Tipologica;
 
 @Repository
 public interface DispositivoRepository extends JpaSpecificationExecutor<Dispositivo>, JpaRepository<Dispositivo, Long> {

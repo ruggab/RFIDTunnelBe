@@ -1,7 +1,6 @@
 package net.mcsistemi.rfidtunnel.services;
 
-import java.sql.Timestamp;
-import java.util.Date;
+import java.io.Reader;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -12,26 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import com.impinj.octane.OctaneSdkException;
-import com.impinj.octane.Tag;
-
-import net.mcsistemi.rfidtunnel.controller.DispositiviRestAPIs;
-import net.mcsistemi.rfidtunnel.entity.Antenna;
 import net.mcsistemi.rfidtunnel.entity.Dispositivo;
-import net.mcsistemi.rfidtunnel.entity.Reader;
-import net.mcsistemi.rfidtunnel.entity.ReaderRfidInpinj;
-import net.mcsistemi.rfidtunnel.entity.ReaderRfidWirama;
-import net.mcsistemi.rfidtunnel.entity.ReaderStream;
 import net.mcsistemi.rfidtunnel.entity.Tipologica;
-import net.mcsistemi.rfidtunnel.job.JobImpinj;
-import net.mcsistemi.rfidtunnel.job.JobWiramaReader;
-import net.mcsistemi.rfidtunnel.job.PoolImpinjReader;
-import net.mcsistemi.rfidtunnel.job.PoolWiramaReader;
-import net.mcsistemi.rfidtunnel.repository.AntennaRepository;
 import net.mcsistemi.rfidtunnel.repository.DispositivoRepository;
-import net.mcsistemi.rfidtunnel.repository.ReaderRepository;
-import net.mcsistemi.rfidtunnel.repository.ReaderStreamRepository;
-import net.mcsistemi.rfidtunnel.repository.TipoReaderRepository;
 import net.mcsistemi.rfidtunnel.repository.TipologicaRepository;
 
 @Service

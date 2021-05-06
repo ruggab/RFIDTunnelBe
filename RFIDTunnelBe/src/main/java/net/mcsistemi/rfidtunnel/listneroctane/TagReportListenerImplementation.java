@@ -11,21 +11,16 @@ import com.impinj.octane.TagReportListener;
 
 import net.mcsistemi.rfidtunnel.entity.ScannerStream;
 import net.mcsistemi.rfidtunnel.job2.TunnelJob;
-import net.mcsistemi.rfidtunnel.services.ReaderService;
 
 public class TagReportListenerImplementation implements TagReportListener {
 
 	Logger logger = Logger.getLogger(TagReportListenerImplementation.class);
-	private ReaderService readerService;
 
 	private TunnelJob tunnelJob;
 
-	public TagReportListenerImplementation(ReaderService readerService) {
-		this.readerService = readerService;
-	}
+
 
 	public TagReportListenerImplementation(TunnelJob tunnelJob) {
-
 		this.tunnelJob = tunnelJob;
 	}
 

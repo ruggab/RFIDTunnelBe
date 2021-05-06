@@ -4,7 +4,6 @@ import com.impinj.octane.GpiChangeListener;
 import com.impinj.octane.GpiEvent;
 import com.impinj.octane.ImpinjReader;
 
-import net.mcsistemi.rfidtunnel.entity.ReaderRfidInpinj;
 import net.mcsistemi.rfidtunnel.services.DispositivoService;
 
 public class GpiChangeListenerImplementation implements GpiChangeListener {
