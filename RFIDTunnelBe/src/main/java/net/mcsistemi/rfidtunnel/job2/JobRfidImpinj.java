@@ -215,7 +215,7 @@ public class JobRfidImpinj extends Job implements JobImpinjInterface {
 			this.reader.applySettings(settings);
 			// Switch all led 0
 		
-			reader.start();
+			//reader.start();
 			logger.info(myDate.getFullDate() + " Reader Start Success");
 		} else {
 			logger.info(myDate.getFullDate() + " Reader Start Failed");
@@ -225,7 +225,7 @@ public class JobRfidImpinj extends Job implements JobImpinjInterface {
 
 	public void stop() throws OctaneSdkException {
 		if (reader!= null) {
-			reader.stop();
+			//reader.stop();
 			reader.disconnect();
 			logger.info("TUNNEL DISCONNECTED, NO OPERATION AVAILABLE !");
 		}

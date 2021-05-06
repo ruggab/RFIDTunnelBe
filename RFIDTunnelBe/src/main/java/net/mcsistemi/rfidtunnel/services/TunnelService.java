@@ -145,9 +145,9 @@ public class TunnelService implements ITunnelService {
 	@Transactional
 	public void save(Tunnel tunnel) throws Exception {
 
-//		if (tunnel.getId() != null) {
-//			tunnelRepository.deleteById(tunnel.getId());
-//		}
+		// if (tunnel.getId() != null) {
+		// tunnelRepository.deleteById(tunnel.getId());
+		// }
 		tunnelRepository.save(tunnel);
 	}
 
@@ -175,8 +175,7 @@ public class TunnelService implements ITunnelService {
 				// Se il tipo dispositivo è un reader rfid Impinj recuper la configurazione
 				// annessa
 				if (dispositivo.getIdTipoDispositivo() == 1 && dispositivo.getIdModelloReader() == 5) {
-					ConfReader confReader = confReaderRepository
-							.findByIdTunnelAndIdDispositivo(tunnel.getId(), dispositivo.getId()).get(0);
+					ConfReader confReader = confReaderRepository.findByIdTunnelAndIdDispositivo(tunnel.getId(), dispositivo.getId()).get(0);
 					confReader.getAntennas().addAll(confAntennaRepository.findByIdReader(confReader.getId()));
 					confReader.getPorts().addAll(confPortRepository.findByIdReader(confReader.getId()));
 					confReader.setDispositivo(dispositivo);
@@ -185,8 +184,7 @@ public class TunnelService implements ITunnelService {
 				// Se il tipo dispositivo è un reader rfid Wiram recuper la configurazione
 				// annessa
 				if (dispositivo.getIdTipoDispositivo() == 1 && dispositivo.getIdModelloReader() == 6) {
-					ConfReader confReader = confReaderRepository
-							.findByIdTunnelAndIdDispositivo(tunnel.getId(), dispositivo.getId()).get(0);
+					ConfReader confReader = confReaderRepository.findByIdTunnelAndIdDispositivo(tunnel.getId(), dispositivo.getId()).get(0);
 					confReader.setDispositivo(dispositivo);
 					listReaderWirama.add(confReader);
 				}
@@ -302,10 +300,9 @@ public class TunnelService implements ITunnelService {
 		ss.setDettaglio(dettaglio);
 		scannerStreamRepository.save(ss);
 	}
-	
-	
+
 	public void saveScannerStream(ScannerStream ss) throws Exception {
-	
+
 		scannerStreamRepository.save(ss);
 	}
 
@@ -329,49 +326,51 @@ public class TunnelService implements ITunnelService {
 		return nextVal;
 	}
 
-	public int compareByPackage(Long packId, String packageData, Boolean epc, Boolean tid, Boolean user,
-			Boolean barcode, Boolean quantita) throws Exception {
+	public int compareByPackage(ScannerStream scannerStream, Boolean epc, Boolean tid, Boolean user, Boolean barcode, Boolean quantita) throws Exception {
 		int ret = 2;
-		String comp = compareQuantitaByPackage(packId, packageData);
-		if (comp.equals("OK")) {
+		String comp = compareQuantitaByPackage(scannerStream.getId(), scannerStream.getPackageData());
+		String quantitaRet = comp.replace("KO", "");
+		if (comp.contains("OK")) {
 			ret = 1;
+			quantitaRet = comp.replace("OK", "");
 		}
-		if (quantita) {
-			return ret;
-		}
-		// Se la quantita è OK allora controllo anche il contenuto in caso di selezione
-		// diversa da quantita
-		if (ret == 1) {
+		comp = comp.replace(quantitaRet, "");
+		if (!quantita && ret == 1) {
+			// Se la quantita è OK allora controllo anche il contenuto in caso di selezione
+			// diversa da quantita
+
 			if (epc) {
-				comp = compareEPCByPackage(packId, packageData);
+				comp = compareEPCByPackage(scannerStream.getId(), scannerStream.getPackageData());
 			}
 			if (tid) {
-				comp = compareTIDByPackage(packId, packageData);
+				comp = compareTIDByPackage(scannerStream.getId(), scannerStream.getPackageData());
 			}
 			if (user) {
-				comp = compareUserByPackage(packId, packageData);
+				comp = compareUserByPackage(scannerStream.getId(), scannerStream.getPackageData());
 			}
 			if (barcode) {
-				comp = compareBarcodeByPackage(packId, packageData);
+				comp = compareBarcodeByPackage(scannerStream.getId(), scannerStream.getPackageData());
 			}
+
 		}
-		if (comp.equals("OK")) {
+		if (comp.contains("OK")) {
 			ret = 1;
 		} else {
 			ret = 2;
 		}
+		scannerStream.setEsito(comp);
+		scannerStream.setQuantita(quantitaRet);
+		scannerStreamRepository.save(scannerStream);
 		return ret;
 	}
 
-	public String compareEPCByPackage(Long packId, String packageData) throws Exception {
+	private String compareEPCByPackage(Long packId, String packageData) throws Exception {
 		String ret = "OK";
-		List<StreamEPCDifference> listDiffFromAttesoAndRead = readerStreamAttesoRepository
-				.getDiffEPCExpectedRead(packId, packageData);
+		List<StreamEPCDifference> listDiffFromAttesoAndRead = readerStreamAttesoRepository.getDiffEPCExpectedRead(packId, packageData);
 		if (listDiffFromAttesoAndRead.size() > 0) {
 			ret = "KO - Expected > Read";
 		}
-		List<StreamEPCDifference> listDiffFromReadAndAtteso = readerStreamAttesoRepository
-				.getDiffEPCReadExpected(packId, packageData);
+		List<StreamEPCDifference> listDiffFromReadAndAtteso = readerStreamAttesoRepository.getDiffEPCReadExpected(packId, packageData);
 		if (listDiffFromReadAndAtteso.size() > 0) {
 			if (!StringUtils.isEmpty(ret))
 				ret = ret + " AND ";
@@ -380,15 +379,13 @@ public class TunnelService implements ITunnelService {
 		return ret;
 	}
 
-	public String compareTIDByPackage(Long packId, String packageData) throws Exception {
+	private String compareTIDByPackage(Long packId, String packageData) throws Exception {
 		String ret = "OK";
-		List<StreamTIDDifference> listDiffFromAttesoAndRead = readerStreamAttesoRepository
-				.getDiffTIDExpectedRead(packId, packageData);
+		List<StreamTIDDifference> listDiffFromAttesoAndRead = readerStreamAttesoRepository.getDiffTIDExpectedRead(packId, packageData);
 		if (listDiffFromAttesoAndRead.size() > 0) {
 			ret = "KO - Expected > Read";
 		}
-		List<StreamTIDDifference> listDiffFromReadAndAtteso = readerStreamAttesoRepository
-				.getDiffTIDReadExpected(packId, packageData);
+		List<StreamTIDDifference> listDiffFromReadAndAtteso = readerStreamAttesoRepository.getDiffTIDReadExpected(packId, packageData);
 		if (listDiffFromReadAndAtteso.size() > 0) {
 			if (!StringUtils.isEmpty(ret))
 				ret = ret + " AND ";
@@ -397,15 +394,13 @@ public class TunnelService implements ITunnelService {
 		return ret;
 	}
 
-	public String compareBarcodeByPackage(Long packId, String packageData) throws Exception {
+	private String compareBarcodeByPackage(Long packId, String packageData) throws Exception {
 		String ret = "OK";
-		List<StreamBarcodeDifference> listDiffFromAttesoAndRead = readerStreamAttesoRepository
-				.getDiffBCExpectedRead(packId, packageData);
+		List<StreamBarcodeDifference> listDiffFromAttesoAndRead = readerStreamAttesoRepository.getDiffBCExpectedRead(packId, packageData);
 		if (listDiffFromAttesoAndRead.size() > 0) {
 			ret = "KO - Expected > Read";
 		}
-		List<StreamBarcodeDifference> listDiffFromReadAndAtteso = readerStreamAttesoRepository
-				.getDiffBCReadExpected(packId, packageData);
+		List<StreamBarcodeDifference> listDiffFromReadAndAtteso = readerStreamAttesoRepository.getDiffBCReadExpected(packId, packageData);
 		if (listDiffFromReadAndAtteso.size() > 0) {
 			if (!StringUtils.isEmpty(ret))
 				ret = ret + " AND ";
@@ -414,15 +409,13 @@ public class TunnelService implements ITunnelService {
 		return ret;
 	}
 
-	public String compareUserByPackage(Long packId, String packageData) throws Exception {
+	private String compareUserByPackage(Long packId, String packageData) throws Exception {
 		String ret = "OK";
-		List<StreamUserDifference> listDiffFromAttesoAndRead = readerStreamAttesoRepository
-				.getDiffUSERExpectedRead(packId, packageData);
+		List<StreamUserDifference> listDiffFromAttesoAndRead = readerStreamAttesoRepository.getDiffUSERExpectedRead(packId, packageData);
 		if (listDiffFromAttesoAndRead.size() > 0) {
 			ret = "KO - Expected > Read";
 		}
-		List<StreamUserDifference> listDiffFromReadAndAtteso = readerStreamAttesoRepository
-				.getDiffUSERReadExpected(packId, packageData);
+		List<StreamUserDifference> listDiffFromReadAndAtteso = readerStreamAttesoRepository.getDiffUSERReadExpected(packId, packageData);
 		if (listDiffFromReadAndAtteso.size() > 0) {
 			if (!StringUtils.isEmpty(ret))
 				ret = ret + " AND ";
@@ -431,7 +424,7 @@ public class TunnelService implements ITunnelService {
 		return ret;
 	}
 
-	public String compareQuantitaByPackage(Long packId, String packageData) throws Exception {
+	private String compareQuantitaByPackage(Long packId, String packageData) throws Exception {
 		String ret = "OK";
 		Integer letto = readerStreamAttesoRepository.getCountLetto(packId, packageData);
 
@@ -439,7 +432,7 @@ public class TunnelService implements ITunnelService {
 		if (letto.intValue() != atteso.intValue()) {
 			ret = "KO";
 		}
-		return ret;
+		return ret + letto;
 	}
 
 	public List<ReaderStream> getAllReaderStream() throws Exception {
@@ -447,8 +440,7 @@ public class TunnelService implements ITunnelService {
 		List<ReaderStream> listReaderStream = readerStreamRepository.findAll(Sort.by(Sort.Direction.DESC, "timeStamp"));
 		return listReaderStream;
 	}
-	
-	
+
 	public List<ScannerStream> getAllScannerStream() throws Exception {
 		//
 		List<ScannerStream> listScannerStream = scannerStreamRepository.findAll(Sort.by(Sort.Direction.DESC, "timeStamp"));

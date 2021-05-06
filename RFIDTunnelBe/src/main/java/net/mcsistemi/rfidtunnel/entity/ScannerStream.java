@@ -39,7 +39,7 @@ public class ScannerStream {
 	private Date timeStamp;
 
 	@Column(nullable = true)
-	private long quantita;
+	private String quantita;
 	
 	@Transient
 	private String dataForm;
@@ -82,14 +82,6 @@ public class ScannerStream {
 		this.dettaglio = dettaglio;
 	}
 
-	public long getQuantita() {
-		return quantita;
-	}
-
-	public void setQuantita(long quantita) {
-		this.quantita = quantita;
-	}
-
 	public Long getIdTunnel() {
 		return idTunnel;
 	}
@@ -115,6 +107,14 @@ public class ScannerStream {
 
 	public void setDataForm(String dataForm) {
 		this.dataForm = dataForm;
+	}
+
+	public String getQuantita() {
+		return quantita;
+	}
+
+	public void setQuantita(String quantita) {
+		this.quantita = quantita;
 	}
 
 	
