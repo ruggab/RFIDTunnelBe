@@ -73,6 +73,7 @@ public class TunnelJob extends Job {
 				Dispositivo dispositivo = (Dispositivo) iterator.next();
 				JobScannerBarcode jobScannerBarcode = (JobScannerBarcode) PoolJob.getJob(dispositivo.getIpAdress() + "_" + dispositivo.getId());
 				jobScannerBarcode.closeSocket();
+				jobScannerBarcode.
 				logger.info("Stop Barcode " + dispositivo.getNome() + " ip:" + dispositivo.getIpAdress());
 				PoolJob.removeJob(dispositivo.getIpAdress() + "_" + dispositivo.getId());
 			}

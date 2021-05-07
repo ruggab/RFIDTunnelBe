@@ -144,15 +144,17 @@ public class TunnelService implements ITunnelService {
 	@Transactional
 	public void save(Tunnel tunnel) throws Exception {
 
-		// if (tunnel.getId() != null) {
-		// tunnelRepository.deleteById(tunnel.getId());
-		// }
 		tunnelRepository.save(tunnel);
 	}
 
 	@Transactional
 	public void aggiornaDispositivo(Dispositivo dispo) throws Exception {
 		dispositivoRepository.save(dispo);
+	}
+	
+	@Transactional
+	public void aggiornaConfReader(ConfReader confReader) throws Exception {
+		confReaderRepository.save(confReader);
 	}
 
 	public List<ConfAntenna> getAllAntenna(Long readerId) throws Exception {

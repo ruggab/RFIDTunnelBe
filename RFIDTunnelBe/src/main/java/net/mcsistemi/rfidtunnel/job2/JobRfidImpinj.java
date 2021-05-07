@@ -45,12 +45,14 @@ public class JobRfidImpinj extends Job implements JobImpinjInterface {
 	private Settings settings = null;
 	
 	private ConfReader confReader;
+	private TunnelJob tunnelJob;
 	
 	public JobRfidImpinj(TunnelJob tunnelJob,  ConfReader confReader) throws Exception {
 
 		// Istanzia l'oggetto Reader
 		this.reader = new ImpinjReader();
 		this.confReader = confReader;
+		this.tunnelJob = tunnelJob;
 		
 
 		try {
@@ -194,39 +196,42 @@ public class JobRfidImpinj extends Job implements JobImpinjInterface {
 			reader.setConnectionLostListener(new ConnectionLostListenerImplement(confReader,tunnelJob.getTunnelService()));
 
 			myDate.RefreshDate();
-			logger.info(myDate.getFullDate() + " READER STARTING ........");
+			
 
 		} catch (Exception e) {
-			this.reader.stop();
-			reader.disconnect();
-			throw e;
+			logger.error("READER IMPINJ FAILED CONFIGURATION !");
+			throw new Exception("Reader IMPINJ FAILED CONFIGURATION - " + " - CAUSE: " + e.getCause() + " - MESSAGE: " + e.getMessage());
 		}
 
 	}
 
-	public void start() throws OctaneSdkException {
+	public void start() throws Exception {
 		if (!reader.isConnected()) {
 			this.reader.connect(this.confReader.getDispositivo().getIpAdress());
-			logger.info(" Reader Already RE - Connected");
+			logger.info(myDate.getFullDate() + " READER STARTING ........");
 		} else {
-			System.out.println(" Reader Already Connected");
+			logger.info(" Reader Already Connected");
 		}
 		if (reader.isConnected()) {
 			this.reader.applySettings(settings);
-			// Switch all led 0
-		
-			//reader.start();
-			logger.info(myDate.getFullDate() + " Reader Start Success");
+			
+			logger.info(myDate.getFullDate() + " READER START SUCCESS");
+			this.confReader.getDispositivo().setStato(true);
+			this.tunnelJob.getTunnelService().aggiornaDispositivo(this.confReader.getDispositivo());
 		} else {
-			logger.info(myDate.getFullDate() + " Reader Start Failed");
+			logger.info(myDate.getFullDate() + " READER START FAILDED");
+			this.confReader.getDispositivo().setStato(false);
+			this.tunnelJob.getTunnelService().aggiornaDispositivo(this.confReader.getDispositivo());
 		}
 
 	}
 
-	public void stop() throws OctaneSdkException {
+	public void stop() throws Exception {
 		if (reader!= null) {
 			//reader.stop();
 			reader.disconnect();
+			this.confReader.getDispositivo().setStato(false);
+			this.tunnelJob.getTunnelService().aggiornaDispositivo(this.confReader.getDispositivo());
 			logger.info("TUNNEL DISCONNECTED, NO OPERATION AVAILABLE !");
 		}
 		

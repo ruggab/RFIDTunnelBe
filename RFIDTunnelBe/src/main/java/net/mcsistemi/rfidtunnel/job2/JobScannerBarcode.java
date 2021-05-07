@@ -37,7 +37,9 @@ public class JobScannerBarcode extends Job implements Runnable {
 			in = connect();
 			String packId = "";
 			String stream = "";
-
+			//START BARCODE
+			dispositivo.setStato(true);
+			tunnelJob.getTunnelService().aggiornaDispositivo(dispositivo);
 			while (running) {
 
 				
@@ -80,16 +82,18 @@ public class JobScannerBarcode extends Job implements Runnable {
 				logger.info("STREAM received " + stream);
 
 			}
+			//Stop BARCODE
+			dispositivo.setStato(false);
+			tunnelJob.getTunnelService().aggiornaDispositivo(dispositivo);
 		} catch (Exception e) {
 			running = false;
 		} finally {
 			try {
-				if (in != null)
-					in.close();
+				if (in != null) in.close();
 				logger.info("disconnecting from: " + this.dispositivo.getIpAdress() + ":" + this.dispositivo.getPorta());
 
 				try {
-					echoSocket.close();
+					if (echoSocket != null) echoSocket.close();
 				} catch (Exception e) {
 					logger.error(e.toString() + " - " + e.getMessage());
 				}
@@ -108,21 +112,32 @@ public class JobScannerBarcode extends Job implements Runnable {
 		try {
 			echoSocket = new Socket(this.dispositivo.getIpAdress(), this.dispositivo.getPorta().intValue());
 			in = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
+			
 		} catch (UnknownHostException e) {
+			running = false;
 			logger.error("Unknown host: " + this.dispositivo.getIpAdress());
 		} catch (IOException e) {
 			logger.error("Connection error to BARCODE " + this.dispositivo.getIpAdress() + " port: " +  this.dispositivo.getPorta().intValue());
+			running = false;
+		} catch (Exception e) {
+			logger.error("Connection error to BARCODE " + this.dispositivo.getIpAdress() + " port: " +  this.dispositivo.getPorta().intValue());
+			running = false;
 		}
 
 		return in;
 	}
 
 	public void closeSocket() {
-		System.out.println("Try to close Socket...");
+		logger.info("Try to close Socket...");
 		try {
 			running = false;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+	
+	
+	
+	
+	
 }
