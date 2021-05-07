@@ -1,4 +1,4 @@
-package net.mcsistemi.rfidtunnel.job2;
+package net.mcsistemi.rfidtunnel.job;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,22 +9,26 @@ import java.net.UnknownHostException;
 import org.apache.log4j.Logger;
 
 import net.mcsistemi.rfidtunnel.entity.Dispositivo;
+import net.mcsistemi.rfidtunnel.entity.Tunnel;
+import net.mcsistemi.rfidtunnel.services.TunnelService;
 
-public class JobScannerBarcode extends Job implements Runnable {
+public class JobScannerBarcode    implements Runnable, JobInterface {
 
 	Logger logger = Logger.getLogger(JobScannerBarcode.class);
 
-	private TunnelJob tunnelJob;
+	
 	private Dispositivo dispositivo;
+	private Tunnel tunnel;
+	private TunnelService tunnelSevice;
 
 
 	Socket echoSocket = null;
 	boolean running = true;
 
-	public JobScannerBarcode(TunnelJob tunnelJob, Dispositivo dispositivo) {
-		this.tunnelJob = tunnelJob;
+	public JobScannerBarcode(Tunnel tunnel, TunnelService tunnelSevice,  Dispositivo dispositivo) {
+		this.tunnel = tunnel;
 		this.dispositivo = dispositivo;
-	
+		this.tunnelSevice = tunnelSevice;
 	}
 
 	// @Override
@@ -39,7 +43,7 @@ public class JobScannerBarcode extends Job implements Runnable {
 			String stream = "";
 			//START BARCODE
 			dispositivo.setStato(true);
-			tunnelJob.getTunnelService().aggiornaDispositivo(dispositivo);
+			tunnelSevice.aggiornaDispositivo(dispositivo);
 			while (running) {
 
 				
@@ -57,20 +61,20 @@ public class JobScannerBarcode extends Job implements Runnable {
 				}
 				
 				packId = packId + stream;
-				if (packId.contains(tunnelJob.getTunnel().getMsgEnd())) {
+				if (packId.contains(tunnel.getMsgEnd())) {
 					
-					packId = packId.substring(0, packId.indexOf(tunnelJob.getTunnel().getMsgEnd()));
+					packId = packId.substring(0, packId.indexOf(tunnel.getMsgEnd()));
 					
 					logger.info("****************");
 					logger.info(packId);
 					logger.info("****************");
 					//SE il package è noread
-					if (packId.equals(tunnelJob.getTunnel().getMsgNoRead())) {
-						packId = tunnelJob.getTunnel().getMsgNoRead() + "-" + tunnelJob.getTunnelService().getSeqNextVal();
-						tunnelJob.getTunnelService().createScannerStream(tunnelJob.getTunnel().getId(), packId, false);
+					if (packId.equals(tunnel.getMsgNoRead())) {
+						packId = tunnel.getMsgNoRead() + "-" + tunnelSevice.getSeqNextVal();
+						tunnelSevice.createScannerStream(tunnel.getId(), packId, false);
 					} else {
-						tunnelJob.setPackId(packId);
-						tunnelJob.getTunnelService().createScannerStream(tunnelJob.getTunnel().getId(), packId, false);
+						
+						tunnelSevice.createScannerStream(tunnel.getId(), packId, false);
 						packId = "";
 						stream = "";
 					}
@@ -84,7 +88,7 @@ public class JobScannerBarcode extends Job implements Runnable {
 			}
 			//Stop BARCODE
 			dispositivo.setStato(false);
-			tunnelJob.getTunnelService().aggiornaDispositivo(dispositivo);
+			tunnelSevice.aggiornaDispositivo(dispositivo);
 		} catch (Exception e) {
 			running = false;
 		} finally {
@@ -127,7 +131,10 @@ public class JobScannerBarcode extends Job implements Runnable {
 		return in;
 	}
 
-	public void closeSocket() {
+	
+
+	@Override
+	public void stop() {
 		logger.info("Try to close Socket...");
 		try {
 			running = false;

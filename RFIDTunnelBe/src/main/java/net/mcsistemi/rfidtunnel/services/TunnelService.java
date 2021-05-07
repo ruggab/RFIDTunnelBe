@@ -3,6 +3,7 @@ package net.mcsistemi.rfidtunnel.services;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -27,8 +28,9 @@ import net.mcsistemi.rfidtunnel.entity.ReaderStreamAtteso;
 import net.mcsistemi.rfidtunnel.entity.ScannerStream;
 import net.mcsistemi.rfidtunnel.entity.Tipologica;
 import net.mcsistemi.rfidtunnel.entity.Tunnel;
-import net.mcsistemi.rfidtunnel.job2.PoolJob;
-import net.mcsistemi.rfidtunnel.job2.TunnelJob;
+import net.mcsistemi.rfidtunnel.job.JobInterface;
+import net.mcsistemi.rfidtunnel.job.JobRfidImpinj;
+import net.mcsistemi.rfidtunnel.job.JobScannerBarcode;
 import net.mcsistemi.rfidtunnel.repository.ConfAntennaRepository;
 import net.mcsistemi.rfidtunnel.repository.ConfPortRepository;
 import net.mcsistemi.rfidtunnel.repository.ConfReaderRepository;
@@ -74,6 +76,10 @@ public class TunnelService implements ITunnelService {
 
 	@Autowired
 	private ReaderStreamAttesoRepository readerStreamAttesoRepository;
+	
+	
+	private Hashtable<String, JobInterface> mapDispo = new Hashtable<String, JobInterface>();
+	
 
 	public Tunnel getTunnelById(Long id) throws Exception {
 		Optional<Tunnel> tunnel = tunnelRepository.findById(id);
@@ -168,40 +174,53 @@ public class TunnelService implements ITunnelService {
 			Optional<Tunnel> tunnelOne = tunnelRepository.findById(tunnel.getId());
 			Tunnel tunnelObj = tunnelOne.get();
 			Set<Dispositivo> dispoSet = tunnelObj.getDispositivi();
-			List<ConfReader> listReaderImpinj = new ArrayList<ConfReader>();
-			List<ConfReader> listReaderWirama = new ArrayList<ConfReader>();
-			List<Dispositivo> listBarcode = new ArrayList<Dispositivo>();
 			for (Iterator iterator = dispoSet.iterator(); iterator.hasNext();) {
 				Dispositivo dispositivo = (Dispositivo) iterator.next();
 				// Se il tipo dispositivo è un reader rfid Impinj recuper la configurazione
 				// annessa
 				if (dispositivo.getIdTipoDispositivo() == 1 && dispositivo.getIdModelloReader() == 5) {
+					
 					ConfReader confReader = confReaderRepository.findByIdTunnelAndIdDispositivo(tunnel.getId(), dispositivo.getId()).get(0);
 					confReader.getAntennas().addAll(confAntennaRepository.findByIdReader(confReader.getId()));
 					confReader.getPorts().addAll(confPortRepository.findByIdReader(confReader.getId()));
 					confReader.setDispositivo(dispositivo);
-					listReaderImpinj.add(confReader);
+					JobRfidImpinj jobRfidImpinj = new JobRfidImpinj(tunnel, this, confReader);
+					jobRfidImpinj.run();
+					mapDispo.put(tunnel.getId()+"|"+dispositivo.getId(), jobRfidImpinj);
+					
 				}
-				// Se il tipo dispositivo è un reader rfid Wiram recuper la configurazione
-				// annessa
+				// Se il tipo dispositivo è un reader rfid Wiram recuper la configurazione annessa
 				if (dispositivo.getIdTipoDispositivo() == 1 && dispositivo.getIdModelloReader() == 6) {
 					ConfReader confReader = confReaderRepository.findByIdTunnelAndIdDispositivo(tunnel.getId(), dispositivo.getId()).get(0);
 					confReader.setDispositivo(dispositivo);
-					listReaderWirama.add(confReader);
+					//START WIRAMA DA GESTIRE
 				}
 				// Se il tipo dispositivo è un Barcode
 				if (dispositivo.getIdTipoDispositivo() == 2) {
-					listBarcode.add(dispositivo);
+					JobScannerBarcode scanner = new JobScannerBarcode(tunnel, this, dispositivo);
+					Thread scannerThread = new Thread(scanner);
+					logger.info("Starting Barcode " + dispositivo.getNome() + " ip:" + dispositivo.getIpAdress());
+					scannerThread.start();
+					mapDispo.put(tunnel.getId()+"|"+dispositivo.getId(), scanner);
 				}
 
 			}
-			TunnelJob tunnelJob = new TunnelJob(tunnel, listReaderImpinj, listReaderWirama, listBarcode, this);
-			tunnelJob.startTunnel();
-			PoolJob.addJob(tunnelJob.getTunnel().getNome() + "_" + tunnelJob.getTunnel().getId(), tunnelJob);
-
-			tunnel.setStato(true);
+			boolean tuttiPartiti = true;
+			//Ricarico i dispositivi con stato aggiornato per capire se tutti sono Startati
+			for (Iterator iterator = dispoSet.iterator(); iterator.hasNext();) {
+				Dispositivo dispositivo = (Dispositivo) iterator.next();
+				Dispositivo dispoAggiornato = this.dispositivoRepository.getOne(dispositivo.getId());
+				if (!dispoAggiornato.isStato()) {
+					tuttiPartiti = false;
+					break;
+				}
+			}
+		
+			tunnel.setStato(tuttiPartiti);
 			tunnelRepository.save(tunnel);
 			listTunnel = tunnelRepository.findAll();
+		
+			
 		} catch (Exception ex) {
 			if (tunnel.isStato()) {
 				listTunnel = this.stop(tunnel);
@@ -215,17 +234,16 @@ public class TunnelService implements ITunnelService {
 	public List<Tunnel> stop(Tunnel tunnel) throws Exception {
 		List<Tunnel> listTunnel = null;
 		try {
-			TunnelJob tunnelJob = (TunnelJob) PoolJob.getJob(tunnel.getNome() + "_" + tunnel.getId());
-			if (tunnelJob != null) {
-				tunnelJob.stopTunnel();
-				PoolJob.removeJob(tunnelJob.getTunnel().getNome() + "_" + tunnelJob.getTunnel().getId());
+			List<JobInterface> lisJob = (ArrayList)mapDispo.values();
+			for (Iterator iterator = lisJob.iterator(); iterator.hasNext();) {
+				JobInterface keyDispo = (JobInterface) iterator.next();
+				keyDispo.stop();
 			}
-
 		} catch (Exception ex) {
 			logger.error(ex.getMessage());
 			throw ex;
 		} finally {
-			// PoolJob.removeJob(reader.getId());
+			
 			tunnel.setStato(false);
 			tunnelRepository.save(tunnel);
 			listTunnel = tunnelRepository.findAll();
@@ -240,7 +258,7 @@ public class TunnelService implements ITunnelService {
 	}
 
 	@Transactional
-	public ScannerStream gestioneStream(TunnelJob tunnelJob, ImpinjReader reader, List<Tag> tags) throws Exception {
+	public ScannerStream gestioneStream(Long idTunnel, ImpinjReader reader, List<Tag> tags) throws Exception {
 		// Salva il package nello Scanner Stream
 		// if (tunnelJob.getTunnel().getIdSceltaGestColli() == 7 ) {
 		ScannerStream scannerStream = scannerStreamRepository.getLastScanner();
@@ -251,7 +269,7 @@ public class TunnelService implements ITunnelService {
 		} else {
 			scannerStream = new ScannerStream();
 			String packageData = "NO_BARCODE-" + tunnelRepository.getSeqNextVal();
-			scannerStream.setIdTunnel(tunnelJob.getTunnel().getId());
+			scannerStream.setIdTunnel(idTunnel);
 			scannerStream.setPackageData(packageData);
 			scannerStream.setDettaglio(true);
 			scannerStream.setTimeStamp(new Date());
@@ -263,7 +281,7 @@ public class TunnelService implements ITunnelService {
 		for (Tag t : tags) {
 			logger.info("IMPINJ ---->>>> EPC: " + t.getEpc().toString());
 			logger.info("IMPINJ ---->>>> TID: " + t.getTid().toString());
-			this.createReadStream(tunnelJob.getTunnel().getId(), reader.getAddress(), scannerStream, t);
+			this.createReadStream(idTunnel, reader.getAddress(), scannerStream, t);
 		}
 		return scannerStream;
 	}

@@ -1,4 +1,4 @@
-package net.mcsistemi.rfidtunnel.job2;
+package net.mcsistemi.rfidtunnel.job;
 
 import java.util.Iterator;
 import java.util.List;
@@ -20,10 +20,12 @@ import com.impinj.octane.TagReadOp;
 import net.mcsistemi.rfidtunnel.entity.ConfAntenna;
 import net.mcsistemi.rfidtunnel.entity.ConfPorta;
 import net.mcsistemi.rfidtunnel.entity.ConfReader;
+import net.mcsistemi.rfidtunnel.entity.Tunnel;
 import net.mcsistemi.rfidtunnel.listneroctane.ConnectionLostListenerImplement;
 import net.mcsistemi.rfidtunnel.listneroctane.KeepAliveListenerImplementation;
 import net.mcsistemi.rfidtunnel.listneroctane.TagOpCompleteListenerImplementation;
 import net.mcsistemi.rfidtunnel.listneroctane.TagReportListenerImplementation;
+import net.mcsistemi.rfidtunnel.services.TunnelService;
 import net.mcsistemi.rfidtunnel.util.DateFunction;
 import net.mcsistemi.rfidtunnel.util.Utils;
 
@@ -36,7 +38,7 @@ import net.mcsistemi.rfidtunnel.util.Utils;
  * 
  */
 
-public class JobRfidImpinj extends Job implements JobImpinjInterface {
+public class JobRfidImpinj  implements JobInterface {
 	Logger logger = Logger.getLogger(JobRfidImpinj.class);
 	
 	
@@ -45,14 +47,16 @@ public class JobRfidImpinj extends Job implements JobImpinjInterface {
 	private Settings settings = null;
 	
 	private ConfReader confReader;
-	private TunnelJob tunnelJob;
+	private TunnelService tunnelService;
+	private Tunnel tunnel;
 	
-	public JobRfidImpinj(TunnelJob tunnelJob,  ConfReader confReader) throws Exception {
+	public JobRfidImpinj(Tunnel tunnel, TunnelService tunnelService,  ConfReader confReader) throws Exception {
 
 		// Istanzia l'oggetto Reader
 		this.reader = new ImpinjReader();
 		this.confReader = confReader;
-		this.tunnelJob = tunnelJob;
+		this.tunnelService = tunnelService;
+		this.tunnel = tunnel;
 		
 
 		try {
@@ -164,7 +168,7 @@ public class JobRfidImpinj extends Job implements JobImpinjInterface {
 				settings.getReport().getOptimizedReadOps().add(readUser);
 				settings.getReport().getOptimizedReadOps().add(readTid);
 				// set up listeners for user and TID also
-				reader.setTagOpCompleteListener(new TagOpCompleteListenerImplementation(confReader, tunnelJob.getTunnelService()));
+				reader.setTagOpCompleteListener(new TagOpCompleteListenerImplementation(confReader, tunnelService));
 			} else {
 				// set up listeners just for EPC
 				// reader.setAntennaChangeListener( new AntennaChangeListenerImplementation());
@@ -183,7 +187,7 @@ public class JobRfidImpinj extends Job implements JobImpinjInterface {
 				r.setIncludeSeenCount(true);
 				settings.setReport(r);
 
-				reader.setTagReportListener(new TagReportListenerImplementation(tunnelJob));
+				reader.setTagReportListener(new TagReportListenerImplementation(tunnelService, tunnel));
 
 			} 
 
@@ -191,9 +195,9 @@ public class JobRfidImpinj extends Job implements JobImpinjInterface {
 				// Configurazione controllo KEEP ALIVE
 				settings.getKeepalives().setPeriodInMs(5000); // Tempo di Attesa prima di attivare evento di
 				settings.getKeepalives().setEnabled(true); // Abilita il Controllo Disconnessione
-				reader.setKeepaliveListener(new KeepAliveListenerImplementation(confReader,tunnelJob.getTunnelService()));
+				reader.setKeepaliveListener(new KeepAliveListenerImplementation(confReader,tunnelService));
 			}
-			reader.setConnectionLostListener(new ConnectionLostListenerImplement(confReader,tunnelJob.getTunnelService()));
+			reader.setConnectionLostListener(new ConnectionLostListenerImplement(confReader,tunnelService));
 
 			myDate.RefreshDate();
 			
@@ -205,7 +209,21 @@ public class JobRfidImpinj extends Job implements JobImpinjInterface {
 
 	}
 
-	public void start() throws Exception {
+	
+
+	public void stop() throws Exception {
+		if (reader!= null) {
+			//reader.stop();
+			reader.disconnect();
+			this.confReader.getDispositivo().setStato(false);
+			this.tunnelService.aggiornaDispositivo(this.confReader.getDispositivo());
+			logger.info("TUNNEL DISCONNECTED, NO OPERATION AVAILABLE !");
+		}
+		
+	}
+
+	@Override
+	public void run() throws Exception {
 		if (!reader.isConnected()) {
 			this.reader.connect(this.confReader.getDispositivo().getIpAdress());
 			logger.info(myDate.getFullDate() + " READER STARTING ........");
@@ -217,22 +235,11 @@ public class JobRfidImpinj extends Job implements JobImpinjInterface {
 			
 			logger.info(myDate.getFullDate() + " READER START SUCCESS");
 			this.confReader.getDispositivo().setStato(true);
-			this.tunnelJob.getTunnelService().aggiornaDispositivo(this.confReader.getDispositivo());
+			this.tunnelService.aggiornaDispositivo(this.confReader.getDispositivo());
 		} else {
 			logger.info(myDate.getFullDate() + " READER START FAILDED");
 			this.confReader.getDispositivo().setStato(false);
-			this.tunnelJob.getTunnelService().aggiornaDispositivo(this.confReader.getDispositivo());
-		}
-
-	}
-
-	public void stop() throws Exception {
-		if (reader!= null) {
-			//reader.stop();
-			reader.disconnect();
-			this.confReader.getDispositivo().setStato(false);
-			this.tunnelJob.getTunnelService().aggiornaDispositivo(this.confReader.getDispositivo());
-			logger.info("TUNNEL DISCONNECTED, NO OPERATION AVAILABLE !");
+			this.tunnelService.aggiornaDispositivo(this.confReader.getDispositivo());
 		}
 		
 	}

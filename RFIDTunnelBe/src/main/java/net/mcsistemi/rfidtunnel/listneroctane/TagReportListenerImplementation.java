@@ -10,34 +10,37 @@ import com.impinj.octane.TagReport;
 import com.impinj.octane.TagReportListener;
 
 import net.mcsistemi.rfidtunnel.entity.ScannerStream;
-import net.mcsistemi.rfidtunnel.job2.TunnelJob;
+import net.mcsistemi.rfidtunnel.entity.Tunnel;
+import net.mcsistemi.rfidtunnel.services.TunnelService;
 
 public class TagReportListenerImplementation implements TagReportListener {
 
 	Logger logger = Logger.getLogger(TagReportListenerImplementation.class);
 
-	private TunnelJob tunnelJob;
+	private TunnelService tunnelService;
+	private Tunnel tunnel;
 
 
 
-	public TagReportListenerImplementation(TunnelJob tunnelJob) {
-		this.tunnelJob = tunnelJob;
+	public TagReportListenerImplementation(TunnelService tunnelService, Tunnel tunnel) {
+		this.tunnelService = tunnelService;
+		this.tunnel = tunnel;
 	}
 
 	@Override
 	public void onTagReported(ImpinjReader impinjReader, TagReport report) {
 		List<Tag> tags = report.getTags();
 		try {
-			ScannerStream scannerStream = this.tunnelJob.getTunnelService().gestioneStream(tunnelJob, impinjReader, tags);
+			ScannerStream scannerStream = this.tunnelService.gestioneStream(tunnel.getId(), impinjReader, tags);
 
 			// Gestioen Atteso
-			if (this.tunnelJob.getTunnel().getIdSceltaGestAtteso() == 7) {
-				int result = this.tunnelJob.getTunnelService().compareByPackage(scannerStream, 
-																				this.tunnelJob.getTunnel().isAttesoEpc(), 
-																				this.tunnelJob.getTunnel().isAttesoTid(), 
-																				this.tunnelJob.getTunnel().isAttesoUser(), 
-																				this.tunnelJob.getTunnel().isAttesoBarcode(), 
-																				this.tunnelJob.getTunnel().isAttesoQuantita());
+			if (this.tunnel.getIdSceltaGestAtteso() == 7) {
+				int result = this.tunnelService.compareByPackage(scannerStream, 
+																				this.tunnel.isAttesoEpc(), 
+																				this.tunnel.isAttesoTid(), 
+																				this.tunnel.isAttesoUser(), 
+																				this.tunnel.isAttesoBarcode(), 
+																				this.tunnel.isAttesoQuantita());
 
 				impinjReader.setGpo(1, false);
 				impinjReader.setGpo(2, false);
