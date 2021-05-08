@@ -42,7 +42,7 @@ public class JobScannerBarcode    implements Runnable, JobInterface {
 			String packId = "";
 			String stream = "";
 			//START BARCODE
-			dispositivo.setStato(true);
+			dispositivo.setStato(running);
 			tunnelSevice.aggiornaDispositivo(dispositivo);
 			while (running) {
 
@@ -87,8 +87,8 @@ public class JobScannerBarcode    implements Runnable, JobInterface {
 
 			}
 			//Stop BARCODE
-			dispositivo.setStato(false);
-			tunnelSevice.aggiornaDispositivo(dispositivo);
+			//dispositivo.setStato(false);
+			//tunnelSevice.aggiornaDispositivo(dispositivo);
 		} catch (Exception e) {
 			running = false;
 		} finally {

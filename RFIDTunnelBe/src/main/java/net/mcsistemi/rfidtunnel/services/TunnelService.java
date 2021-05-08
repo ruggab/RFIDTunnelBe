@@ -76,10 +76,8 @@ public class TunnelService implements ITunnelService {
 
 	@Autowired
 	private ReaderStreamAttesoRepository readerStreamAttesoRepository;
-	
-	
+
 	private Hashtable<String, JobInterface> mapDispo = new Hashtable<String, JobInterface>();
-	
 
 	public Tunnel getTunnelById(Long id) throws Exception {
 		Optional<Tunnel> tunnel = tunnelRepository.findById(id);
@@ -157,7 +155,7 @@ public class TunnelService implements ITunnelService {
 	public void aggiornaDispositivo(Dispositivo dispo) throws Exception {
 		dispositivoRepository.save(dispo);
 	}
-	
+
 	@Transactional
 	public void aggiornaConfReader(ConfReader confReader) throws Exception {
 		confReaderRepository.save(confReader);
@@ -172,28 +170,28 @@ public class TunnelService implements ITunnelService {
 		List<Tunnel> listTunnel = null;
 		try {
 			Optional<Tunnel> tunnelOne = tunnelRepository.findById(tunnel.getId());
-			Tunnel tunnelObj = tunnelOne.get();
-			Set<Dispositivo> dispoSet = tunnelObj.getDispositivi();
+			tunnel = tunnelOne.get();
+			Set<Dispositivo> dispoSet = tunnel.getDispositivi();
 			for (Iterator iterator = dispoSet.iterator(); iterator.hasNext();) {
 				Dispositivo dispositivo = (Dispositivo) iterator.next();
 				// Se il tipo dispositivo è un reader rfid Impinj recuper la configurazione
 				// annessa
 				if (dispositivo.getIdTipoDispositivo() == 1 && dispositivo.getIdModelloReader() == 5) {
-					
+
 					ConfReader confReader = confReaderRepository.findByIdTunnelAndIdDispositivo(tunnel.getId(), dispositivo.getId()).get(0);
 					confReader.getAntennas().addAll(confAntennaRepository.findByIdReader(confReader.getId()));
 					confReader.getPorts().addAll(confPortRepository.findByIdReader(confReader.getId()));
 					confReader.setDispositivo(dispositivo);
 					JobRfidImpinj jobRfidImpinj = new JobRfidImpinj(tunnel, this, confReader);
 					jobRfidImpinj.run();
-					mapDispo.put(tunnel.getId()+"|"+dispositivo.getId(), jobRfidImpinj);
-					
+					mapDispo.put(tunnel.getId() + "|" + dispositivo.getId(), jobRfidImpinj);
+
 				}
 				// Se il tipo dispositivo è un reader rfid Wiram recuper la configurazione annessa
 				if (dispositivo.getIdTipoDispositivo() == 1 && dispositivo.getIdModelloReader() == 6) {
 					ConfReader confReader = confReaderRepository.findByIdTunnelAndIdDispositivo(tunnel.getId(), dispositivo.getId()).get(0);
 					confReader.setDispositivo(dispositivo);
-					//START WIRAMA DA GESTIRE
+					// START WIRAMA DA GESTIRE
 				}
 				// Se il tipo dispositivo è un Barcode
 				if (dispositivo.getIdTipoDispositivo() == 2) {
@@ -201,30 +199,34 @@ public class TunnelService implements ITunnelService {
 					Thread scannerThread = new Thread(scanner);
 					logger.info("Starting Barcode " + dispositivo.getNome() + " ip:" + dispositivo.getIpAdress());
 					scannerThread.start();
-					mapDispo.put(tunnel.getId()+"|"+dispositivo.getId(), scanner);
+					mapDispo.put(tunnel.getId() + "|" + dispositivo.getId(), scanner);
 				}
 
 			}
+			String nomeDeviceKo = "";
 			boolean tuttiPartiti = true;
-			//Ricarico i dispositivi con stato aggiornato per capire se tutti sono Startati
+			// Ricarico i dispositivi con stato aggiornato per capire se tutti sono Startati
 			for (Iterator iterator = dispoSet.iterator(); iterator.hasNext();) {
 				Dispositivo dispositivo = (Dispositivo) iterator.next();
 				Dispositivo dispoAggiornato = this.dispositivoRepository.getOne(dispositivo.getId());
 				if (!dispoAggiornato.isStato()) {
+					nomeDeviceKo = dispositivo.getNome();
 					tuttiPartiti = false;
 					break;
 				}
 			}
-		
+
+			
+			if (!tuttiPartiti) {
+				throw new Exception("Attention the devices " + nomeDeviceKo + " has not started");
+			}
 			tunnel.setStato(tuttiPartiti);
 			tunnelRepository.save(tunnel);
 			listTunnel = tunnelRepository.findAll();
-		
-			
+
 		} catch (Exception ex) {
-			if (tunnel.isStato()) {
-				listTunnel = this.stop(tunnel);
-			}
+			listTunnel = this.stop(tunnel);
+
 			logger.info(ex.getMessage());
 			throw ex;
 		}
@@ -234,7 +236,8 @@ public class TunnelService implements ITunnelService {
 	public List<Tunnel> stop(Tunnel tunnel) throws Exception {
 		List<Tunnel> listTunnel = null;
 		try {
-			List<JobInterface> lisJob = (ArrayList)mapDispo.values();
+
+			List<JobInterface> lisJob = new ArrayList<JobInterface>(mapDispo.values());
 			for (Iterator iterator = lisJob.iterator(); iterator.hasNext();) {
 				JobInterface keyDispo = (JobInterface) iterator.next();
 				keyDispo.stop();
@@ -243,7 +246,7 @@ public class TunnelService implements ITunnelService {
 			logger.error(ex.getMessage());
 			throw ex;
 		} finally {
-			
+
 			tunnel.setStato(false);
 			tunnelRepository.save(tunnel);
 			listTunnel = tunnelRepository.findAll();
