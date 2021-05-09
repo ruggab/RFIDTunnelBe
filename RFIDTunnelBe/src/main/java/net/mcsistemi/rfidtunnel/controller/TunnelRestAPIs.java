@@ -182,5 +182,14 @@ public class TunnelRestAPIs {
 		}
 	}
 	
+	
+	@DeleteMapping("/deleteAllData")
+	public void deleteAllData() throws Exception, ResourceNotFoundException {
+		try {
+			  tunnelService.deleteAllData();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
 
 }

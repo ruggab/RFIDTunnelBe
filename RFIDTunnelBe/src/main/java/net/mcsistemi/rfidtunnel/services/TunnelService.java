@@ -469,6 +469,11 @@ public class TunnelService implements ITunnelService {
 		return listScannerStream;
 	}
 	
-	
-
+	@Transactional
+	public void deleteAllData() throws Exception {
+		//
+		readerStreamRepository.deleteAll();
+		scannerStreamRepository.deleteAll();
+		
+	}
 }
