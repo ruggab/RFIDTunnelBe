@@ -13,14 +13,24 @@ import org.springframework.stereotype.Service;
 
 import net.mcsistemi.rfidtunnel.entity.Dispositivo;
 import net.mcsistemi.rfidtunnel.entity.Tipologica;
+import net.mcsistemi.rfidtunnel.entity.Tunnel;
+import net.mcsistemi.rfidtunnel.entity.TunnelDispositivi;
 import net.mcsistemi.rfidtunnel.repository.DispositivoRepository;
 import net.mcsistemi.rfidtunnel.repository.TipologicaRepository;
+import net.mcsistemi.rfidtunnel.repository.TunnelDispositiviRepository;
+import net.mcsistemi.rfidtunnel.repository.TunnelRepository;
 
 @Service
 public class DispositivoService implements IDispositivoService {
 
 	@Autowired
 	private DispositivoRepository dispositivoRepository;
+	
+	@Autowired
+	private TunnelDispositiviRepository tunnelDispositiviRepository;
+	
+	@Autowired
+	private TunnelRepository tunnelRepository;
 
 	
 
@@ -61,6 +71,11 @@ public class DispositivoService implements IDispositivoService {
 		}
 		return dispositivoList;
 	}
+	
+	public List<Dispositivo> findAllDispositivi() throws Exception {
+		List<Dispositivo> dispositivoList = dispositivoRepository.findAllDispositivi();
+		return dispositivoList;
+	}
 
 	public void delete(Long dispoId) throws Exception {
 		dispositivoRepository.deleteById(dispoId);
@@ -68,12 +83,9 @@ public class DispositivoService implements IDispositivoService {
 
 	@Transactional
 	public void save(Dispositivo dispositivo) throws Exception {
-
 		dispositivoRepository.save(dispositivo);
 	}
 
-	
-	
 	
 
 	public List<Dispositivo> getReaderRfidList() throws Exception {
@@ -86,6 +98,20 @@ public class DispositivoService implements IDispositivoService {
 		//
 		List<Dispositivo> dispositivoList = dispositivoRepository.findByIdTipoDispositivo(new Long(2));
 		return dispositivoList;
+	}
+	
+	public List<TunnelDispositivi> findAllTunnelDevice() throws Exception {
+		//
+		List<TunnelDispositivi> tunnelDeviceList = tunnelDispositiviRepository.findAll();
+		
+		for (Iterator iterator = tunnelDeviceList.iterator(); iterator.hasNext();) {
+			TunnelDispositivi tunnelDispositivi = (TunnelDispositivi) iterator.next();
+			Dispositivo dispositivo = dispositivoRepository.getOne(tunnelDispositivi.getDispositiviId());
+			Tunnel tunnel = tunnelRepository.getOne(tunnelDispositivi.getTunnelId());
+			tunnelDispositivi.setDispositivo(dispositivo);
+			tunnelDispositivi.setTunnel(tunnel);
+		}
+		return tunnelDeviceList;
 	}
 
 }

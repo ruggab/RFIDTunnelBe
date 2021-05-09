@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -28,8 +29,7 @@ public class Dispositivo {
 	
 	@ManyToMany
 	private Set<Tunnel> tunnels;
-
-
+	
 	private String nome;
 
 	private Long idTipoDispositivo;
@@ -195,4 +195,8 @@ public class Dispositivo {
 		this.stato = stato;
 	}
 
+
+	
+	
+	
 }
