@@ -191,5 +191,24 @@ public class TunnelRestAPIs {
 			throw e;
 		}
 	}
+	
+	
+	@GetMapping("/enableTrigger")
+	public void enableTrigger() throws Exception, ResourceNotFoundException {
+		try {
+			  tunnelService.enableTrigger();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	@GetMapping("/disableTrigger")
+	public void disableTrigger() throws Exception, ResourceNotFoundException {
+		try {
+			  tunnelService.disableTrigger();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
 
 }

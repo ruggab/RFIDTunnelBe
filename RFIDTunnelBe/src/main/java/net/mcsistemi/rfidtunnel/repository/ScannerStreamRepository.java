@@ -33,4 +33,20 @@ public interface ScannerStreamRepository extends JpaRepository<ScannerStream, Lo
 	@Query(value="select * from scanner_stream where dettaglio = false order by time_stamp desc fetch first 1 rows only ", nativeQuery = true)
     ScannerStream getLastScanner();
 	
+	
+	@Modifying
+	@Transactional
+	@Query(value="ALTER TABLE scanner_stream ENABLE TRIGGER  expt_ean128 ", nativeQuery = true)
+	void enableTrigger();
+	
+	
+	@Modifying
+	@Transactional
+	@Query(value="ALTER TABLE scanner_stream DISABLE TRIGGER  expt_ean128 ", nativeQuery = true)
+	void disableTrigger();
+	
+	
+	
+	
+	
 }

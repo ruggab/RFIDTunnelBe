@@ -12,7 +12,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
-import javax.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "scanner_stream")
@@ -25,11 +24,10 @@ public class ScannerStream {
 
 	private Long idTunnel;
 
-	// @NotBlank
+	
 	private String packageData;
 	
-	// @NotBlank
-	@Column(nullable = true)
+	
 	private String esito;
 
 	// @NotBlank
@@ -38,12 +36,14 @@ public class ScannerStream {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date timeStamp;
 
-	@Column(nullable = true)
+	
 	private String quantita;
+	
+	
+	private String lastEvent;
 	
 	@Transient
 	private String dataForm;
-	
 	
 
 	
@@ -115,6 +115,14 @@ public class ScannerStream {
 
 	public void setQuantita(String quantita) {
 		this.quantita = quantita;
+	}
+
+	public String getLastEvent() {
+		return lastEvent;
+	}
+
+	public void setLastEvent(String lastEvent) {
+		this.lastEvent = lastEvent;
 	}
 
 	

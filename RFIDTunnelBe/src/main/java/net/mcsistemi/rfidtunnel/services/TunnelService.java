@@ -350,7 +350,7 @@ public class TunnelService implements ITunnelService {
 
 	public int compareByPackage(ScannerStream scannerStream, Boolean epc, Boolean tid, Boolean user, Boolean barcode, Boolean quantita) throws Exception {
 		int ret = 2;
-		String comp = compareQuantitaByPackage(scannerStream.getId(), scannerStream.getPackageData(), epc, tid, user, barcode);
+		String comp = compareQuantitaByPackage(scannerStream.getId(), scannerStream.getPackageData(), epc, tid, user, barcode, quantita);
 		String quantitaRet = comp.replace("KO", "");
 		if (comp.contains("OK")) {
 			ret = 1;
@@ -446,13 +446,13 @@ public class TunnelService implements ITunnelService {
 		return ret;
 	}
 
-	private String compareQuantitaByPackage(Long packId, String packageData, boolean epc, boolean tid, boolean user, boolean barcode) throws Exception {
+	private String compareQuantitaByPackage(Long packId, String packageData, boolean epc, boolean tid, boolean user, boolean barcode, boolean quantita) throws Exception {
 		String ret = "OK";
 		Integer letto = null;
 		if (epc) {
 		    letto = readerStreamAttesoRepository.getCountDistinctEpcLetto(packId, packageData);
 		}
-		if (tid) {
+		if (tid||quantita) {
 		    letto = readerStreamAttesoRepository.getCountDistinctTidLetto(packId, packageData);
 		}
 		if (user) {
@@ -488,4 +488,22 @@ public class TunnelService implements ITunnelService {
 		scannerStreamRepository.deleteAll();
 		
 	}
+	
+
+	public void enableTrigger() throws Exception {
+		scannerStreamRepository.enableTrigger();
+		logger.info("Trigger ENABLED");
+	}
+	
+	
+	public void disableTrigger() throws Exception {
+		scannerStreamRepository.disableTrigger();
+		logger.info("Trigger DISABLED");
+	}
+	
+	
+	
+	
+	
+	
 }
