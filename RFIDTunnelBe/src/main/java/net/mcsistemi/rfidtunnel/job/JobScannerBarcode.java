@@ -71,13 +71,12 @@ public class JobScannerBarcode    implements Runnable, JobInterface {
 					//SE il package è noread
 					if (packId.equals(tunnel.getMsgNoRead())) {
 						packId = tunnel.getMsgNoRead() + "-" + tunnelSevice.getSeqNextVal();
-						tunnelSevice.createScannerStream(tunnel.getId(), packId, false);
 					} else {
-						
-						tunnelSevice.createScannerStream(tunnel.getId(), packId, false);
+						tunnelSevice.createScannerStream(tunnel.getId(), packId, "N");
 						packId = "";
 						stream = "";
 					}
+					
 				} else {
 					continue;
 				}

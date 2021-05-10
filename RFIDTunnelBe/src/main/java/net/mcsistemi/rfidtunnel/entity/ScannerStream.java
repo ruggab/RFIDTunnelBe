@@ -30,8 +30,8 @@ public class ScannerStream {
 	
 	private String esito;
 
-	// @NotBlank
-	private boolean dettaglio;
+	
+	private String dettaglio;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date timeStamp;
@@ -74,13 +74,6 @@ public class ScannerStream {
 		this.esito = esito;
 	}
 
-	public boolean isDettaglio() {
-		return dettaglio;
-	}
-
-	public void setDettaglio(boolean dettaglio) {
-		this.dettaglio = dettaglio;
-	}
 
 	public Long getIdTunnel() {
 		return idTunnel;
@@ -123,6 +116,14 @@ public class ScannerStream {
 
 	public void setLastEvent(String lastEvent) {
 		this.lastEvent = lastEvent;
+	}
+
+	public String getDettaglio() {
+		return dettaglio;
+	}
+
+	public void setDettaglio(String dettaglio) {
+		this.dettaglio = dettaglio;
 	}
 
 	

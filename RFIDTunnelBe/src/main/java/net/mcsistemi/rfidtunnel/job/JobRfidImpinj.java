@@ -203,6 +203,7 @@ public class JobRfidImpinj  implements JobInterface {
 			
 
 		} catch (Exception e) {
+			this.stop();
 			logger.error("READER IMPINJ FAILED CONFIGURATION !");
 			throw new Exception("Reader IMPINJ FAILED CONFIGURATION - " + " - CAUSE: " + e.getCause() + " - MESSAGE: " + e.getMessage());
 		}

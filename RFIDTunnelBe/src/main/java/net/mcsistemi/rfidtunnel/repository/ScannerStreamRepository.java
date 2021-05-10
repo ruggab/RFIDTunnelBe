@@ -30,8 +30,11 @@ public interface ScannerStreamRepository extends JpaRepository<ScannerStream, Lo
 	void deleteScannerByPackId(String packId);
 	
 	
-	@Query(value="select * from scanner_stream where dettaglio = false order by time_stamp desc fetch first 1 rows only ", nativeQuery = true)
+	@Query(value="select * from scanner_stream where dettaglio = 'N' order by time_stamp desc fetch first 1 rows only ", nativeQuery = true)
     ScannerStream getLastScanner();
+	
+	@Query(value="select * from scanner_stream where dettaglio = 'N' order by time_stamp desc  ", nativeQuery = true)
+    List<ScannerStream> getScannerNoDetail();
 	
 	
 	@Modifying

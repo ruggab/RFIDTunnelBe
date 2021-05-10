@@ -264,29 +264,36 @@ public class TunnelService implements ITunnelService {
 	public ScannerStream gestioneStream(Long idTunnel, ImpinjReader reader, List<Tag> tags) throws Exception {
 		// Salva il package nello Scanner Stream
 		// if (tunnelJob.getTunnel().getIdSceltaGestColli() == 7 ) {
-		ScannerStream scannerStream = scannerStreamRepository.getLastScanner();
-		if (scannerStream != null) {
-			logger.info("Package: " + scannerStream.getPackageData());
-			scannerStream.setDettaglio(true);
-			scannerStream = scannerStreamRepository.save(scannerStream);
+		ScannerStream lastScannerStream = null;
+		List<ScannerStream> scannerStreamList = scannerStreamRepository.getScannerNoDetail();
+		if (scannerStreamList.size() > 0) {
+			lastScannerStream = scannerStreamList.get(0);
+			logger.info("Package: " + lastScannerStream.getPackageData());
+			lastScannerStream.setDettaglio("Y");
+			lastScannerStream = scannerStreamRepository.save(lastScannerStream);
+			for (int i = 1; i < scannerStreamList.size(); i++) {
+				ScannerStream scannerStream = scannerStreamList.get(i);
+				scannerStream.setDettaglio("ERROR");
+				scannerStream = scannerStreamRepository.save(scannerStream);
+			}
 		} else {
-			scannerStream = new ScannerStream();
+			lastScannerStream = new ScannerStream();
 			String packageData = "NO_BARCODE-" + tunnelRepository.getSeqNextVal();
-			scannerStream.setIdTunnel(idTunnel);
-			scannerStream.setPackageData(packageData);
-			scannerStream.setDettaglio(true);
-			scannerStream.setTimeStamp(new Date());
-			scannerStream = scannerStreamRepository.save(scannerStream);
-			logger.info("Package: " + scannerStream.getPackageData());
+			lastScannerStream.setIdTunnel(idTunnel);
+			lastScannerStream.setPackageData(packageData);
+			lastScannerStream.setDettaglio("Y");
+			lastScannerStream.setTimeStamp(new Date());
+			lastScannerStream = scannerStreamRepository.save(lastScannerStream);
+			logger.info("Package: " + lastScannerStream.getPackageData());
 		}
 		// }
 		// Salvo il reader stream
 		for (Tag t : tags) {
 			logger.info("IMPINJ ---->>>> EPC: " + t.getEpc().toString());
 			logger.info("IMPINJ ---->>>> TID: " + t.getTid().toString());
-			this.createReadStream(idTunnel, reader.getAddress(), scannerStream, t);
+			this.createReadStream(idTunnel, reader.getAddress(), lastScannerStream, t);
 		}
-		return scannerStream;
+		return lastScannerStream;
 	}
 
 	private void createReadStream(Long idTunnel, String ipAdress, ScannerStream ss, Tag tag) throws Exception {
@@ -314,7 +321,7 @@ public class TunnelService implements ITunnelService {
 
 	}
 
-	public void createScannerStream(Long tunnelId, String packageData, boolean dettaglio) throws Exception {
+	public void createScannerStream(Long tunnelId, String packageData, String dettaglio) throws Exception {
 		ScannerStream ss = new ScannerStream();
 		ss.setIdTunnel(tunnelId);
 		ss.setPackageData(packageData);
