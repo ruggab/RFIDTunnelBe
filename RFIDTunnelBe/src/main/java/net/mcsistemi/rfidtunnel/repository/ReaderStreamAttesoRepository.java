@@ -50,8 +50,18 @@ public interface ReaderStreamAttesoRepository extends JpaRepository<ReaderStream
 	List<StreamBarcodeDifference> getDiffBCReadExpected(@Param ("packId") Long packId, @Param ("packageData") String packageData);
 	
 	//QUANTITA
-	@Query(value = "select count (*) from reader_stream s where s.pack_id = :packId and s.package_data = :packageData ", nativeQuery = true)
-	Integer getCountLetto(@Param ("packId") Long packId, @Param ("packageData") String packageData);
+	@Query(value = "select count (distinct (s.epc)) from reader_stream s where s.pack_id = :packId and s.package_data = :packageData ", nativeQuery = true)
+	Integer getCountDistinctEpcLetto(@Param ("packId") Long packId, @Param ("packageData") String packageData);
+
+	//QUANTITA
+	@Query(value = "select count (distinct (s.tid)) from reader_stream s where s.pack_id = :packId and s.package_data = :packageData ", nativeQuery = true)
+	Integer getCountDistinctTidLetto(@Param ("packId") Long packId, @Param ("packageData") String packageData);
+	
+	@Query(value = "select count (distinct (s.barcode)) from reader_stream s where s.pack_id = :packId and s.package_data = :packageData ", nativeQuery = true)
+	Integer getCountDistinctBarcodeLetto(@Param ("packId") Long packId, @Param ("packageData") String packageData);
+
+	@Query(value = "select count (distinct (s.user_data)) from reader_stream s where s.pack_id = :packId and s.package_data = :packageData ", nativeQuery = true)
+	Integer getCountDistinctUserLetto(@Param ("packId") Long packId, @Param ("packageData") String packageData);
 	
 	@Query(value = "select count (*) from reader_stream_atteso a where a.package_data = :packageData ", nativeQuery = true)
 	Integer getCountExpected(@Param ("packageData") String packageData);

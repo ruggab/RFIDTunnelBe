@@ -350,7 +350,7 @@ public class TunnelService implements ITunnelService {
 
 	public int compareByPackage(ScannerStream scannerStream, Boolean epc, Boolean tid, Boolean user, Boolean barcode, Boolean quantita) throws Exception {
 		int ret = 2;
-		String comp = compareQuantitaByPackage(scannerStream.getId(), scannerStream.getPackageData());
+		String comp = compareQuantitaByPackage(scannerStream.getId(), scannerStream.getPackageData(), epc, tid, user, barcode);
 		String quantitaRet = comp.replace("KO", "");
 		if (comp.contains("OK")) {
 			ret = 1;
@@ -446,9 +446,21 @@ public class TunnelService implements ITunnelService {
 		return ret;
 	}
 
-	private String compareQuantitaByPackage(Long packId, String packageData) throws Exception {
+	private String compareQuantitaByPackage(Long packId, String packageData, boolean epc, boolean tid, boolean user, boolean barcode) throws Exception {
 		String ret = "OK";
-		Integer letto = readerStreamAttesoRepository.getCountLetto(packId, packageData);
+		Integer letto = null;
+		if (epc) {
+		    letto = readerStreamAttesoRepository.getCountDistinctEpcLetto(packId, packageData);
+		}
+		if (tid) {
+		    letto = readerStreamAttesoRepository.getCountDistinctTidLetto(packId, packageData);
+		}
+		if (user) {
+		    letto = readerStreamAttesoRepository.getCountDistinctUserLetto(packId, packageData);
+		}
+		if (barcode) {
+		    letto = readerStreamAttesoRepository.getCountDistinctBarcodeLetto(packId, packageData);
+		}
 
 		Integer atteso = readerStreamAttesoRepository.getCountExpected(packageData);
 		if (letto.intValue() != atteso.intValue()) {
