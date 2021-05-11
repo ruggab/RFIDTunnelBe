@@ -37,6 +37,7 @@ public interface ScannerStreamRepository extends JpaRepository<ScannerStream, Lo
     List<ScannerStream> getScannerNoDetail();
 	
 	
+	
 	@Modifying
 	@Transactional
 	@Query(value="ALTER TABLE scanner_stream ENABLE TRIGGER  expt_ean128 ", nativeQuery = true)

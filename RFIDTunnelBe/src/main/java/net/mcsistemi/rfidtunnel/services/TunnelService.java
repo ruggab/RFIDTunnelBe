@@ -41,6 +41,7 @@ import net.mcsistemi.rfidtunnel.repository.ReaderStreamAttesoRepository.StreamEP
 import net.mcsistemi.rfidtunnel.repository.ReaderStreamAttesoRepository.StreamTIDDifference;
 import net.mcsistemi.rfidtunnel.repository.ReaderStreamAttesoRepository.StreamUserDifference;
 import net.mcsistemi.rfidtunnel.repository.ReaderStreamRepository;
+import net.mcsistemi.rfidtunnel.repository.ReaderStreamRepository.ReaderStreamOnly;
 import net.mcsistemi.rfidtunnel.repository.ScannerStreamRepository;
 import net.mcsistemi.rfidtunnel.repository.TipologicaRepository;
 import net.mcsistemi.rfidtunnel.repository.TunnelRepository;
@@ -479,6 +480,13 @@ public class TunnelService implements ITunnelService {
 	public List<ReaderStream> getAllReaderStream() throws Exception {
 		//
 		List<ReaderStream> listReaderStream = readerStreamRepository.findAll(Sort.by(Sort.Direction.DESC, "timeStamp"));
+		return listReaderStream;
+	}
+	
+	
+	public List<ReaderStreamOnly> getAllDistinctReaderStream() throws Exception {
+		//
+		List<ReaderStreamOnly> listReaderStream = readerStreamRepository.getReaderStreamDistinctList();
 		return listReaderStream;
 	}
 

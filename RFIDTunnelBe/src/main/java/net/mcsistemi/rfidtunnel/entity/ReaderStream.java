@@ -42,7 +42,7 @@ public class ReaderStream {
 	private String barcode;
 
 	private String ipAdress;
-
+	
 	private String antennaPortNumber;
 
 	private String firstSeenTime;

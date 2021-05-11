@@ -22,6 +22,7 @@ import net.mcsistemi.rfidtunnel.entity.ScannerStream;
 import net.mcsistemi.rfidtunnel.entity.Tunnel;
 import net.mcsistemi.rfidtunnel.exception.ResourceNotFoundException;
 import net.mcsistemi.rfidtunnel.repository.ReaderStreamAttesoRepository.StreamEPCDifference;
+import net.mcsistemi.rfidtunnel.repository.ReaderStreamRepository.ReaderStreamOnly;
 import net.mcsistemi.rfidtunnel.services.TunnelService;
 
 @RestController
@@ -167,6 +168,15 @@ public class TunnelRestAPIs {
 	public List<ReaderStream> getAllReaderStream() throws Exception, ResourceNotFoundException {
 		try {
 			return tunnelService.getAllReaderStream();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	@GetMapping("/allDistinctReaderStream")
+	public List<ReaderStreamOnly> getAllDistinctReaderStream() throws Exception, ResourceNotFoundException {
+		try {
+			return tunnelService.getAllDistinctReaderStream();
 		} catch (Exception e) {
 			throw e;
 		}
