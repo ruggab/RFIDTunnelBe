@@ -88,8 +88,9 @@ public class ConfReaderService implements IReaderService {
 		if (confReader.getId()!=null) {
 			confAntennaRepository.deleteByIdReader(confReader.getId());
 			confPortRepository.deleteByIdReader(confReader.getId());
+			confReaderRepository.delete(confReader);
 		}
-		confReaderRepository.deleteByIdTunnelAndIdDispositivo(confReader.getIdTunnel(), confReader.getIdDispositivo());
+		//confReaderRepository.deleteByIdTunnelAndIdDispositivo(confReader.getIdTunnel(), confReader.getIdDispositivo());
 		//
 		ConfReader cf = confReaderRepository.save(confReader);
 		List<ConfAntenna> listaAntenna = confReader.getAntennas();
