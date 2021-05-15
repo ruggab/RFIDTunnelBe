@@ -27,8 +27,7 @@ public class Dispositivo {
 	@Column(name = "id")
 	private Long id;
 	
-	@ManyToMany
-	private Set<Tunnel> tunnels;
+	
 	
 	private String nome;
 
@@ -107,13 +106,7 @@ public class Dispositivo {
 		this.nome = nome;
 	}
 
-	public Set<Tunnel> getTunnels() {
-		return tunnels;
-	}
-
-	public void setTunnels(Set<Tunnel> tunnels) {
-		this.tunnels = tunnels;
-	}
+	
 
 	public Long getIdModelloReader() {
 		return idModelloReader;

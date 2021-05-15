@@ -107,10 +107,12 @@ public class JobRfidImpinj  implements JobInterface {
 			// enable this GPI and set some debounce
 			confReader.getDispositivo().getNumPortInput();
 			// Start Port
-			if (!StringUtils.isEmpty(confReader.getGpiPortStart())) {
-				settings.getGpis().get(confReader.getGpiPortStart()).setIsEnabled(true);
-				settings.getGpis().get(confReader.getGpiPortStart()).setPortNumber(confReader.getGpiPortStart());
-				settings.getGpis().get(confReader.getGpiPortStart()).setDebounceInMs(confReader.getDebGpiPortStart());
+			
+			if (confReader.getGpiPortStart() != null) {
+				Integer portStart = confReader.getGpiPortStart()-1;
+				settings.getGpis().get(portStart).setIsEnabled(true);
+				settings.getGpis().get(portStart).setPortNumber(confReader.getGpiPortStart());
+				settings.getGpis().get(portStart).setDebounceInMs(confReader.getDebGpiPortStart());
 			}
 			settings.getAutoStart().setMode(Utils.getAutoStartMode(confReader.getAutoStartMode()));
 			settings.getAutoStart().setGpiPortNumber(confReader.getGpiPortStart());

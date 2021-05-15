@@ -2,8 +2,6 @@ package net.mcsistemi.rfidtunnel.controller;
 
 import java.util.List;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,7 +19,7 @@ import net.mcsistemi.rfidtunnel.entity.ReaderStreamAtteso;
 import net.mcsistemi.rfidtunnel.entity.ScannerStream;
 import net.mcsistemi.rfidtunnel.entity.Tunnel;
 import net.mcsistemi.rfidtunnel.exception.ResourceNotFoundException;
-import net.mcsistemi.rfidtunnel.repository.ReaderStreamAttesoRepository.StreamEPCDifference;
+import net.mcsistemi.rfidtunnel.model.TunnelDevice;
 import net.mcsistemi.rfidtunnel.repository.ReaderStreamRepository.ReaderStreamOnly;
 import net.mcsistemi.rfidtunnel.services.TunnelService;
 
@@ -216,6 +214,15 @@ public class TunnelRestAPIs {
 	public void disableTrigger() throws Exception, ResourceNotFoundException {
 		try {
 			  tunnelService.disableTrigger();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	@GetMapping("/findAllTunnelDevice")
+	public List<TunnelDevice> findAllTunnelDevice() throws Exception, ResourceNotFoundException {
+		try {
+			return tunnelService.findAllTunnelDevice();
 		} catch (Exception e) {
 			throw e;
 		}

@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import net.mcsistemi.rfidtunnel.entity.Dispositivo;
-import net.mcsistemi.rfidtunnel.entity.TunnelDispositivi;
 import net.mcsistemi.rfidtunnel.exception.ResourceNotFoundException;
 import net.mcsistemi.rfidtunnel.services.DispositivoService;
 
@@ -91,13 +90,6 @@ public class DispositiviRestAPIs {
 		}
 	}
 
-	@GetMapping("/findAllTunnelDevice")
-	public List<TunnelDispositivi> findAllTunnelDevice() throws Exception, ResourceNotFoundException {
-		try {
-			return dispositivoService.findAllTunnelDevice();
-		} catch (Exception e) {
-			throw e;
-		}
-	}
+	
 	
 }

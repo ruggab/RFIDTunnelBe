@@ -31,6 +31,7 @@ import net.mcsistemi.rfidtunnel.entity.Tunnel;
 import net.mcsistemi.rfidtunnel.job.JobInterface;
 import net.mcsistemi.rfidtunnel.job.JobRfidImpinj;
 import net.mcsistemi.rfidtunnel.job.JobScannerBarcode;
+import net.mcsistemi.rfidtunnel.model.TunnelDevice;
 import net.mcsistemi.rfidtunnel.repository.ConfAntennaRepository;
 import net.mcsistemi.rfidtunnel.repository.ConfPortRepository;
 import net.mcsistemi.rfidtunnel.repository.ConfReaderRepository;
@@ -517,7 +518,24 @@ public class TunnelService implements ITunnelService {
 	}
 	
 	
-	
+	public List<TunnelDevice> findAllTunnelDevice() throws Exception {
+		//
+		List<TunnelDevice> ret = new ArrayList<TunnelDevice>();
+		List<Tunnel> tunnels = tunnelRepository.findAll();
+		for (Iterator iterator = tunnels.iterator(); iterator.hasNext();) {
+			Tunnel tunnel = (Tunnel) iterator.next();
+			Set<Dispositivo> dispoSet = tunnel.getDispositivi();
+			for (Iterator iterator2 = dispoSet.iterator(); iterator2.hasNext();) {
+				Dispositivo dispositivo = (Dispositivo) iterator2.next();
+				TunnelDevice tunnelDevice = new TunnelDevice();
+				tunnelDevice.setDispositivo(dispositivo);
+				tunnelDevice.setTunnel(tunnel);
+				ret.add(tunnelDevice);
+			}
+		}
+		return ret;
+	}
+
 	
 	
 	
