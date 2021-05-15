@@ -1,4 +1,4 @@
-package net.mcsistemi.rfidtunnel.services;
+package net.mcsistemi.rfidtunnel.db.services;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -9,15 +9,15 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import net.mcsistemi.rfidtunnel.entity.Funzione;
-import net.mcsistemi.rfidtunnel.entity.FunzioneProfilo;
-import net.mcsistemi.rfidtunnel.entity.ProfiloUtente;
-import net.mcsistemi.rfidtunnel.entity.Utente;
-import net.mcsistemi.rfidtunnel.repository.FunzioneProfiloRepository;
-import net.mcsistemi.rfidtunnel.repository.FunzioneRepository;
-import net.mcsistemi.rfidtunnel.repository.ProfiloRepository;
-import net.mcsistemi.rfidtunnel.repository.ProfiloUtenteRepository;
-import net.mcsistemi.rfidtunnel.repository.UtenteRepository;
+import net.mcsistemi.rfidtunnel.db.entity.Funzione;
+import net.mcsistemi.rfidtunnel.db.entity.FunzioneProfilo;
+import net.mcsistemi.rfidtunnel.db.entity.ProfiloUtente;
+import net.mcsistemi.rfidtunnel.db.entity.Utente;
+import net.mcsistemi.rfidtunnel.db.repository.FunzioneProfiloRepository;
+import net.mcsistemi.rfidtunnel.db.repository.FunzioneRepository;
+import net.mcsistemi.rfidtunnel.db.repository.ProfiloRepository;
+import net.mcsistemi.rfidtunnel.db.repository.ProfiloUtenteRepository;
+import net.mcsistemi.rfidtunnel.db.repository.UtenteRepository;
 
 @Service
 public class UtenteService implements IUtenteService {

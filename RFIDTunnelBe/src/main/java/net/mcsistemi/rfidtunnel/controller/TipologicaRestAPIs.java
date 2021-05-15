@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import net.mcsistemi.rfidtunnel.entity.Tipologica;
-import net.mcsistemi.rfidtunnel.services.TipologicaService;
+import net.mcsistemi.rfidtunnel.db.entity.Tipologica;
+import net.mcsistemi.rfidtunnel.db.services.TipologicaService;
 
 @RestController
 @RequestMapping("/api/v1")

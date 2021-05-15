@@ -8,8 +8,8 @@ import com.impinj.octane.ImpinjReader;
 import com.impinj.octane.KeepaliveEvent;
 import com.impinj.octane.KeepaliveListener;
 
-import net.mcsistemi.rfidtunnel.entity.ConfReader;
-import net.mcsistemi.rfidtunnel.services.TunnelService;
+import net.mcsistemi.rfidtunnel.db.entity.ConfReader;
+import net.mcsistemi.rfidtunnel.db.services.TunnelService;
 
 public class KeepAliveListenerImplementation implements KeepaliveListener {
 

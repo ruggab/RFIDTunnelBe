@@ -7,7 +7,7 @@ import com.impinj.octane.ImpinjReader;
 import com.impinj.octane.ReaderStartEvent;
 import com.impinj.octane.ReaderStartListener;
 
-import net.mcsistemi.rfidtunnel.services.DispositivoService;
+import net.mcsistemi.rfidtunnel.db.services.DispositivoService;
 
 public class ReaderStartListenerImplementation implements ReaderStartListener {
 

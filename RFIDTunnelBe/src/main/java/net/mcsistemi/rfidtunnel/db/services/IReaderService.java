@@ -1,4 +1,4 @@
-package net.mcsistemi.rfidtunnel.services;
+package net.mcsistemi.rfidtunnel.db.services;
 
 import org.springframework.stereotype.Service;
 

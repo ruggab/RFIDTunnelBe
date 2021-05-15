@@ -9,8 +9,8 @@ import com.impinj.octane.TagOpReport;
 import com.impinj.octane.TagOpResult;
 import com.impinj.octane.TagReadOpResult;
 
-import net.mcsistemi.rfidtunnel.entity.ConfReader;
-import net.mcsistemi.rfidtunnel.services.TunnelService;
+import net.mcsistemi.rfidtunnel.db.entity.ConfReader;
+import net.mcsistemi.rfidtunnel.db.services.TunnelService;
 
 public class TagOpCompleteListenerImplementation implements TagOpCompleteListener {
 

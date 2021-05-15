@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import net.mcsistemi.rfidtunnel.entity.ConfAntenna;
-import net.mcsistemi.rfidtunnel.entity.ConfPorta;
-import net.mcsistemi.rfidtunnel.entity.ConfReader;
+import net.mcsistemi.rfidtunnel.db.entity.ConfAntenna;
+import net.mcsistemi.rfidtunnel.db.entity.ConfPorta;
+import net.mcsistemi.rfidtunnel.db.entity.ConfReader;
+import net.mcsistemi.rfidtunnel.db.services.ConfReaderService;
 import net.mcsistemi.rfidtunnel.exception.ResourceNotFoundException;
-import net.mcsistemi.rfidtunnel.services.ConfReaderService;
 
 @RestController
 @RequestMapping("/api/v1")

@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import net.mcsistemi.rfidtunnel.entity.Utente;
-import net.mcsistemi.rfidtunnel.services.UtenteService;
+import net.mcsistemi.rfidtunnel.db.entity.Utente;
+import net.mcsistemi.rfidtunnel.db.services.UtenteService;
 
 @RestController
 @RequestMapping("/api/v1")

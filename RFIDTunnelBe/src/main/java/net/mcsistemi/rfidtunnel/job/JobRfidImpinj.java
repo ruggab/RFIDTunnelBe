@@ -17,15 +17,15 @@ import com.impinj.octane.ReportMode;
 import com.impinj.octane.Settings;
 import com.impinj.octane.TagReadOp;
 
-import net.mcsistemi.rfidtunnel.entity.ConfAntenna;
-import net.mcsistemi.rfidtunnel.entity.ConfPorta;
-import net.mcsistemi.rfidtunnel.entity.ConfReader;
-import net.mcsistemi.rfidtunnel.entity.Tunnel;
+import net.mcsistemi.rfidtunnel.db.entity.ConfAntenna;
+import net.mcsistemi.rfidtunnel.db.entity.ConfPorta;
+import net.mcsistemi.rfidtunnel.db.entity.ConfReader;
+import net.mcsistemi.rfidtunnel.db.entity.Tunnel;
+import net.mcsistemi.rfidtunnel.db.services.TunnelService;
 import net.mcsistemi.rfidtunnel.listneroctane.ConnectionLostListenerImplement;
 import net.mcsistemi.rfidtunnel.listneroctane.KeepAliveListenerImplementation;
 import net.mcsistemi.rfidtunnel.listneroctane.TagOpCompleteListenerImplementation;
 import net.mcsistemi.rfidtunnel.listneroctane.TagReportListenerImplementation;
-import net.mcsistemi.rfidtunnel.services.TunnelService;
 import net.mcsistemi.rfidtunnel.util.DateFunction;
 import net.mcsistemi.rfidtunnel.util.Utils;
 

@@ -14,14 +14,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import net.mcsistemi.rfidtunnel.entity.ReaderStream;
-import net.mcsistemi.rfidtunnel.entity.ReaderStreamAtteso;
-import net.mcsistemi.rfidtunnel.entity.ScannerStream;
-import net.mcsistemi.rfidtunnel.entity.Tunnel;
+import net.mcsistemi.rfidtunnel.db.entity.ReaderStream;
+import net.mcsistemi.rfidtunnel.db.entity.ReaderStreamAtteso;
+import net.mcsistemi.rfidtunnel.db.entity.ScannerStream;
+import net.mcsistemi.rfidtunnel.db.entity.Tunnel;
+import net.mcsistemi.rfidtunnel.db.repository.ReaderStreamRepository.ReaderStreamOnly;
+import net.mcsistemi.rfidtunnel.db.services.TunnelService;
 import net.mcsistemi.rfidtunnel.exception.ResourceNotFoundException;
 import net.mcsistemi.rfidtunnel.model.TunnelDevice;
-import net.mcsistemi.rfidtunnel.repository.ReaderStreamRepository.ReaderStreamOnly;
-import net.mcsistemi.rfidtunnel.services.TunnelService;
 
 @RestController
 @RequestMapping("/api/v1")

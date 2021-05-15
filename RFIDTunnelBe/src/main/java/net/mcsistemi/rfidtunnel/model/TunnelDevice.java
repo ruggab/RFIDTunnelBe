@@ -1,7 +1,7 @@
 package net.mcsistemi.rfidtunnel.model;
 
-import net.mcsistemi.rfidtunnel.entity.Dispositivo;
-import net.mcsistemi.rfidtunnel.entity.Tunnel;
+import net.mcsistemi.rfidtunnel.db.entity.Dispositivo;
+import net.mcsistemi.rfidtunnel.db.entity.Tunnel;
 
 /**
  * @author Gabriele

@@ -9,9 +9,9 @@ import com.impinj.octane.Tag;
 import com.impinj.octane.TagReport;
 import com.impinj.octane.TagReportListener;
 
-import net.mcsistemi.rfidtunnel.entity.ScannerStream;
-import net.mcsistemi.rfidtunnel.entity.Tunnel;
-import net.mcsistemi.rfidtunnel.services.TunnelService;
+import net.mcsistemi.rfidtunnel.db.entity.ScannerStream;
+import net.mcsistemi.rfidtunnel.db.entity.Tunnel;
+import net.mcsistemi.rfidtunnel.db.services.TunnelService;
 
 public class TagReportListenerImplementation implements TagReportListener {
 

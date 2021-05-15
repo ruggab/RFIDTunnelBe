@@ -1,4 +1,4 @@
-package net.mcsistemi.rfidtunnel.services;
+package net.mcsistemi.rfidtunnel.db.services;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -20,32 +20,32 @@ import org.springframework.util.StringUtils;
 import com.impinj.octane.ImpinjReader;
 import com.impinj.octane.Tag;
 
-import net.mcsistemi.rfidtunnel.entity.ConfAntenna;
-import net.mcsistemi.rfidtunnel.entity.ConfReader;
-import net.mcsistemi.rfidtunnel.entity.Dispositivo;
-import net.mcsistemi.rfidtunnel.entity.ReaderStream;
-import net.mcsistemi.rfidtunnel.entity.ReaderStreamAtteso;
-import net.mcsistemi.rfidtunnel.entity.ScannerStream;
-import net.mcsistemi.rfidtunnel.entity.Tipologica;
-import net.mcsistemi.rfidtunnel.entity.Tunnel;
+import net.mcsistemi.rfidtunnel.db.entity.ConfAntenna;
+import net.mcsistemi.rfidtunnel.db.entity.ConfReader;
+import net.mcsistemi.rfidtunnel.db.entity.Dispositivo;
+import net.mcsistemi.rfidtunnel.db.entity.ReaderStream;
+import net.mcsistemi.rfidtunnel.db.entity.ReaderStreamAtteso;
+import net.mcsistemi.rfidtunnel.db.entity.ScannerStream;
+import net.mcsistemi.rfidtunnel.db.entity.Tipologica;
+import net.mcsistemi.rfidtunnel.db.entity.Tunnel;
+import net.mcsistemi.rfidtunnel.db.repository.ConfAntennaRepository;
+import net.mcsistemi.rfidtunnel.db.repository.ConfPortRepository;
+import net.mcsistemi.rfidtunnel.db.repository.ConfReaderRepository;
+import net.mcsistemi.rfidtunnel.db.repository.DispositivoRepository;
+import net.mcsistemi.rfidtunnel.db.repository.ReaderStreamAttesoRepository;
+import net.mcsistemi.rfidtunnel.db.repository.ReaderStreamRepository;
+import net.mcsistemi.rfidtunnel.db.repository.ScannerStreamRepository;
+import net.mcsistemi.rfidtunnel.db.repository.TipologicaRepository;
+import net.mcsistemi.rfidtunnel.db.repository.TunnelRepository;
+import net.mcsistemi.rfidtunnel.db.repository.ReaderStreamAttesoRepository.StreamBarcodeDifference;
+import net.mcsistemi.rfidtunnel.db.repository.ReaderStreamAttesoRepository.StreamEPCDifference;
+import net.mcsistemi.rfidtunnel.db.repository.ReaderStreamAttesoRepository.StreamTIDDifference;
+import net.mcsistemi.rfidtunnel.db.repository.ReaderStreamAttesoRepository.StreamUserDifference;
+import net.mcsistemi.rfidtunnel.db.repository.ReaderStreamRepository.ReaderStreamOnly;
 import net.mcsistemi.rfidtunnel.job.JobInterface;
 import net.mcsistemi.rfidtunnel.job.JobRfidImpinj;
 import net.mcsistemi.rfidtunnel.job.JobScannerBarcode;
 import net.mcsistemi.rfidtunnel.model.TunnelDevice;
-import net.mcsistemi.rfidtunnel.repository.ConfAntennaRepository;
-import net.mcsistemi.rfidtunnel.repository.ConfPortRepository;
-import net.mcsistemi.rfidtunnel.repository.ConfReaderRepository;
-import net.mcsistemi.rfidtunnel.repository.DispositivoRepository;
-import net.mcsistemi.rfidtunnel.repository.ReaderStreamAttesoRepository;
-import net.mcsistemi.rfidtunnel.repository.ReaderStreamAttesoRepository.StreamBarcodeDifference;
-import net.mcsistemi.rfidtunnel.repository.ReaderStreamAttesoRepository.StreamEPCDifference;
-import net.mcsistemi.rfidtunnel.repository.ReaderStreamAttesoRepository.StreamTIDDifference;
-import net.mcsistemi.rfidtunnel.repository.ReaderStreamAttesoRepository.StreamUserDifference;
-import net.mcsistemi.rfidtunnel.repository.ReaderStreamRepository;
-import net.mcsistemi.rfidtunnel.repository.ReaderStreamRepository.ReaderStreamOnly;
-import net.mcsistemi.rfidtunnel.repository.ScannerStreamRepository;
-import net.mcsistemi.rfidtunnel.repository.TipologicaRepository;
-import net.mcsistemi.rfidtunnel.repository.TunnelRepository;
 
 @Service
 public class TunnelService implements ITunnelService {

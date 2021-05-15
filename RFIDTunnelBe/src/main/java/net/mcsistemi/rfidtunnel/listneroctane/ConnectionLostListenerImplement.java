@@ -3,8 +3,8 @@ package net.mcsistemi.rfidtunnel.listneroctane;
 import com.impinj.octane.ConnectionLostListener;
 import com.impinj.octane.ImpinjReader;
 
-import net.mcsistemi.rfidtunnel.entity.ConfReader;
-import net.mcsistemi.rfidtunnel.services.TunnelService;
+import net.mcsistemi.rfidtunnel.db.entity.ConfReader;
+import net.mcsistemi.rfidtunnel.db.services.TunnelService;
 import net.mcsistemi.rfidtunnel.util.DateFunction;
 
 public class ConnectionLostListenerImplement implements ConnectionLostListener {
