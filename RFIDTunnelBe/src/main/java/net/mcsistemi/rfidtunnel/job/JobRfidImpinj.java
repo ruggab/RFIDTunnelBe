@@ -105,36 +105,37 @@ public class JobRfidImpinj  implements JobInterface {
 			// reader.setGpiChangeListener(new GpiChangeListenerImplementation());
 
 			// enable this GPI and set some debounce
-			confReader.getDispositivo().getNumPortInput();
+			
 			// Start Port
 			
-			if (confReader.getGpiPortStart() != null) {
-				Integer portStart = confReader.getGpiPortStart()-1;
-				settings.getGpis().get(portStart).setIsEnabled(true);
-				settings.getGpis().get(portStart).setPortNumber(confReader.getGpiPortStart());
-				settings.getGpis().get(portStart).setDebounceInMs(confReader.getDebGpiPortStart());
+			for (int i = 0; i < confReader.getDispositivo().getNumPortInput(); i++) {
+				settings.getGpis().get(i).setIsEnabled(true);
+				settings.getGpis().get(i).setDebounceInMs(confReader.getDebGpiPortStart());
+				settings.getGpis().get(i).setPortNumber(i+1);
 			}
-			settings.getAutoStart().setMode(Utils.getAutoStartMode(confReader.getAutoStartMode()));
-			settings.getAutoStart().setGpiPortNumber(confReader.getGpiPortStart());
-			settings.getAutoStart().setGpiLevel(confReader.isStateGpiPortStart());
+			 
+	        
+	         
+			
+			if (confReader.getGpiPortStart() != null) {
+				settings.getAutoStart().setMode(Utils.getAutoStartMode(confReader.getAutoStartMode()));
+				settings.getAutoStart().setGpiPortNumber(confReader.getGpiPortStart());
+				settings.getAutoStart().setGpiLevel(confReader.isStateGpiPortStart());
+				
+			}
+			
 
 			// Stop Port
-			if (!StringUtils.isEmpty(confReader.getGpiPortStop())) {
-				settings.getGpis().get(confReader.getGpiPortStop()).setIsEnabled(true);
-				settings.getGpis().get(confReader.getGpiPortStop()).setPortNumber(confReader.getGpiPortStop());
-				settings.getGpis().get(confReader.getGpiPortStop()).setDebounceInMs(confReader.getDebGpiPortStop());
+			if (confReader.getGpiPortStop() != null) {
+				settings.getAutoStop().setGpiPortNumber(confReader.getGpiPortStop());
+				settings.getAutoStop().setGpiLevel(confReader.isStateGpiPortStop());
+				settings.getAutoStop().setMode(Utils.getAutoStopMode(confReader.getAutoStopMode()));
+				
 			}
-			// if you set start, you have to set stop
-			settings.getAutoStop().setGpiPortNumber(confReader.getGpiPortStop());
-			settings.getAutoStop().setGpiLevel(confReader.isStateGpiPortStop());
-			settings.getAutoStop().setMode(Utils.getAutoStopMode(confReader.getAutoStopMode()));
-			// settings.getAutoStop().setTimeout(60000);
 
 			// Maitenance port
-			if (!StringUtils.isEmpty(confReader.getGpiPortMaintenance())) {
-				settings.getGpis().get(confReader.getGpiPortMaintenance()).setIsEnabled(true);
-				settings.getGpis().get(confReader.getGpiPortMaintenance()).setPortNumber(confReader.getGpiPortMaintenance());
-				settings.getGpis().get(confReader.getGpiPortMaintenance()).setDebounceInMs(confReader.getDebGpiPortMaintenance());
+			if (confReader.getGpiPortMaintenance() != null) {
+			
 			}
 			
 			GpoConfigGroup gpos = settings.getGpos();
@@ -227,22 +228,28 @@ public class JobRfidImpinj  implements JobInterface {
 
 	@Override
 	public void run() throws Exception {
-		if (!reader.isConnected()) {
-			this.reader.connect(this.confReader.getDispositivo().getIpAdress());
-			logger.info(myDate.getFullDate() + " READER STARTING ........");
-		} else {
-			logger.info(" Reader Already Connected");
-		}
-		if (reader.isConnected()) {
-			this.reader.applySettings(settings);
-			
-			logger.info(myDate.getFullDate() + " READER START SUCCESS");
-			this.confReader.getDispositivo().setStato(true);
-			this.tunnelService.aggiornaDispositivo(this.confReader.getDispositivo());
-		} else {
-			logger.info(myDate.getFullDate() + " READER START FAILDED");
-			this.confReader.getDispositivo().setStato(false);
-			this.tunnelService.aggiornaDispositivo(this.confReader.getDispositivo());
+		try {
+			if (!reader.isConnected()) {
+				this.reader.connect(this.confReader.getDispositivo().getIpAdress());
+				logger.info(myDate.getFullDate() + " READER STARTING ........");
+			} else {
+				logger.info(" Reader Already Connected");
+			}
+			if (reader.isConnected()) {
+				this.reader.applySettings(settings);
+				
+				logger.info(myDate.getFullDate() + " READER START SUCCESS");
+				this.confReader.getDispositivo().setStato(true);
+				this.tunnelService.aggiornaDispositivo(this.confReader.getDispositivo());
+			} else {
+				logger.info(myDate.getFullDate() + " READER START FAILDED");
+				this.confReader.getDispositivo().setStato(false);
+				this.tunnelService.aggiornaDispositivo(this.confReader.getDispositivo());
+			}
+		} catch (Exception e) {
+			this.stop();
+			logger.error("READER IMPINJ FAILED START !");
+			throw new Exception("Reader IMPINJ FAILED START - " + " - CAUSE: " + e.getCause() + " - MESSAGE: " + e.getMessage());
 		}
 		
 	}
