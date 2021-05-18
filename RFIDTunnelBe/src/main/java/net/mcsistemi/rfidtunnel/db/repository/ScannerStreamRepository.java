@@ -50,6 +50,12 @@ public interface ScannerStreamRepository extends JpaRepository<ScannerStream, Lo
 	void disableTrigger();
 	
 	
+	@Query(value="SELECT * FROM scanner_stream WHERE DATE(time_stamp) = current_date   ", nativeQuery = true)
+    List<ScannerStream> getTotalDay();
+	
+	//From Monday to Sunday
+	@Query(value="@Query(select * from scanner_stream WHERE (time_stamp >= date_trunc('week', CURRENT_TIMESTAMP - interval '1 week') and time_stamp < date_trunc('week', CURRENT_TIMESTAMP) )  ", nativeQuery = true)
+    List<ScannerStream> getTotalLastWeek();
 	
 	
 	
