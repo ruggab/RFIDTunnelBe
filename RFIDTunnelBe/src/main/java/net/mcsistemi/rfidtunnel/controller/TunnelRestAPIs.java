@@ -11,14 +11,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import net.mcsistemi.rfidtunnel.db.entity.ReaderStream;
-import net.mcsistemi.rfidtunnel.db.entity.ReaderStreamAtteso;
-import net.mcsistemi.rfidtunnel.db.entity.ScannerStream;
 import net.mcsistemi.rfidtunnel.db.entity.Tunnel;
-import net.mcsistemi.rfidtunnel.db.repository.ReaderStreamRepository.ReaderStreamOnly;
 import net.mcsistemi.rfidtunnel.db.services.TunnelService;
 import net.mcsistemi.rfidtunnel.exception.ResourceNotFoundException;
 import net.mcsistemi.rfidtunnel.model.TunnelDevice;
@@ -30,6 +25,7 @@ public class TunnelRestAPIs {
 
 	@Autowired
 	private TunnelService tunnelService;
+	
 
 	
 
@@ -121,36 +117,6 @@ public class TunnelRestAPIs {
 	}
 	
 	
-	@GetMapping("/readerStreamAtteso/{packId}")
-	public List<ReaderStreamAtteso> getReaderStreamAtteso(@PathVariable(value = "packId") String packId) throws Exception {
-		try {
-			return tunnelService.getReaderStreamAtteso(packId);
-		} catch (Exception e) {
-			throw e;
-		}
-	}
-	
-	@PutMapping ("/createStreamAtteso")
-	public  ReaderStreamAtteso createStreamAtteso(@RequestParam String collo,  @RequestParam(required = false) String epc,  @RequestParam(required = false) String tid) throws Exception {
-		try {
-			return tunnelService.createReaderStreamAtteso(collo, epc, tid);
-		} catch (Exception e) {
-			throw e;
-		}
-	}
-	
-//	@GetMapping("/compareByPackage")
-//	public int compareEPCByPackage(@RequestParam String packId,  @RequestParam boolean epc,
-//			@RequestParam boolean tid, @RequestParam boolean user, @RequestParam boolean barcode, @RequestParam boolean quantita) throws Exception {
-//		try {
-//			return tunnelService.compareByPackage(packId, epc, tid, user, barcode, quantita);
-//		} catch (Exception e) {
-//			throw e;
-//		}
-//	}
-	
-	
-	
 	
 	@GetMapping("/getSeqNextVal")
 	public Integer getSeqNextVal() throws Exception {
@@ -162,62 +128,7 @@ public class TunnelRestAPIs {
 	}
 	
 	
-	@GetMapping("/allReaderStream")
-	public List<ReaderStream> getAllReaderStream() throws Exception, ResourceNotFoundException {
-		try {
-			return tunnelService.getAllReaderStream();
-		} catch (Exception e) {
-			throw e;
-		}
-	}
 	
-	@GetMapping("/allDistinctReaderStream")
-	public List<ReaderStreamOnly> getAllDistinctReaderStream() throws Exception, ResourceNotFoundException {
-		try {
-			return tunnelService.getAllDistinctReaderStream();
-		} catch (Exception e) {
-			throw e;
-		}
-	}
-	
-	
-	@GetMapping("/allScannerStream")
-	public List<ScannerStream> getAllScannerStream() throws Exception, ResourceNotFoundException {
-		try {
-			return tunnelService.getAllScannerStream();
-		} catch (Exception e) {
-			throw e;
-		}
-	}
-	
-	
-	@DeleteMapping("/deleteAllData")
-	public void deleteAllData() throws Exception, ResourceNotFoundException {
-		try {
-			  tunnelService.deleteAllData();
-		} catch (Exception e) {
-			throw e;
-		}
-	}
-	
-	
-	@GetMapping("/enableTrigger")
-	public void enableTrigger() throws Exception, ResourceNotFoundException {
-		try {
-			  tunnelService.enableTrigger();
-		} catch (Exception e) {
-			throw e;
-		}
-	}
-	
-	@GetMapping("/disableTrigger")
-	public void disableTrigger() throws Exception, ResourceNotFoundException {
-		try {
-			  tunnelService.disableTrigger();
-		} catch (Exception e) {
-			throw e;
-		}
-	}
 	
 	@GetMapping("/findAllTunnelDevice")
 	public List<TunnelDevice> findAllTunnelDevice() throws Exception, ResourceNotFoundException {

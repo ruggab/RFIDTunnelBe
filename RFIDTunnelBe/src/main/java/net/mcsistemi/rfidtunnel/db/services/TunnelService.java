@@ -257,10 +257,7 @@ public class TunnelService implements ITunnelService {
 
 	}
 
-	private ScannerStream getLastScanner() throws Exception {
-		ScannerStream scannerStream = scannerStreamRepository.getLastScanner();
-		return scannerStream;
-	}
+	
 
 	@Transactional
 	public ScannerStream gestioneStream(Long idTunnel, ImpinjReader reader, List<Tag> tags) throws Exception {
@@ -323,34 +320,7 @@ public class TunnelService implements ITunnelService {
 
 	}
 
-	public void createScannerStream(Long tunnelId, String packageData, String dettaglio) throws Exception {
-		ScannerStream ss = new ScannerStream();
-		ss.setIdTunnel(tunnelId);
-		ss.setPackageData(packageData);
-		ss.setTimeStamp(new Date());
-		ss.setDettaglio(dettaglio);
-		scannerStreamRepository.save(ss);
-	}
-
-	public void saveScannerStream(ScannerStream ss) throws Exception {
-
-		scannerStreamRepository.save(ss);
-	}
-
-	public ReaderStreamAtteso createReaderStreamAtteso(String collo, String epc, String tid) throws Exception {
-		ReaderStreamAtteso rsa = new ReaderStreamAtteso();
-		rsa.setPackageData(collo);
-		rsa.setEpc(epc);
-		rsa.setTid(tid);
-		ReaderStreamAtteso readerStreamAtteso = readerStreamAttesoRepository.save(rsa);
-		return readerStreamAtteso;
-	}
-
-	public List<ReaderStreamAtteso> getReaderStreamAtteso(String collo) throws Exception {
-
-		List<ReaderStreamAtteso> listStreamAtteso = readerStreamAttesoRepository.getReaderStreamExpectedByCollo(collo);
-		return listStreamAtteso;
-	}
+	
 
 	public Integer getSeqNextVal() throws Exception {
 		Integer nextVal = tunnelRepository.getSeqNextVal();
@@ -478,45 +448,14 @@ public class TunnelService implements ITunnelService {
 		return ret + letto;
 	}
 
-	public List<ReaderStream> getAllReaderStream() throws Exception {
-		//
-		List<ReaderStream> listReaderStream = readerStreamRepository.findAll(Sort.by(Sort.Direction.DESC, "timeStamp"));
-		return listReaderStream;
+	public void createScannerStream(Long tunnelId, String packageData, String dettaglio) throws Exception {
+		ScannerStream ss = new ScannerStream();
+		ss.setIdTunnel(tunnelId);
+		ss.setPackageData(packageData);
+		ss.setTimeStamp(new Date());
+		ss.setDettaglio(dettaglio);
+		scannerStreamRepository.save(ss);
 	}
-	
-	
-	public List<ReaderStreamOnly> getAllDistinctReaderStream() throws Exception {
-		//
-		List<ReaderStreamOnly> listReaderStream = readerStreamRepository.getReaderStreamDistinctList();
-		return listReaderStream;
-	}
-
-	public List<ScannerStream> getAllScannerStream() throws Exception {
-		//
-		List<ScannerStream> listScannerStream = scannerStreamRepository.findAll(Sort.by(Sort.Direction.DESC, "timeStamp"));
-		return listScannerStream;
-	}
-	
-	@Transactional
-	public void deleteAllData() throws Exception {
-		//
-		readerStreamRepository.deleteAll();
-		scannerStreamRepository.deleteAll();
-		
-	}
-	
-
-	public void enableTrigger() throws Exception {
-		scannerStreamRepository.enableTrigger();
-		logger.info("Trigger ENABLED");
-	}
-	
-	
-	public void disableTrigger() throws Exception {
-		scannerStreamRepository.disableTrigger();
-		logger.info("Trigger DISABLED");
-	}
-	
 	
 	public List<TunnelDevice> findAllTunnelDevice() throws Exception {
 		//

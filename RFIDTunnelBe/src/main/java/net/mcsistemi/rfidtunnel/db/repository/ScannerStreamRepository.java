@@ -50,13 +50,26 @@ public interface ScannerStreamRepository extends JpaRepository<ScannerStream, Lo
 	void disableTrigger();
 	
 	
-	@Query(value="SELECT * FROM scanner_stream WHERE DATE(time_stamp) = current_date   ", nativeQuery = true)
-    List<ScannerStream> getTotalDay();
+	@Query(value="SELECT count(*) FROM scanner_stream WHERE DATE(time_stamp) = current_date   ", nativeQuery = true)
+    Integer getTotalPackageReadDay();
+	
+	@Query(value="SELECT count(*) FROM scanner_stream WHERE DATE(time_stamp) = current_date  and esito = 'KO' ", nativeQuery = true)
+    Integer getTotalPackageKoDay();
 	
 	//From Monday to Sunday
-	@Query(value="@Query(select * from scanner_stream WHERE (time_stamp >= date_trunc('week', CURRENT_TIMESTAMP - interval '1 week') and time_stamp < date_trunc('week', CURRENT_TIMESTAMP) )  ", nativeQuery = true)
-    List<ScannerStream> getTotalLastWeek();
+	@Query(value="@Query(select count(*) from scanner_stream WHERE (time_stamp >= date_trunc('week', CURRENT_TIMESTAMP - interval '1 week') and time_stamp < date_trunc('week', CURRENT_TIMESTAMP) )  ", nativeQuery = true)
+	Integer getTotalPackageReadLastWeek();
+	
+	//From Monday to Sunday
+	@Query(value="@Query(select count(*) from scanner_stream WHERE (time_stamp >= date_trunc('week', CURRENT_TIMESTAMP - interval '1 week') and time_stamp < date_trunc('week', CURRENT_TIMESTAMP) and esito = 'KO')  ", nativeQuery = true)
+	Integer getTotalPackageKoLastWeek();
 	
 	
+	//From 1 to 30/31 mese precedente
+	@Query(value="@Query(select * from scanner_stream where time_stamp >= date_trunc('month', now()) - interval '1 month' and time_stamp < date_trunc('month', now())  ", nativeQuery = true)
+	Integer getTotalPackageReadLastMonth();
 	
+	//From 1 to 30/31 mese precedente
+	@Query(value="@Query(select * from scanner_stream where time_stamp >= date_trunc('month', now()) - interval '1 month' and time_stamp < date_trunc('month', now())  and esito = 'KO'", nativeQuery = true)
+	Integer getTotalPackageKoLastMonth();
 }
