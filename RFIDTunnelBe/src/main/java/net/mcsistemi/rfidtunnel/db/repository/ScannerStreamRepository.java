@@ -57,19 +57,19 @@ public interface ScannerStreamRepository extends JpaRepository<ScannerStream, Lo
     Integer getTotalPackageKoDay();
 	
 	//From Monday to Sunday
-	@Query(value="@Query(select count(*) from scanner_stream WHERE (time_stamp >= date_trunc('week', CURRENT_TIMESTAMP - interval '1 week') and time_stamp < date_trunc('week', CURRENT_TIMESTAMP) )  ", nativeQuery = true)
+	@Query(value="SELECT count(*) from scanner_stream WHERE time_stamp >= date_trunc('week', CURRENT_TIMESTAMP - interval '1 week') and time_stamp < date_trunc('week', CURRENT_TIMESTAMP)   ", nativeQuery = true)
 	Integer getTotalPackageReadLastWeek();
 	
 	//From Monday to Sunday
-	@Query(value="@Query(select count(*) from scanner_stream WHERE (time_stamp >= date_trunc('week', CURRENT_TIMESTAMP - interval '1 week') and time_stamp < date_trunc('week', CURRENT_TIMESTAMP) and esito = 'KO')  ", nativeQuery = true)
+	@Query(value="SELECT count(*) from scanner_stream WHERE time_stamp >= date_trunc('week', CURRENT_TIMESTAMP - interval '1 week') and time_stamp < date_trunc('week', CURRENT_TIMESTAMP) and esito = 'KO'  ", nativeQuery = true)
 	Integer getTotalPackageKoLastWeek();
 	
 	
 	//From 1 to 30/31 mese precedente
-	@Query(value="@Query(select * from scanner_stream where time_stamp >= date_trunc('month', now()) - interval '1 month' and time_stamp < date_trunc('month', now())  ", nativeQuery = true)
+	@Query(value="SELECT count(*) from scanner_stream where time_stamp >= date_trunc('month', now()) - interval '1 month' and time_stamp < date_trunc('month', now())  ", nativeQuery = true)
 	Integer getTotalPackageReadLastMonth();
 	
 	//From 1 to 30/31 mese precedente
-	@Query(value="@Query(select * from scanner_stream where time_stamp >= date_trunc('month', now()) - interval '1 month' and time_stamp < date_trunc('month', now())  and esito = 'KO'", nativeQuery = true)
+	@Query(value="SELECT count(*) from scanner_stream where time_stamp >= date_trunc('month', now()) - interval '1 month' and time_stamp < date_trunc('month', now())  and esito = 'KO'", nativeQuery = true)
 	Integer getTotalPackageKoLastMonth();
 }
