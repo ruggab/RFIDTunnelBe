@@ -33,6 +33,8 @@ public class ConfReader {
 	private List<ConfPorta> ports = new ArrayList<ConfPorta>();
 	@Transient
 	private Dispositivo dispositivo;
+	@Transient
+	private Tunnel tunnel;
 	
 	private Long idDispositivo;
 	private Long idTunnel;
@@ -259,5 +261,15 @@ public class ConfReader {
 	public void setSession(Integer session) {
 		this.session = session;
 	}
+
+	public Tunnel getTunnel() {
+		return tunnel;
+	}
+
+	public void setTunnel(Tunnel tunnel) {
+		this.tunnel = tunnel;
+	}
+	
+	
 
 }

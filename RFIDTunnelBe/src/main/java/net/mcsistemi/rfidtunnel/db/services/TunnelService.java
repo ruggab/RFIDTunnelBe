@@ -184,7 +184,8 @@ public class TunnelService implements ITunnelService {
 					confReader.getAntennas().addAll(confAntennaRepository.findByIdReader(confReader.getId()));
 					confReader.getPorts().addAll(confPortRepository.findByIdReader(confReader.getId()));
 					confReader.setDispositivo(dispositivo);
-					JobRfidImpinj jobRfidImpinj = new JobRfidImpinj(tunnel, this, confReader);
+					confReader.setTunnel(tunnel);
+					JobRfidImpinj jobRfidImpinj = new JobRfidImpinj(this, confReader);
 					jobRfidImpinj.run();
 					mapDispo.put(tunnel.getId() + "|" + dispositivo.getId(), jobRfidImpinj);
 
@@ -218,7 +219,6 @@ public class TunnelService implements ITunnelService {
 				}
 			}
 
-			
 			if (!tuttiPartiti) {
 				throw new Exception("Attention the devices " + nomeDeviceKo + " has not started");
 			}
@@ -257,10 +257,8 @@ public class TunnelService implements ITunnelService {
 
 	}
 
-	
-
 	@Transactional
-	public ScannerStream gestioneStream(Long idTunnel, ImpinjReader reader, List<Tag> tags) throws Exception {
+	public ScannerStream gestioneStream(ConfReader confReader, ImpinjReader reader, List<Tag> tags) throws Exception {
 		// Salva il package nello Scanner Stream
 		// if (tunnelJob.getTunnel().getIdSceltaGestColli() == 7 ) {
 		ScannerStream lastScannerStream = null;
@@ -278,7 +276,7 @@ public class TunnelService implements ITunnelService {
 		} else {
 			lastScannerStream = new ScannerStream();
 			String packageData = "NO_BARCODE-" + tunnelRepository.getSeqNextVal();
-			lastScannerStream.setIdTunnel(idTunnel);
+			lastScannerStream.setIdTunnel(confReader.getIdTunnel());
 			lastScannerStream.setPackageData(packageData);
 			lastScannerStream.setDettaglio("Y");
 			lastScannerStream.setTimeStamp(new Date());
@@ -288,20 +286,25 @@ public class TunnelService implements ITunnelService {
 		// }
 		// Salvo il reader stream
 		for (Tag t : tags) {
-			logger.info("IMPINJ ---->>>> EPC: " + t.getEpc().toString());
-			logger.info("IMPINJ ---->>>> TID: " + t.getTid().toString());
-			this.createReadStream(idTunnel, reader.getAddress(), lastScannerStream, t);
+			if (confReader.isEnableEpc()) {
+				logger.info("IMPINJ ---->>>> EPC: " + t.getEpc().toString());
+			}
+			if (confReader.isEnableTid()) {
+				logger.info("IMPINJ ---->>>> TID: " + t.getTid().toString());
+			}
+			this.createReadStream(confReader, lastScannerStream, t);
 		}
 		return lastScannerStream;
 	}
 
-	private void createReadStream(Long idTunnel, String ipAdress, ScannerStream ss, Tag tag) throws Exception {
+	private void createReadStream(ConfReader confreader, ScannerStream ss, Tag tag) throws Exception {
 		ReaderStream readerStream = new ReaderStream();
-		readerStream.setIdTunnel(idTunnel);
-		readerStream.setEpc(tag.getEpc().toHexString());
+		readerStream.setIdTunnel(confreader.getIdTunnel());
+
 		readerStream.setTimeStamp(new Timestamp(System.currentTimeMillis()));
-		readerStream.setTid(tag.getTid().toHexString());
-		readerStream.setIpAdress(ipAdress);
+		readerStream.setEpc(confreader.isEnableEpc() ? tag.getEpc().toHexString() : "");
+		readerStream.setTid(confreader.isEnableTid() ? tag.getTid().toHexString() : "");
+		readerStream.setIpAdress(confreader.getDispositivo().getIpAdress());
 		readerStream.setUserData("");
 		readerStream.setPackId(ss.getId());
 		readerStream.setPackageData(ss.getPackageData());
@@ -319,8 +322,6 @@ public class TunnelService implements ITunnelService {
 		readerStreamRepository.save(readerStream);
 
 	}
-
-	
 
 	public Integer getSeqNextVal() throws Exception {
 		Integer nextVal = tunnelRepository.getSeqNextVal();
@@ -429,16 +430,16 @@ public class TunnelService implements ITunnelService {
 		String ret = "OK";
 		Integer letto = null;
 		if (epc) {
-		    letto = readerStreamAttesoRepository.getCountDistinctEpcLetto(packId, packageData);
+			letto = readerStreamAttesoRepository.getCountDistinctEpcLetto(packId, packageData);
 		}
-		if (tid||quantita) {
-		    letto = readerStreamAttesoRepository.getCountDistinctTidLetto(packId, packageData);
+		if (tid || quantita) {
+			letto = readerStreamAttesoRepository.getCountDistinctTidLetto(packId, packageData);
 		}
 		if (user) {
-		    letto = readerStreamAttesoRepository.getCountDistinctUserLetto(packId, packageData);
+			letto = readerStreamAttesoRepository.getCountDistinctUserLetto(packId, packageData);
 		}
 		if (barcode) {
-		    letto = readerStreamAttesoRepository.getCountDistinctBarcodeLetto(packId, packageData);
+			letto = readerStreamAttesoRepository.getCountDistinctBarcodeLetto(packId, packageData);
 		}
 
 		Integer atteso = readerStreamAttesoRepository.getCountExpected(packageData);
@@ -456,7 +457,7 @@ public class TunnelService implements ITunnelService {
 		ss.setDettaglio(dettaglio);
 		scannerStreamRepository.save(ss);
 	}
-	
+
 	public List<TunnelDevice> findAllTunnelDevice() throws Exception {
 		//
 		List<TunnelDevice> ret = new ArrayList<TunnelDevice>();
@@ -475,7 +476,4 @@ public class TunnelService implements ITunnelService {
 		return ret;
 	}
 
-	
-	
-	
 }

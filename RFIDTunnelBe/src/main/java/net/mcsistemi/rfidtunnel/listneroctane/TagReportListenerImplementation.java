@@ -9,6 +9,7 @@ import com.impinj.octane.Tag;
 import com.impinj.octane.TagReport;
 import com.impinj.octane.TagReportListener;
 
+import net.mcsistemi.rfidtunnel.db.entity.ConfReader;
 import net.mcsistemi.rfidtunnel.db.entity.ScannerStream;
 import net.mcsistemi.rfidtunnel.db.entity.Tunnel;
 import net.mcsistemi.rfidtunnel.db.services.TunnelService;
@@ -18,29 +19,29 @@ public class TagReportListenerImplementation implements TagReportListener {
 	Logger logger = Logger.getLogger(TagReportListenerImplementation.class);
 
 	private TunnelService tunnelService;
-	private Tunnel tunnel;
+	private ConfReader confReader;
 
 
 
-	public TagReportListenerImplementation(TunnelService tunnelService, Tunnel tunnel) {
+	public TagReportListenerImplementation(TunnelService tunnelService, ConfReader confReader) {
 		this.tunnelService = tunnelService;
-		this.tunnel = tunnel;
+		this.confReader = confReader;
 	}
 
 	@Override
 	public void onTagReported(ImpinjReader impinjReader, TagReport report) {
 		List<Tag> tags = report.getTags();
 		try {
-			ScannerStream scannerStream = this.tunnelService.gestioneStream(tunnel.getId(), impinjReader, tags);
+			ScannerStream scannerStream = this.tunnelService.gestioneStream(confReader, impinjReader, tags);
 
 			// Gestioen Atteso
-			if (this.tunnel.getIdSceltaGestAtteso() == 7) {
+			if (confReader.getTunnel().getIdSceltaGestAtteso() == 7) {
 				int result = this.tunnelService.compareByPackage(scannerStream, 
-																				this.tunnel.isAttesoEpc(), 
-																				this.tunnel.isAttesoTid(), 
-																				this.tunnel.isAttesoUser(), 
-																				this.tunnel.isAttesoBarcode(), 
-																				this.tunnel.isAttesoQuantita());
+						confReader.getTunnel().isAttesoEpc(), 
+						confReader.getTunnel().isAttesoTid(), 
+						confReader.getTunnel().isAttesoUser(), 
+						confReader.getTunnel().isAttesoBarcode(), 
+						confReader.getTunnel().isAttesoQuantita());
 
 				impinjReader.setGpo(1, false);
 				impinjReader.setGpo(2, false);

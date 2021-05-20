@@ -48,15 +48,15 @@ public class JobRfidImpinj  implements JobInterface {
 	
 	private ConfReader confReader;
 	private TunnelService tunnelService;
-	private Tunnel tunnel;
 	
-	public JobRfidImpinj(Tunnel tunnel, TunnelService tunnelService,  ConfReader confReader) throws Exception {
+	
+	public JobRfidImpinj(TunnelService tunnelService,  ConfReader confReader) throws Exception {
 
 		// Istanzia l'oggetto Reader
 		this.reader = new ImpinjReader();
 		this.confReader = confReader;
 		this.tunnelService = tunnelService;
-		this.tunnel = tunnel;
+		
 		
 
 		try {
@@ -190,7 +190,7 @@ public class JobRfidImpinj  implements JobInterface {
 				r.setIncludeSeenCount(true);
 				settings.setReport(r);
 
-				reader.setTagReportListener(new TagReportListenerImplementation(tunnelService, tunnel));
+				reader.setTagReportListener(new TagReportListenerImplementation(tunnelService, confReader));
 
 			} 
 
