@@ -269,6 +269,13 @@ public class DataStreamService  {
 		List<ReaderStreamOnly> listReaderStream = readerStreamRepository.getReaderStreamDistinctList();
 		return listReaderStream;
 	}
+	
+	
+	public List<ReaderStreamOnly> getDistinctReaderStreamByPackage(String packId) throws Exception {
+		//
+		List<ReaderStreamOnly> listReaderStream = readerStreamRepository.getReaderStreamDistinctByPackId(packId);
+		return listReaderStream;
+	}
 
 	public List<ScannerStream> getAllScannerStream() throws Exception {
 		//

@@ -66,6 +66,15 @@ public class DataRestAPIs {
 		}
 	}
 	
+	@GetMapping("/distinctReaderStreamByPackage/{packId}")
+	public List<ReaderStreamOnly> getDistinctReaderStreamByPackage(@PathVariable(value = "packId") String packId) throws Exception, ResourceNotFoundException {
+		try {
+			return dataStreamService.getDistinctReaderStreamByPackage(packId);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
 	@GetMapping("/allDistinctReaderStream")
 	public List<ReaderStreamOnly> getAllDistinctReaderStream() throws Exception, ResourceNotFoundException {
 		try {
