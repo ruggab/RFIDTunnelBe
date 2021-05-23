@@ -244,6 +244,7 @@ public class TunnelService implements ITunnelService {
 				JobInterface keyDispo = (JobInterface) iterator.next();
 				keyDispo.stop();
 			}
+			mapDispo.clear();
 		} catch (Exception ex) {
 			logger.error(ex.getMessage());
 			throw ex;
