@@ -1,38 +1,27 @@
 package net.mcsistemi.rfidtunnel.controller;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
-import com.google.common.base.Predicate;
+import org.springframework.web.reactive.config.ResourceHandlerRegistry;
+import org.springframework.web.reactive.config.WebFluxConfigurer;
 
 import springfox.documentation.builders.ApiInfoBuilder;
-import springfox.documentation.service.ApiInfo;
+import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
-import static springfox.documentation.builders.PathSelectors.regex;
-import static com.google.common.base.Predicates.or;
 
-@Configuration
-@EnableSwagger2
-public class SwaggerConfig {
+public class SwaggerConfig implements WebFluxConfigurer {
 
 	@Bean
-	public Docket postsApi() {
-		return new Docket(DocumentationType.SWAGGER_2).groupName("public-api")
-				.apiInfo(apiInfo()).select().paths(postPaths()).build();
+	public Docket createRestApi() {
+		return new Docket(DocumentationType.SWAGGER_2).apiInfo(new ApiInfoBuilder().description("My Reactive API")
+				.title("My Domain object API").version("1.0.0").build()).enable(true).select()
+				.apis(RequestHandlerSelectors.basePackage("net.mcsistemi.rfidtunnel.controller")).paths(PathSelectors.any()).build();
+
 	}
 
-	private Predicate<String> postPaths() {
-		return or(regex("/api/v1.*"));
+	@Override
+	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+		registry.addResourceHandler("/swagger-ui/**").addResourceLocations("classpath:/META-INF/resources/webjars/springfox-swagger-ui/").resourceChain(false);
 	}
-
-	private ApiInfo apiInfo() {
-		return new ApiInfoBuilder().title("Java rfidtunnel API")
-				.description("Java API reference for developers")
-				//.termsOfServiceUrl("http://javainuse.com")
-				.contact("ruggzan@gmail.com").license("MCSistemi License")
-				.licenseUrl("ruggzan@gmail.com").version("1.0").build();
-	}
-
 }
