@@ -8,6 +8,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import javax.transaction.Transactional;
 
@@ -199,9 +201,11 @@ public class TunnelService implements ITunnelService {
 				// Se il tipo dispositivo è un Barcode
 				if (dispositivo.getIdTipoDispositivo() == 2) {
 					JobScannerBarcode scanner = new JobScannerBarcode(tunnel, this, dispositivo);
-					Thread scannerThread = new Thread(scanner);
+					//Thread scannerThread = new Thread(scanner);
 					logger.info("Starting Barcode " + dispositivo.getNome() + " ip:" + dispositivo.getIpAdress());
-					scannerThread.start();
+					Executor executor = Executors.newSingleThreadExecutor();
+					executor.execute(scanner);
+					//scannerThread.start();
 					mapDispo.put(tunnel.getId() + "|" + dispositivo.getId(), scanner);
 				}
 
@@ -238,10 +242,8 @@ public class TunnelService implements ITunnelService {
 	public List<Tunnel> stop(Tunnel tunnel) throws Exception {
 		List<Tunnel> listTunnel = null;
 		try {
-
-			List<JobInterface> lisJob = new ArrayList<JobInterface>(mapDispo.values());
-			for (Iterator iterator = lisJob.iterator(); iterator.hasNext();) {
-				JobInterface keyDispo = (JobInterface) iterator.next();
+			//List<JobInterface> lisJob = new ArrayList<JobInterface>(mapDispo.values());
+			for (JobInterface keyDispo : mapDispo.values()) {
 				keyDispo.stop();
 			}
 			mapDispo.clear();
