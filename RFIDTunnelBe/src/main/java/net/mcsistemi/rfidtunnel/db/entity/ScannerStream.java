@@ -40,7 +40,8 @@ public class ScannerStream {
 	private String quantita;
 	
 	
-	private String lastEvent;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date timeInvio;
 	
 	@Transient
 	private String dataForm;
@@ -110,12 +111,14 @@ public class ScannerStream {
 		this.quantita = quantita;
 	}
 
-	public String getLastEvent() {
-		return lastEvent;
+
+
+	public Date getTimeInvio() {
+		return timeInvio;
 	}
 
-	public void setLastEvent(String lastEvent) {
-		this.lastEvent = lastEvent;
+	public void setTimeInvio(Date timeInvio) {
+		this.timeInvio = timeInvio;
 	}
 
 	public String getDettaglio() {
