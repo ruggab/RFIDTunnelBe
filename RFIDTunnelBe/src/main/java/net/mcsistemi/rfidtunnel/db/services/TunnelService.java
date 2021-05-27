@@ -201,11 +201,11 @@ public class TunnelService implements ITunnelService {
 				// Se il tipo dispositivo è un Barcode
 				if (dispositivo.getIdTipoDispositivo() == 2) {
 					JobScannerBarcode scanner = new JobScannerBarcode(tunnel, this, dispositivo);
-					//Thread scannerThread = new Thread(scanner);
+					Thread scannerThread = new Thread(scanner);
 					logger.info("Starting Barcode " + dispositivo.getNome() + " ip:" + dispositivo.getIpAdress());
-					Executor executor = Executors.newSingleThreadExecutor();
-					executor.execute(scanner);
-					//scannerThread.start();
+					//Executor executor = Executors.newSingleThreadExecutor();
+					//executor.execute(scanner);
+					scannerThread.start();
 					mapDispo.put(tunnel.getId() + "|" + dispositivo.getId(), scanner);
 				}
 
