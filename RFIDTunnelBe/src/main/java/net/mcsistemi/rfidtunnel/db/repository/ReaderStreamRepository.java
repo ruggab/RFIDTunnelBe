@@ -4,9 +4,11 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import net.mcsistemi.rfidtunnel.db.entity.ReaderStream;
 
+@Repository
 public interface ReaderStreamRepository extends JpaRepository<ReaderStream, Long> {
 
 	@Query(value = "select distinct  a.id_tunnel as idTunnel, a.ip_adress, a.pack_id as packId, a.package_data as packageData, a.epc, a.tid, a.barcode, a.user_data from reader_stream a order by a.pack_id desc  ", nativeQuery = true)
