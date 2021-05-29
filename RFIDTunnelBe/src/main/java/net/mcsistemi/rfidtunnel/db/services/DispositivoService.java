@@ -15,6 +15,7 @@ import net.mcsistemi.rfidtunnel.db.entity.Dispositivo;
 import net.mcsistemi.rfidtunnel.db.entity.Tipologica;
 import net.mcsistemi.rfidtunnel.db.repository.DispositivoRepository;
 import net.mcsistemi.rfidtunnel.db.repository.TipologicaRepository;
+import net.mcsistemi.rfidtunnel.db.repository.TunnelRepository;
 
 @Service
 public class DispositivoService implements IDispositivoService {
@@ -23,6 +24,8 @@ public class DispositivoService implements IDispositivoService {
 	private DispositivoRepository dispositivoRepository;
 	
 	
+	@Autowired
+	private TunnelRepository tunnelRepository;
 	
 	
 

@@ -117,6 +117,16 @@ public class TunnelRestAPIs {
 	}
 	
 	
+	@GetMapping("/isTunnelStart/{idTunnel}")
+	public boolean isTunnelStart(@PathVariable(value = "idTunnel") Long idTunnel) throws Exception, ResourceNotFoundException {
+		try {
+			boolean ret = tunnelService.isTunnelStart(idTunnel);
+			return ret;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
 	
 	@GetMapping("/getSeqNextVal")
 	public Integer getSeqNextVal() throws Exception {

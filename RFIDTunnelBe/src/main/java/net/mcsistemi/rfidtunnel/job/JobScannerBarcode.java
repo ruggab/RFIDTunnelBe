@@ -12,20 +12,18 @@ import net.mcsistemi.rfidtunnel.db.entity.Dispositivo;
 import net.mcsistemi.rfidtunnel.db.entity.Tunnel;
 import net.mcsistemi.rfidtunnel.db.services.TunnelService;
 
-public class JobScannerBarcode    implements Runnable, JobInterface {
+public class JobScannerBarcode implements Runnable, JobInterface {
 
 	Logger logger = Logger.getLogger(JobScannerBarcode.class);
 
-	
 	private Dispositivo dispositivo;
 	private Tunnel tunnel;
 	private TunnelService tunnelSevice;
 
-
 	Socket echoSocket = null;
 	boolean running = true;
 
-	public JobScannerBarcode(Tunnel tunnel, TunnelService tunnelSevice,  Dispositivo dispositivo) {
+	public JobScannerBarcode(Tunnel tunnel, TunnelService tunnelSevice, Dispositivo dispositivo) {
 		this.tunnel = tunnel;
 		this.dispositivo = dispositivo;
 		this.tunnelSevice = tunnelSevice;
@@ -41,34 +39,32 @@ public class JobScannerBarcode    implements Runnable, JobInterface {
 			in = connect();
 			String packId = "";
 			String stream = "";
-			//START BARCODE
+			// START BARCODE
 			dispositivo.setStato(running);
 			tunnelSevice.aggiornaDispositivo(dispositivo);
 			while (running) {
-
-				
 
 				try {
 					stream = in.readLine().toString();
 
 				} catch (NullPointerException e) {
 					// e.printStackTrace();
-					
+
 					logger.info("Waiting for JobScannerBarcode streams ... ");
 					Thread.sleep(1000);
 					in = connect();
 					continue;
 				}
-				
+
 				packId = packId + stream;
 				if (packId.contains(tunnel.getMsgEnd())) {
-					
+
 					packId = packId.substring(0, packId.indexOf(tunnel.getMsgEnd()));
-					
+
 					logger.info("****************");
 					logger.info(packId);
 					logger.info("****************");
-					//SE il package è noread
+					// SE il package è noread
 					if (packId.equals(tunnel.getMsgNoRead())) {
 						packId = tunnel.getMsgNoRead() + "-" + tunnelSevice.getSeqNextVal();
 					} else {
@@ -76,27 +72,28 @@ public class JobScannerBarcode    implements Runnable, JobInterface {
 						packId = "";
 						stream = "";
 					}
-					
+
 				} else {
 					continue;
 				}
 
-
 				logger.info("STREAM received " + stream);
 
 			}
-			//Stop BARCODE
-			//dispositivo.setStato(false);
-			//tunnelSevice.aggiornaDispositivo(dispositivo);
+			// Stop BARCODE
+			// dispositivo.setStato(false);
+			// tunnelSevice.aggiornaDispositivo(dispositivo);
 		} catch (Exception e) {
 			running = false;
 		} finally {
 			try {
-				if (in != null) in.close();
+				if (in != null)
+					in.close();
 				logger.info("disconnecting from: " + this.dispositivo.getIpAdress() + ":" + this.dispositivo.getPorta());
 
 				try {
-					if (echoSocket != null) echoSocket.close();
+					if (echoSocket != null)
+						echoSocket.close();
 				} catch (Exception e) {
 					logger.error(e.toString() + " - " + e.getMessage());
 				}
@@ -115,35 +112,32 @@ public class JobScannerBarcode    implements Runnable, JobInterface {
 		try {
 			echoSocket = new Socket(this.dispositivo.getIpAdress(), this.dispositivo.getPorta().intValue());
 			in = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
-			
+
 		} catch (UnknownHostException e) {
-			running = false;
 			logger.error("Unknown host: " + this.dispositivo.getIpAdress());
+			stop();
 		} catch (IOException e) {
-			logger.error("Connection error to BARCODE " + this.dispositivo.getIpAdress() + " port: " +  this.dispositivo.getPorta().intValue());
-			running = false;
+			logger.error("Connection error to BARCODE " + this.dispositivo.getIpAdress() + " port: " + this.dispositivo.getPorta().intValue());
+			stop();
 		} catch (Exception e) {
-			logger.error("Connection error to BARCODE " + this.dispositivo.getIpAdress() + " port: " +  this.dispositivo.getPorta().intValue());
-			running = false;
+			logger.error("Connection error to BARCODE " + this.dispositivo.getIpAdress() + " port: " + this.dispositivo.getPorta().intValue());
+			stop();
 		}
 
 		return in;
 	}
-
-	
 
 	@Override
 	public void stop() {
 		logger.info("Try to close Socket...");
 		try {
 			running = false;
+			if (echoSocket != null) echoSocket.close();
+			dispositivo.setStato(running);
+			tunnelSevice.aggiornaDispositivo(dispositivo);;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
-	
-	
-	
-	
+
 }

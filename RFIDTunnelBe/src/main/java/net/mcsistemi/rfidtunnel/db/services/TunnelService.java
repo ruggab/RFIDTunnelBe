@@ -153,6 +153,10 @@ public class TunnelService implements ITunnelService {
 	public void save(Tunnel tunnel) throws Exception {
 
 		tunnelRepository.save(tunnel);
+		for (Dispositivo dispositivo : tunnel.getDispositivi()) {
+			dispositivo.setIdTunnel(tunnel.getId());
+			dispositivoRepository.save(dispositivo);
+		}  
 	}
 
 	@Transactional
@@ -175,6 +179,9 @@ public class TunnelService implements ITunnelService {
 		try {
 			Optional<Tunnel> tunnelOne = tunnelRepository.findById(tunnel.getId());
 			tunnel = tunnelOne.get();
+			if (tunnel.isStato()) {
+				throw new Exception("Tunnel già in esecuzione");
+			}
 			Set<Dispositivo> dispoSet = tunnel.getDispositivi();
 			for (Iterator iterator = dispoSet.iterator(); iterator.hasNext();) {
 				Dispositivo dispositivo = (Dispositivo) iterator.next();
@@ -208,8 +215,10 @@ public class TunnelService implements ITunnelService {
 					scannerThread.start();
 					mapDispo.put(tunnel.getId() + "|" + dispositivo.getId(), scanner);
 				}
-
 			}
+			//Ritardo un secondo per esser certi che il bar code sia stato aggiornato
+			Thread.sleep(1000);
+			//Controllo dispositivi partiti e relativi messaggi
 			String nomeDeviceKo = "";
 			boolean tuttiPartiti = true;
 			// Ricarico i dispositivi con stato aggiornato per capire se tutti sono Startati
@@ -477,6 +486,12 @@ public class TunnelService implements ITunnelService {
 			}
 		}
 		return ret;
+	}
+	
+	public boolean isTunnelStart(Long idTunnel) throws Exception {
+		Tunnel tunnel = tunnelRepository.getOne(idTunnel);
+		
+		return tunnel.isStato();
 	}
 
 }

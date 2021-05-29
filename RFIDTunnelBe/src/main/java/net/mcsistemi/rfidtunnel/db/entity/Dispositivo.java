@@ -27,8 +27,16 @@ public class Dispositivo {
 	@Column(name = "id")
 	private Long id;
 	
+	private Long idTunnel;
 	
-	
+	public Long getIdTunnel() {
+		return idTunnel;
+	}
+
+	public void setIdTunnel(Long idTunnel) {
+		this.idTunnel = idTunnel;
+	}
+
 	private String nome;
 
 	private Long idTipoDispositivo;
