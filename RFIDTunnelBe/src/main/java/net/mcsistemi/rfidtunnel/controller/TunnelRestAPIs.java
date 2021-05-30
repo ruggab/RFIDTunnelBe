@@ -1,5 +1,6 @@
 package net.mcsistemi.rfidtunnel.controller;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import net.mcsistemi.rfidtunnel.db.entity.Dispositivo;
 import net.mcsistemi.rfidtunnel.db.entity.Tunnel;
 import net.mcsistemi.rfidtunnel.db.services.TunnelService;
 import net.mcsistemi.rfidtunnel.exception.ResourceNotFoundException;
@@ -87,6 +89,7 @@ public class TunnelRestAPIs {
 	public void salvaTunnel(@RequestBody Tunnel tunnel) throws Exception, ResourceNotFoundException {
 		try {
 			tunnelService.save(tunnel);
+			 
 		} catch (Exception e) {
 			throw e;
 		}

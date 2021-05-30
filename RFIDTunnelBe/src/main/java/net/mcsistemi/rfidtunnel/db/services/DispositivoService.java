@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import net.mcsistemi.rfidtunnel.db.entity.Dispositivo;
 import net.mcsistemi.rfidtunnel.db.entity.Tipologica;
+import net.mcsistemi.rfidtunnel.db.entity.Tunnel;
 import net.mcsistemi.rfidtunnel.db.repository.DispositivoRepository;
 import net.mcsistemi.rfidtunnel.db.repository.TipologicaRepository;
 import net.mcsistemi.rfidtunnel.db.repository.TunnelRepository;
@@ -55,6 +56,7 @@ public class DispositivoService implements IDispositivoService {
 		List<Dispositivo> dispositivoList = dispositivoRepository.findAll(Sort.by(Sort.Direction.ASC, "ipAdress"));
 		for (Iterator iterator = dispositivoList.iterator(); iterator.hasNext();) {
 			Dispositivo dispositivo = (Dispositivo) iterator.next();
+			List<Tunnel> tunnel = tunnelRepository.getTunnelFromDisp(dispositivo.getId());
 			Tipologica tip = tipologicaRepository.getOne(dispositivo.getIdTipoDispositivo());
 			dispositivo.setDescTipoDispositivo(tip.getDescrizione());
 			if (dispositivo.getIdModelloReader() != null) {
