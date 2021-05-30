@@ -97,5 +97,11 @@ public class DispositivoService implements IDispositivoService {
 		return dispositivoList;
 	}
 	
+	public boolean isDeviceStart(Long idDevice) throws Exception {
+		Dispositivo dispositivo = dispositivoRepository.getOne(idDevice);
+
+		return dispositivo.isStato();
+	}
+	
 	
 }
