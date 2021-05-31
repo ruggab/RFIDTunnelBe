@@ -89,6 +89,16 @@ public class DispositiviRestAPIs {
 			throw e;
 		}
 	}
+	
+	@GetMapping("/isDeviceStart/{idDevice}")
+	public boolean isDeviceStart(@PathVariable(value = "idDevice") Long idDevice) throws Exception, ResourceNotFoundException {
+		try {
+			boolean ret = dispositivoService.isDeviceStart(idDevice);
+			return ret;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
 
 	
 	
