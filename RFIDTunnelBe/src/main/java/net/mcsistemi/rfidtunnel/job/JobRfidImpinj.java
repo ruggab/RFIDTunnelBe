@@ -22,6 +22,7 @@ import net.mcsistemi.rfidtunnel.db.entity.ConfPorta;
 import net.mcsistemi.rfidtunnel.db.entity.ConfReader;
 import net.mcsistemi.rfidtunnel.db.entity.Tunnel;
 import net.mcsistemi.rfidtunnel.db.services.TunnelService;
+import net.mcsistemi.rfidtunnel.exception.BusinessException;
 import net.mcsistemi.rfidtunnel.listneroctane.ConnectionLostListenerImplement;
 import net.mcsistemi.rfidtunnel.listneroctane.KeepAliveListenerImplementation;
 import net.mcsistemi.rfidtunnel.listneroctane.TagOpCompleteListenerImplementation;
@@ -208,7 +209,7 @@ public class JobRfidImpinj  implements JobInterface {
 		} catch (Exception e) {
 			this.stop();
 			logger.error("READER IMPINJ FAILED CONFIGURATION !");
-			throw new Exception("Reader IMPINJ FAILED CONFIGURATION - " + " - CAUSE: " + e.getCause() + " - MESSAGE: " + e.getMessage());
+			throw new BusinessException("Reader INPINJ FAILED Connection");
 		}
 
 	}
