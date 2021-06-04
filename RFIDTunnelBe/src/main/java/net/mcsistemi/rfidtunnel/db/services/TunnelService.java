@@ -49,6 +49,7 @@ import net.mcsistemi.rfidtunnel.job.JobInterface;
 import net.mcsistemi.rfidtunnel.job.JobRfidImpinj;
 import net.mcsistemi.rfidtunnel.job.JobScannerBarcode;
 import net.mcsistemi.rfidtunnel.model.TunnelDevice;
+import net.mcsistemi.rfidtunnel.util.SGTIN96;
 
 @Service
 public class TunnelService implements ITunnelService {
@@ -209,7 +210,7 @@ public class TunnelService implements ITunnelService {
 					}
 					ConfReader confReader = confReaderRepository.findByIdTunnelAndIdDispositivo(tunnel.getId(), dispositivo.getId()).get(0);
 					confReader.setDispositivo(dispositivo);
-					
+
 					// START WIRAMA DA GESTIRE
 				}
 				// Se il tipo dispositivo è un Barcode
@@ -268,12 +269,12 @@ public class TunnelService implements ITunnelService {
 				String[] td = key.split("|");
 				String idTunnel = td[0];
 				String idDispo = td[2];
-				if (idTunnel.equals(tunnel.getId()+"")) {
-					JobInterface job = mapDispo.get(idTunnel+"|"+idDispo);
+				if (idTunnel.equals(tunnel.getId() + "")) {
+					JobInterface job = mapDispo.get(idTunnel + "|" + idDispo);
 					job.stop();
 				}
 			}
-			
+
 		} catch (Exception ex) {
 			logger.error(ex.getMessage());
 			throw ex;
@@ -289,23 +290,23 @@ public class TunnelService implements ITunnelService {
 
 	@Transactional
 	public ScannerStream gestioneStream(ConfReader confReader, ImpinjReader reader, List<Tag> tags) throws Exception {
-		//Carico tutti i colli che non hanno reader (dettaglio) associati
+		// Carico tutti i colli che non hanno reader (dettaglio) associati
 		ScannerStream lastScannerStream = null;
 		List<ScannerStream> scannerStreamList = scannerStreamRepository.getScannerNoDetail();
 		if (scannerStreamList.size() > 0) {
-			//Recupero l'ultimo collo letto (la query era desc) e gli associo il dettaglio 
+			// Recupero l'ultimo collo letto (la query era desc) e gli associo il dettaglio
 			lastScannerStream = scannerStreamList.get(0);
 			logger.info("Package: " + lastScannerStream.getPackageData());
 			lastScannerStream.setDettaglio("Y");
 			lastScannerStream = scannerStreamRepository.save(lastScannerStream);
-			//Setto ERROR ai precedenti colli
+			// Setto ERROR ai precedenti colli
 			for (int i = 1; i < scannerStreamList.size(); i++) {
 				ScannerStream scannerStream = scannerStreamList.get(i);
 				scannerStream.setDettaglio("ERROR");
 				scannerStream = scannerStreamRepository.save(scannerStream);
 			}
 		} else {
-			//Se sono in questa funzione senza colli letti associa a questi un collo di tipo NO_BARCODE con seq
+			// Se sono in questa funzione senza colli letti associa a questi un collo di tipo NO_BARCODE con seq
 			lastScannerStream = new ScannerStream();
 			String packageData = "NO_BARCODE-" + tunnelRepository.getSeqNextVal();
 			lastScannerStream.setIdTunnel(confReader.getIdTunnel());
@@ -315,7 +316,7 @@ public class TunnelService implements ITunnelService {
 			lastScannerStream = scannerStreamRepository.save(lastScannerStream);
 			logger.info("Package: " + lastScannerStream.getPackageData());
 		}
-		//Leggo i readers e li associo all'ultimo collo arrivato
+		// Leggo i readers e li associo all'ultimo collo arrivato
 		for (Tag t : tags) {
 			if (confReader.isEnableEpc()) {
 				logger.info("IMPINJ ---->>>> EPC: " + t.getEpc().toString());
@@ -332,16 +333,13 @@ public class TunnelService implements ITunnelService {
 		ReaderStream readerStream = new ReaderStream();
 		readerStream.setIdTunnel(confreader.getIdTunnel());
 		readerStream.setTimeStamp(new Timestamp(System.currentTimeMillis()));
-		if (confreader.isEnableEpc()) {
-			readerStream.setEpc(confreader.isEnableEpc() ? tag.getEpc().toHexString() : "");
-		}
-		if (confreader.isEnableTid()) {
-			readerStream.setTid(confreader.isEnableTid() ? tag.getTid().toHexString() : "");
-		}
-		if (confreader.isEnable()) {
-			readerStream.setTid(confreader.isEnableTid() ? tag.getTid().toHexString() : "");
-		}
-		
+
+		readerStream.setEpc(confreader.isEnableEpc() ? tag.getEpc().toHexString() : "");
+
+		readerStream.setTid(confreader.isEnableTid() ? tag.getTid().toHexString() : "");
+
+		readerStream.setSku(confreader.isEnableSku() ? SGTIN96.decodeEpc(tag.getEpc().toHexString()) : "");
+
 		readerStream.setIpAdress(confreader.getDispositivo().getIpAdress());
 		readerStream.setUserData("");
 		readerStream.setPackId(ss.getId());

@@ -39,7 +39,7 @@ public class ReaderStream {
 
 	private String tid;
 	
-	private String barcode;
+	private String sku;
 
 	private String ipAdress;
 	
@@ -194,14 +194,6 @@ public class ReaderStream {
 		this.userData = userData;
 	}
 
-	public String getBarcode() {
-		return barcode;
-	}
-
-	public void setBarcode(String barcode) {
-		this.barcode = barcode;
-	}
-
 	public Long getIdTunnel() {
 		return idTunnel;
 	}
@@ -243,6 +235,18 @@ public class ReaderStream {
 
 	public void setPackageData(String packageData) {
 		this.packageData = packageData;
+	}
+
+
+
+	public String getSku() {
+		return sku;
+	}
+
+
+
+	public void setSku(String sku) {
+		this.sku = sku;
 	}
 
 	
