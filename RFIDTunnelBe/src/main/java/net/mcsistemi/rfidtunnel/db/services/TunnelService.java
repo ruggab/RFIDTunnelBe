@@ -289,21 +289,23 @@ public class TunnelService implements ITunnelService {
 
 	@Transactional
 	public ScannerStream gestioneStream(ConfReader confReader, ImpinjReader reader, List<Tag> tags) throws Exception {
-		// Salva il package nello Scanner Stream
-		// if (tunnelJob.getTunnel().getIdSceltaGestColli() == 7 ) {
+		//Carico tutti i colli che non hanno reader (dettaglio) associati
 		ScannerStream lastScannerStream = null;
 		List<ScannerStream> scannerStreamList = scannerStreamRepository.getScannerNoDetail();
 		if (scannerStreamList.size() > 0) {
+			//Recupero l'ultimo collo letto (la query era desc) e gli associo il dettaglio 
 			lastScannerStream = scannerStreamList.get(0);
 			logger.info("Package: " + lastScannerStream.getPackageData());
 			lastScannerStream.setDettaglio("Y");
 			lastScannerStream = scannerStreamRepository.save(lastScannerStream);
+			//Setto ERROR ai precedenti colli
 			for (int i = 1; i < scannerStreamList.size(); i++) {
 				ScannerStream scannerStream = scannerStreamList.get(i);
 				scannerStream.setDettaglio("ERROR");
 				scannerStream = scannerStreamRepository.save(scannerStream);
 			}
 		} else {
+			//Se sono in questa funzione senza colli letti associa a questi un collo di tipo NO_BARCODE con seq
 			lastScannerStream = new ScannerStream();
 			String packageData = "NO_BARCODE-" + tunnelRepository.getSeqNextVal();
 			lastScannerStream.setIdTunnel(confReader.getIdTunnel());
@@ -313,8 +315,7 @@ public class TunnelService implements ITunnelService {
 			lastScannerStream = scannerStreamRepository.save(lastScannerStream);
 			logger.info("Package: " + lastScannerStream.getPackageData());
 		}
-		// }
-		// Salvo il reader stream
+		//Leggo i readers e li associo all'ultimo collo arrivato
 		for (Tag t : tags) {
 			if (confReader.isEnableEpc()) {
 				logger.info("IMPINJ ---->>>> EPC: " + t.getEpc().toString());
@@ -330,10 +331,17 @@ public class TunnelService implements ITunnelService {
 	private void createReadStream(ConfReader confreader, ScannerStream ss, Tag tag) throws Exception {
 		ReaderStream readerStream = new ReaderStream();
 		readerStream.setIdTunnel(confreader.getIdTunnel());
-
 		readerStream.setTimeStamp(new Timestamp(System.currentTimeMillis()));
-		readerStream.setEpc(confreader.isEnableEpc() ? tag.getEpc().toHexString() : "");
-		readerStream.setTid(confreader.isEnableTid() ? tag.getTid().toHexString() : "");
+		if (confreader.isEnableEpc()) {
+			readerStream.setEpc(confreader.isEnableEpc() ? tag.getEpc().toHexString() : "");
+		}
+		if (confreader.isEnableTid()) {
+			readerStream.setTid(confreader.isEnableTid() ? tag.getTid().toHexString() : "");
+		}
+		if (confreader.isEnable()) {
+			readerStream.setTid(confreader.isEnableTid() ? tag.getTid().toHexString() : "");
+		}
+		
 		readerStream.setIpAdress(confreader.getDispositivo().getIpAdress());
 		readerStream.setUserData("");
 		readerStream.setPackId(ss.getId());
