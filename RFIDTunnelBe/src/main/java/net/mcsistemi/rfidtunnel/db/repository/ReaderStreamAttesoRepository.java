@@ -44,10 +44,10 @@ public interface ReaderStreamAttesoRepository extends JpaRepository<ReaderStream
 	
 	//SOLO BARCODE
 	@Query(value = "select a.package_data, a.barcode  from reader_stream_atteso a where a.package_data = :packageData "
-			+ "except select s.package_data, s.barcode from reader_stream s where s.pack_id = :packId and s.package_data = :packageData", nativeQuery = true)
+			+ "except select s.package_data, s.sku from reader_stream s where s.pack_id = :packId and s.package_data = :packageData", nativeQuery = true)
 	List<StreamBarcodeDifference> getDiffBCExpectedRead(@Param ("packId") Long packId, @Param ("packageData") String packageData);
 	
-	@Query(value = "select s.package_data, s.barcode from reader_stream s where s.pack_id = :packId and s.package_data = :packageData "
+	@Query(value = "select s.package_data, s.sku from reader_stream s where s.pack_id = :packId and s.package_data = :packageData "
 			+ "except select a.package_data, a.barcode from reader_stream_atteso a where a.package_data = :packageData ", nativeQuery = true)
 	List<StreamBarcodeDifference> getDiffBCReadExpected(@Param ("packId") Long packId, @Param ("packageData") String packageData);
 	
@@ -59,7 +59,7 @@ public interface ReaderStreamAttesoRepository extends JpaRepository<ReaderStream
 	@Query(value = "select count (distinct (s.tid)) from reader_stream s where s.pack_id = :packId and s.package_data = :packageData ", nativeQuery = true)
 	Integer getCountDistinctTidLetto(@Param ("packId") Long packId, @Param ("packageData") String packageData);
 	
-	@Query(value = "select count (distinct (s.barcode)) from reader_stream s where s.pack_id = :packId and s.package_data = :packageData ", nativeQuery = true)
+	@Query(value = "select count (distinct (s.sku)) from reader_stream s where s.pack_id = :packId and s.package_data = :packageData ", nativeQuery = true)
 	Integer getCountDistinctBarcodeLetto(@Param ("packId") Long packId, @Param ("packageData") String packageData);
 
 	@Query(value = "select count (distinct (s.user_data)) from reader_stream s where s.pack_id = :packId and s.package_data = :packageData ", nativeQuery = true)
