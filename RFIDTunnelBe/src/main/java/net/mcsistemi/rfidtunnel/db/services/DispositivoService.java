@@ -19,7 +19,7 @@ import net.mcsistemi.rfidtunnel.db.repository.TipologicaRepository;
 import net.mcsistemi.rfidtunnel.db.repository.TunnelRepository;
 
 @Service
-public class DispositivoService implements IDispositivoService {
+public class DispositivoService  {
 
 	@Autowired
 	private DispositivoRepository dispositivoRepository;

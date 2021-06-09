@@ -3,7 +3,6 @@ package net.mcsistemi.rfidtunnel.db.services;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,15 +19,12 @@ import net.mcsistemi.rfidtunnel.db.repository.ProfiloUtenteRepository;
 import net.mcsistemi.rfidtunnel.db.repository.UtenteRepository;
 
 @Service
-public class UtenteService implements IUtenteService {
+public class UtenteService  {
 	
 	Logger logger = Logger.getLogger(UtenteService.class);
 
 	@Autowired
 	private UtenteRepository utenteRepository;
-	
-	@Autowired
-	private ProfiloRepository profiloRepository;
 	
 	@Autowired
 	private FunzioneRepository funzioneRepository;

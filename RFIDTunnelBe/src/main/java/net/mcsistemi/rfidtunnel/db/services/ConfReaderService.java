@@ -1,6 +1,5 @@
 package net.mcsistemi.rfidtunnel.db.services;
 
-import java.sql.Timestamp;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -10,19 +9,16 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.impinj.octane.Tag;
-
 import net.mcsistemi.rfidtunnel.db.entity.ConfAntenna;
 import net.mcsistemi.rfidtunnel.db.entity.ConfPorta;
 import net.mcsistemi.rfidtunnel.db.entity.ConfReader;
-import net.mcsistemi.rfidtunnel.db.entity.ReaderStream;
 import net.mcsistemi.rfidtunnel.db.repository.ConfAntennaRepository;
 import net.mcsistemi.rfidtunnel.db.repository.ConfPortRepository;
 import net.mcsistemi.rfidtunnel.db.repository.ConfReaderRepository;
 import net.mcsistemi.rfidtunnel.db.repository.ReaderStreamRepository;
 
 @Service
-public class ConfReaderService implements IReaderService {
+public class ConfReaderService  {
 
 
 	@Autowired

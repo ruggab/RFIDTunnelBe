@@ -5,10 +5,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
 import net.mcsistemi.rfidtunnel.db.entity.Dispositivo;
+import net.mcsistemi.rfidtunnel.db.entity.ScannerStream;
 import net.mcsistemi.rfidtunnel.db.entity.Tunnel;
 import net.mcsistemi.rfidtunnel.db.services.TunnelService;
 
@@ -37,7 +39,7 @@ public class JobScannerBarcode implements Runnable, JobInterface {
 
 		try {
 			in = connect();
-			String packId = "";
+			String packageData = "";
 			String stream = "";
 			// START BARCODE
 			dispositivo.setStato(running);
@@ -56,23 +58,21 @@ public class JobScannerBarcode implements Runnable, JobInterface {
 					continue;
 				}
 
-				packId = packId + stream;
-				if (packId.contains(tunnel.getMsgEnd())) {
+				packageData = packageData + stream;
+				if (packageData.contains(tunnel.getMsgEnd())) {
 
-					packId = packId.substring(0, packId.indexOf(tunnel.getMsgEnd()));
+					packageData = packageData.substring(0, packageData.indexOf(tunnel.getMsgEnd()));
 
 					logger.info("****************");
-					logger.info(packId);
+					logger.info(packageData);
 					logger.info("****************");
 					// SE il package è noread
-					if (packId.equals(tunnel.getMsgNoRead())) {
-						packId = tunnel.getMsgNoRead() + "-" + tunnelSevice.getSeqNextVal();
-					} else {
-						tunnelSevice.createScannerStream(tunnel.getId(), packId, "N");
-						packId = "";
-						stream = "";
-					}
-
+					if (packageData.equals(tunnel.getMsgNoRead())) {
+						packageData = tunnel.getMsgNoRead() + "-" + tunnelSevice.getSeqNextVal();
+					} 
+					tunnelSevice.createScannerStream(tunnel.getId(), packageData, "N");
+					packageData = "";
+					stream = "";
 				} else {
 					continue;
 				}

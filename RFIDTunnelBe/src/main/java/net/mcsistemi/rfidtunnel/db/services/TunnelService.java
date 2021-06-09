@@ -8,14 +8,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 import javax.transaction.Transactional;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -26,7 +23,6 @@ import net.mcsistemi.rfidtunnel.db.entity.ConfAntenna;
 import net.mcsistemi.rfidtunnel.db.entity.ConfReader;
 import net.mcsistemi.rfidtunnel.db.entity.Dispositivo;
 import net.mcsistemi.rfidtunnel.db.entity.ReaderStream;
-import net.mcsistemi.rfidtunnel.db.entity.ReaderStreamAtteso;
 import net.mcsistemi.rfidtunnel.db.entity.ScannerStream;
 import net.mcsistemi.rfidtunnel.db.entity.Tipologica;
 import net.mcsistemi.rfidtunnel.db.entity.Tunnel;
@@ -35,16 +31,15 @@ import net.mcsistemi.rfidtunnel.db.repository.ConfPortRepository;
 import net.mcsistemi.rfidtunnel.db.repository.ConfReaderRepository;
 import net.mcsistemi.rfidtunnel.db.repository.DispositivoRepository;
 import net.mcsistemi.rfidtunnel.db.repository.ReaderStreamAttesoRepository;
+import net.mcsistemi.rfidtunnel.db.repository.ReaderStreamAttesoRepository.StreamBarcodeDifference;
+import net.mcsistemi.rfidtunnel.db.repository.ReaderStreamAttesoRepository.StreamEPCDifference;
+import net.mcsistemi.rfidtunnel.db.repository.ReaderStreamAttesoRepository.StreamTIDDifference;
+import net.mcsistemi.rfidtunnel.db.repository.ReaderStreamAttesoRepository.StreamUserDifference;
 import net.mcsistemi.rfidtunnel.db.repository.ReaderStreamRepository;
 import net.mcsistemi.rfidtunnel.db.repository.ScannerStreamRepository;
 import net.mcsistemi.rfidtunnel.db.repository.TipologicaRepository;
 import net.mcsistemi.rfidtunnel.db.repository.TunnelRepository;
 import net.mcsistemi.rfidtunnel.exception.BusinessException;
-import net.mcsistemi.rfidtunnel.db.repository.ReaderStreamAttesoRepository.StreamBarcodeDifference;
-import net.mcsistemi.rfidtunnel.db.repository.ReaderStreamAttesoRepository.StreamEPCDifference;
-import net.mcsistemi.rfidtunnel.db.repository.ReaderStreamAttesoRepository.StreamTIDDifference;
-import net.mcsistemi.rfidtunnel.db.repository.ReaderStreamAttesoRepository.StreamUserDifference;
-import net.mcsistemi.rfidtunnel.db.repository.ReaderStreamRepository.ReaderStreamOnly;
 import net.mcsistemi.rfidtunnel.job.JobInterface;
 import net.mcsistemi.rfidtunnel.job.JobRfidImpinj;
 import net.mcsistemi.rfidtunnel.job.JobScannerBarcode;
@@ -52,7 +47,7 @@ import net.mcsistemi.rfidtunnel.model.TunnelDevice;
 import net.mcsistemi.rfidtunnel.util.SGTIN96;
 
 @Service
-public class TunnelService implements ITunnelService {
+public class TunnelService  {
 
 	Logger logger = Logger.getLogger(TunnelService.class);
 
@@ -486,6 +481,16 @@ public class TunnelService implements ITunnelService {
 	}
 
 	public void createScannerStream(Long tunnelId, String packageData, String dettaglio) throws Exception {
+		
+		List<ScannerStream> scannerStreamList = scannerStreamRepository.getScannerNoDetail();
+		if (scannerStreamList.size() > 0) {
+			// Setto ERROR ai precedenti colli
+			for (int i = 0; i < scannerStreamList.size(); i++) {
+				ScannerStream scannerStream = scannerStreamList.get(i);
+				scannerStream.setDettaglio("ERROR");
+				scannerStreamRepository.save(scannerStream);
+			}
+		} 
 		ScannerStream ss = new ScannerStream();
 		ss.setIdTunnel(tunnelId);
 		ss.setPackageData(packageData);
@@ -493,6 +498,13 @@ public class TunnelService implements ITunnelService {
 		ss.setDettaglio(dettaglio);
 		scannerStreamRepository.save(ss);
 	}
+	
+	public List<ScannerStream> getScannerNoDetail() throws Exception {
+	
+		return scannerStreamRepository.getScannerNoDetail();
+	}
+	
+	
 
 	public List<TunnelDevice> findAllTunnelDevice() throws Exception {
 		//
@@ -516,6 +528,14 @@ public class TunnelService implements ITunnelService {
 		Tunnel tunnel = tunnelRepository.getOne(idTunnel);
 
 		return tunnel.isStato();
+	}
+	
+	
+	
+
+	public ScannerStream saveScannerStream(ScannerStream ss) throws Exception {
+
+		return scannerStreamRepository.save(ss);
 	}
 
 }

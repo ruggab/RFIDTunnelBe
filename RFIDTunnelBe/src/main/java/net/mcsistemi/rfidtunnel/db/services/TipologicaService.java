@@ -10,7 +10,7 @@ import net.mcsistemi.rfidtunnel.db.entity.Tipologica;
 import net.mcsistemi.rfidtunnel.db.repository.TipologicaRepository;
 
 @Service
-public class TipologicaService implements IDispositivoService {
+public class TipologicaService{
 
 	
 	@Autowired
