@@ -9,7 +9,7 @@
 		<version>2.2.0.RELEASE</version>
 		<relativePath />
 	</parent>
-	<groupId>net.mcsistemi</groupId>
+	<groupId>net.smart.rfid</groupId>
 	<artifactId>RFIDTunnelBe</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>RFIDTunnelBe</name>
