@@ -1,4 +1,4 @@
-package net.mcsistemi.rfidtunnel.controller;
+package net.smart.rfid.tunnel.controller;
 
 import javax.validation.Valid;
 
@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import net.mcsistemi.rfidtunnel.db.entity.Utente;
-import net.mcsistemi.rfidtunnel.db.services.UtenteService;
+import net.smart.rfid.tunnel.db.entity.Utente;
+import net.smart.rfid.tunnel.db.services.UtenteService;
 
 @RestController
 @RequestMapping("/api/v1")

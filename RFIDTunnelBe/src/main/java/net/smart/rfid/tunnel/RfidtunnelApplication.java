@@ -1,5 +1,4 @@
-package net.mcsistemi.rfidtunnel;
-
+package net.smart.rfid.tunnel;
 
 import org.apache.log4j.Logger;
 import org.springframework.boot.SpringApplication;

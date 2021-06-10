@@ -1,11 +1,11 @@
-package net.mcsistemi.rfidtunnel.listneroctane;
+package net.smart.rfid.tunnel.listneroctane;
 
 import com.impinj.octane.ConnectionLostListener;
 import com.impinj.octane.ImpinjReader;
 
-import net.mcsistemi.rfidtunnel.db.entity.ConfReader;
-import net.mcsistemi.rfidtunnel.db.services.TunnelService;
-import net.mcsistemi.rfidtunnel.util.DateFunction;
+import net.smart.rfid.tunnel.db.entity.ConfReader;
+import net.smart.rfid.tunnel.db.services.TunnelService;
+import net.smart.rfid.tunnel.util.DateFunction;
 
 public class ConnectionLostListenerImplement implements ConnectionLostListener {
 	static DateFunction myDate;

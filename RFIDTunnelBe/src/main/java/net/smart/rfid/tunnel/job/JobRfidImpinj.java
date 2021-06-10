@@ -1,4 +1,4 @@
-package net.mcsistemi.rfidtunnel.job;
+package net.smart.rfid.tunnel.job;
 
 import java.util.Iterator;
 import java.util.List;
@@ -17,18 +17,18 @@ import com.impinj.octane.ReportMode;
 import com.impinj.octane.Settings;
 import com.impinj.octane.TagReadOp;
 
-import net.mcsistemi.rfidtunnel.db.entity.ConfAntenna;
-import net.mcsistemi.rfidtunnel.db.entity.ConfPorta;
-import net.mcsistemi.rfidtunnel.db.entity.ConfReader;
-import net.mcsistemi.rfidtunnel.db.entity.Tunnel;
-import net.mcsistemi.rfidtunnel.db.services.TunnelService;
-import net.mcsistemi.rfidtunnel.exception.BusinessException;
-import net.mcsistemi.rfidtunnel.listneroctane.ConnectionLostListenerImplement;
-import net.mcsistemi.rfidtunnel.listneroctane.KeepAliveListenerImplementation;
-import net.mcsistemi.rfidtunnel.listneroctane.TagOpCompleteListenerImplementation;
-import net.mcsistemi.rfidtunnel.listneroctane.TagReportListenerImplementation;
-import net.mcsistemi.rfidtunnel.util.DateFunction;
-import net.mcsistemi.rfidtunnel.util.Utils;
+import net.smart.rfid.tunnel.db.entity.ConfAntenna;
+import net.smart.rfid.tunnel.db.entity.ConfPorta;
+import net.smart.rfid.tunnel.db.entity.ConfReader;
+import net.smart.rfid.tunnel.db.entity.Tunnel;
+import net.smart.rfid.tunnel.db.services.TunnelService;
+import net.smart.rfid.tunnel.exception.BusinessException;
+import net.smart.rfid.tunnel.listneroctane.ConnectionLostListenerImplement;
+import net.smart.rfid.tunnel.listneroctane.KeepAliveListenerImplementation;
+import net.smart.rfid.tunnel.listneroctane.TagOpCompleteListenerImplementation;
+import net.smart.rfid.tunnel.listneroctane.TagReportListenerImplementation;
+import net.smart.rfid.tunnel.util.DateFunction;
+import net.smart.rfid.tunnel.util.Utils;
 
 /**
  * 

@@ -1,4 +1,4 @@
-package net.mcsistemi.rfidtunnel.job;
+package net.smart.rfid.tunnel.job;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -10,8 +10,8 @@ import java.text.SimpleDateFormat;
 
 import org.apache.log4j.Logger;
 
-import net.mcsistemi.rfidtunnel.db.entity.ConfReader;
-import net.mcsistemi.rfidtunnel.db.services.TunnelService;
+import net.smart.rfid.tunnel.db.entity.ConfReader;
+import net.smart.rfid.tunnel.db.services.TunnelService;
 
 public class JobRfidWirama implements Runnable, JobInterface {
 

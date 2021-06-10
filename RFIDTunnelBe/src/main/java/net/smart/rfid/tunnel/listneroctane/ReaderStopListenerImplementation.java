@@ -1,4 +1,4 @@
-package net.mcsistemi.rfidtunnel.listneroctane;
+package net.smart.rfid.tunnel.listneroctane;
 
 
 import org.apache.log4j.Logger;
@@ -7,7 +7,7 @@ import com.impinj.octane.ImpinjReader;
 import com.impinj.octane.ReaderStopEvent;
 import com.impinj.octane.ReaderStopListener;
 
-import net.mcsistemi.rfidtunnel.db.services.DispositivoService;
+import net.smart.rfid.tunnel.db.services.DispositivoService;
 
 public class ReaderStopListenerImplementation implements ReaderStopListener {
 

@@ -1,4 +1,4 @@
-package net.mcsistemi.rfidtunnel.job;
+package net.smart.rfid.tunnel.job;
 
 public interface JobInterface {
 

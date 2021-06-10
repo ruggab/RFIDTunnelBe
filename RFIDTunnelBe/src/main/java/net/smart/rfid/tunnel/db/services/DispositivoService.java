@@ -1,4 +1,4 @@
-package net.mcsistemi.rfidtunnel.db.services;
+package net.smart.rfid.tunnel.db.services;
 
 import java.io.Reader;
 import java.util.Iterator;
@@ -11,12 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import net.mcsistemi.rfidtunnel.db.entity.Dispositivo;
-import net.mcsistemi.rfidtunnel.db.entity.Tipologica;
-import net.mcsistemi.rfidtunnel.db.entity.Tunnel;
-import net.mcsistemi.rfidtunnel.db.repository.DispositivoRepository;
-import net.mcsistemi.rfidtunnel.db.repository.TipologicaRepository;
-import net.mcsistemi.rfidtunnel.db.repository.TunnelRepository;
+import net.smart.rfid.tunnel.db.entity.Dispositivo;
+import net.smart.rfid.tunnel.db.entity.Tipologica;
+import net.smart.rfid.tunnel.db.entity.Tunnel;
+import net.smart.rfid.tunnel.db.repository.DispositivoRepository;
+import net.smart.rfid.tunnel.db.repository.TipologicaRepository;
+import net.smart.rfid.tunnel.db.repository.TunnelRepository;
 
 @Service
 public class DispositivoService  {

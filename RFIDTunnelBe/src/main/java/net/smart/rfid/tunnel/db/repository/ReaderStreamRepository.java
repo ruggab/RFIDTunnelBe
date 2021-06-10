@@ -1,4 +1,4 @@
-package net.mcsistemi.rfidtunnel.db.repository;
+package net.smart.rfid.tunnel.db.repository;
 
 import java.util.List;
 
@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import net.mcsistemi.rfidtunnel.db.entity.ReaderStream;
+import net.smart.rfid.tunnel.db.entity.ReaderStream;
 
 @Repository
 public interface ReaderStreamRepository extends JpaRepository<ReaderStream, Long> {

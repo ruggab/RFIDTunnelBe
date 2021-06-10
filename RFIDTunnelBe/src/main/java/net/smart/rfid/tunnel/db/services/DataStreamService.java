@@ -1,4 +1,4 @@
-package net.mcsistemi.rfidtunnel.db.services;
+package net.smart.rfid.tunnel.db.services;
 
 import java.sql.Timestamp;
 import java.util.Date;
@@ -14,17 +14,17 @@ import org.springframework.util.StringUtils;
 
 import com.impinj.octane.Tag;
 
-import net.mcsistemi.rfidtunnel.db.entity.ReaderStream;
-import net.mcsistemi.rfidtunnel.db.entity.ReaderStreamAtteso;
-import net.mcsistemi.rfidtunnel.db.entity.ScannerStream;
-import net.mcsistemi.rfidtunnel.db.repository.ReaderStreamAttesoRepository;
-import net.mcsistemi.rfidtunnel.db.repository.ReaderStreamAttesoRepository.StreamBarcodeDifference;
-import net.mcsistemi.rfidtunnel.db.repository.ReaderStreamAttesoRepository.StreamEPCDifference;
-import net.mcsistemi.rfidtunnel.db.repository.ReaderStreamAttesoRepository.StreamTIDDifference;
-import net.mcsistemi.rfidtunnel.db.repository.ReaderStreamAttesoRepository.StreamUserDifference;
-import net.mcsistemi.rfidtunnel.db.repository.ReaderStreamRepository;
-import net.mcsistemi.rfidtunnel.db.repository.ReaderStreamRepository.ReaderStreamOnly;
-import net.mcsistemi.rfidtunnel.db.repository.ScannerStreamRepository;
+import net.smart.rfid.tunnel.db.entity.ReaderStream;
+import net.smart.rfid.tunnel.db.entity.ReaderStreamAtteso;
+import net.smart.rfid.tunnel.db.entity.ScannerStream;
+import net.smart.rfid.tunnel.db.repository.ReaderStreamAttesoRepository;
+import net.smart.rfid.tunnel.db.repository.ReaderStreamRepository;
+import net.smart.rfid.tunnel.db.repository.ScannerStreamRepository;
+import net.smart.rfid.tunnel.db.repository.ReaderStreamAttesoRepository.StreamBarcodeDifference;
+import net.smart.rfid.tunnel.db.repository.ReaderStreamAttesoRepository.StreamEPCDifference;
+import net.smart.rfid.tunnel.db.repository.ReaderStreamAttesoRepository.StreamTIDDifference;
+import net.smart.rfid.tunnel.db.repository.ReaderStreamAttesoRepository.StreamUserDifference;
+import net.smart.rfid.tunnel.db.repository.ReaderStreamRepository.ReaderStreamOnly;
 
 @Service
 public class DataStreamService  {

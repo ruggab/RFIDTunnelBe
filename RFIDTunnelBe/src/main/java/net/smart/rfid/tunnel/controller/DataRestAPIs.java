@@ -1,4 +1,4 @@
-package net.mcsistemi.rfidtunnel.controller;
+package net.smart.rfid.tunnel.controller;
 
 import java.util.List;
 
@@ -14,15 +14,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import net.mcsistemi.rfidtunnel.db.entity.ReaderStream;
-import net.mcsistemi.rfidtunnel.db.entity.ReaderStreamAtteso;
-import net.mcsistemi.rfidtunnel.db.entity.ScannerStream;
-import net.mcsistemi.rfidtunnel.db.entity.Tunnel;
-import net.mcsistemi.rfidtunnel.db.repository.ReaderStreamRepository.ReaderStreamOnly;
-import net.mcsistemi.rfidtunnel.db.services.DataStreamService;
-import net.mcsistemi.rfidtunnel.db.services.TunnelService;
-import net.mcsistemi.rfidtunnel.exception.ResourceNotFoundException;
-import net.mcsistemi.rfidtunnel.model.TunnelDevice;
+import net.smart.rfid.tunnel.db.entity.ReaderStream;
+import net.smart.rfid.tunnel.db.entity.ReaderStreamAtteso;
+import net.smart.rfid.tunnel.db.entity.ScannerStream;
+import net.smart.rfid.tunnel.db.entity.Tunnel;
+import net.smart.rfid.tunnel.db.repository.ReaderStreamRepository.ReaderStreamOnly;
+import net.smart.rfid.tunnel.db.services.DataStreamService;
+import net.smart.rfid.tunnel.db.services.TunnelService;
+import net.smart.rfid.tunnel.exception.ResourceNotFoundException;
+import net.smart.rfid.tunnel.model.TunnelDevice;
 
 @RestController
 @RequestMapping("/api/v1")

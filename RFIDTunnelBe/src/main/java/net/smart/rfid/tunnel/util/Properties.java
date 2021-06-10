@@ -1,4 +1,4 @@
-package net.mcsistemi.rfidtunnel.util;
+package net.smart.rfid.tunnel.util;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;

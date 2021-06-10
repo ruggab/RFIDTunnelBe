@@ -1,4 +1,4 @@
-package net.mcsistemi.rfidtunnel.listneroctane;
+package net.smart.rfid.tunnel.listneroctane;
 
 import org.apache.log4j.Logger;
 
@@ -9,8 +9,8 @@ import com.impinj.octane.TagOpReport;
 import com.impinj.octane.TagOpResult;
 import com.impinj.octane.TagReadOpResult;
 
-import net.mcsistemi.rfidtunnel.db.entity.ConfReader;
-import net.mcsistemi.rfidtunnel.db.services.TunnelService;
+import net.smart.rfid.tunnel.db.entity.ConfReader;
+import net.smart.rfid.tunnel.db.services.TunnelService;
 
 public class TagOpCompleteListenerImplementation implements TagOpCompleteListener {
 

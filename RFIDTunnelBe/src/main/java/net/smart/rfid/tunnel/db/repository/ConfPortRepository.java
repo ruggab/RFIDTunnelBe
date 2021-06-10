@@ -1,4 +1,4 @@
-package net.mcsistemi.rfidtunnel.db.repository;
+package net.smart.rfid.tunnel.db.repository;
 
 import java.util.List;
 
@@ -8,8 +8,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import net.mcsistemi.rfidtunnel.db.entity.ConfAntenna;
-import net.mcsistemi.rfidtunnel.db.entity.ConfPorta;
+import net.smart.rfid.tunnel.db.entity.ConfAntenna;
+import net.smart.rfid.tunnel.db.entity.ConfPorta;
 
 @Repository
 public interface ConfPortRepository extends JpaSpecificationExecutor<ConfPorta>, JpaRepository<ConfPorta, Long> {

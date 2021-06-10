@@ -1,4 +1,4 @@
-package net.mcsistemi.rfidtunnel.util;
+package net.smart.rfid.tunnel.util;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

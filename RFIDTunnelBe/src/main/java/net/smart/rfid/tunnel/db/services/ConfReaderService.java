@@ -1,4 +1,4 @@
-package net.mcsistemi.rfidtunnel.db.services;
+package net.smart.rfid.tunnel.db.services;
 
 import java.util.Iterator;
 import java.util.List;
@@ -9,13 +9,13 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import net.mcsistemi.rfidtunnel.db.entity.ConfAntenna;
-import net.mcsistemi.rfidtunnel.db.entity.ConfPorta;
-import net.mcsistemi.rfidtunnel.db.entity.ConfReader;
-import net.mcsistemi.rfidtunnel.db.repository.ConfAntennaRepository;
-import net.mcsistemi.rfidtunnel.db.repository.ConfPortRepository;
-import net.mcsistemi.rfidtunnel.db.repository.ConfReaderRepository;
-import net.mcsistemi.rfidtunnel.db.repository.ReaderStreamRepository;
+import net.smart.rfid.tunnel.db.entity.ConfAntenna;
+import net.smart.rfid.tunnel.db.entity.ConfPorta;
+import net.smart.rfid.tunnel.db.entity.ConfReader;
+import net.smart.rfid.tunnel.db.repository.ConfAntennaRepository;
+import net.smart.rfid.tunnel.db.repository.ConfPortRepository;
+import net.smart.rfid.tunnel.db.repository.ConfReaderRepository;
+import net.smart.rfid.tunnel.db.repository.ReaderStreamRepository;
 
 @Service
 public class ConfReaderService  {

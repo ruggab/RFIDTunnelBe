@@ -1,4 +1,4 @@
-package net.mcsistemi.rfidtunnel.db.entity;
+package net.smart.rfid.tunnel.db.entity;
 
 import java.util.Set;
 

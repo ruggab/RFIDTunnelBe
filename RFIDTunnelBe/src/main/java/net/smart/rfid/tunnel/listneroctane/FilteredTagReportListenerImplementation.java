@@ -1,4 +1,4 @@
-package net.mcsistemi.rfidtunnel.listneroctane;
+package net.smart.rfid.tunnel.listneroctane;
 
 import com.impinj.octane.ImpinjReader;
 import com.impinj.octane.Tag;

@@ -1,4 +1,4 @@
-package net.mcsistemi.rfidtunnel;
+package net.smart.rfid.tunnel;
 
 import java.util.List;
 
@@ -8,10 +8,10 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import net.mcsistemi.rfidtunnel.db.entity.Dispositivo;
-import net.mcsistemi.rfidtunnel.db.entity.Tunnel;
-import net.mcsistemi.rfidtunnel.db.repository.DispositivoRepository;
-import net.mcsistemi.rfidtunnel.db.repository.TunnelRepository;
+import net.smart.rfid.tunnel.db.entity.Dispositivo;
+import net.smart.rfid.tunnel.db.entity.Tunnel;
+import net.smart.rfid.tunnel.db.repository.DispositivoRepository;
+import net.smart.rfid.tunnel.db.repository.TunnelRepository;
 
 
 @Component

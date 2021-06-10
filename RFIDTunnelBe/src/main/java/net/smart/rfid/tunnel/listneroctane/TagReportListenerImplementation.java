@@ -1,4 +1,4 @@
-package net.mcsistemi.rfidtunnel.listneroctane;
+package net.smart.rfid.tunnel.listneroctane;
 
 import java.util.List;
 
@@ -9,10 +9,10 @@ import com.impinj.octane.Tag;
 import com.impinj.octane.TagReport;
 import com.impinj.octane.TagReportListener;
 
-import net.mcsistemi.rfidtunnel.db.entity.ConfReader;
-import net.mcsistemi.rfidtunnel.db.entity.ScannerStream;
-import net.mcsistemi.rfidtunnel.db.entity.Tunnel;
-import net.mcsistemi.rfidtunnel.db.services.TunnelService;
+import net.smart.rfid.tunnel.db.entity.ConfReader;
+import net.smart.rfid.tunnel.db.entity.ScannerStream;
+import net.smart.rfid.tunnel.db.entity.Tunnel;
+import net.smart.rfid.tunnel.db.services.TunnelService;
 
 public class TagReportListenerImplementation implements TagReportListener {
 

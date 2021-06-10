@@ -1,4 +1,4 @@
-package net.mcsistemi.rfidtunnel.job;
+package net.smart.rfid.tunnel.job;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,10 +9,10 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import net.mcsistemi.rfidtunnel.db.entity.Dispositivo;
-import net.mcsistemi.rfidtunnel.db.entity.ScannerStream;
-import net.mcsistemi.rfidtunnel.db.entity.Tunnel;
-import net.mcsistemi.rfidtunnel.db.services.TunnelService;
+import net.smart.rfid.tunnel.db.entity.Dispositivo;
+import net.smart.rfid.tunnel.db.entity.ScannerStream;
+import net.smart.rfid.tunnel.db.entity.Tunnel;
+import net.smart.rfid.tunnel.db.services.TunnelService;
 
 public class JobScannerBarcode implements Runnable, JobInterface {
 

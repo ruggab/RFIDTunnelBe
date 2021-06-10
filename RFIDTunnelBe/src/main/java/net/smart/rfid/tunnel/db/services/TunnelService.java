@@ -1,4 +1,4 @@
-package net.mcsistemi.rfidtunnel.db.services;
+package net.smart.rfid.tunnel.db.services;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -19,32 +19,32 @@ import org.springframework.util.StringUtils;
 import com.impinj.octane.ImpinjReader;
 import com.impinj.octane.Tag;
 
-import net.mcsistemi.rfidtunnel.db.entity.ConfAntenna;
-import net.mcsistemi.rfidtunnel.db.entity.ConfReader;
-import net.mcsistemi.rfidtunnel.db.entity.Dispositivo;
-import net.mcsistemi.rfidtunnel.db.entity.ReaderStream;
-import net.mcsistemi.rfidtunnel.db.entity.ScannerStream;
-import net.mcsistemi.rfidtunnel.db.entity.Tipologica;
-import net.mcsistemi.rfidtunnel.db.entity.Tunnel;
-import net.mcsistemi.rfidtunnel.db.repository.ConfAntennaRepository;
-import net.mcsistemi.rfidtunnel.db.repository.ConfPortRepository;
-import net.mcsistemi.rfidtunnel.db.repository.ConfReaderRepository;
-import net.mcsistemi.rfidtunnel.db.repository.DispositivoRepository;
-import net.mcsistemi.rfidtunnel.db.repository.ReaderStreamAttesoRepository;
-import net.mcsistemi.rfidtunnel.db.repository.ReaderStreamAttesoRepository.StreamBarcodeDifference;
-import net.mcsistemi.rfidtunnel.db.repository.ReaderStreamAttesoRepository.StreamEPCDifference;
-import net.mcsistemi.rfidtunnel.db.repository.ReaderStreamAttesoRepository.StreamTIDDifference;
-import net.mcsistemi.rfidtunnel.db.repository.ReaderStreamAttesoRepository.StreamUserDifference;
-import net.mcsistemi.rfidtunnel.db.repository.ReaderStreamRepository;
-import net.mcsistemi.rfidtunnel.db.repository.ScannerStreamRepository;
-import net.mcsistemi.rfidtunnel.db.repository.TipologicaRepository;
-import net.mcsistemi.rfidtunnel.db.repository.TunnelRepository;
-import net.mcsistemi.rfidtunnel.exception.BusinessException;
-import net.mcsistemi.rfidtunnel.job.JobInterface;
-import net.mcsistemi.rfidtunnel.job.JobRfidImpinj;
-import net.mcsistemi.rfidtunnel.job.JobScannerBarcode;
-import net.mcsistemi.rfidtunnel.model.TunnelDevice;
-import net.mcsistemi.rfidtunnel.util.SGTIN96;
+import net.smart.rfid.tunnel.db.entity.ConfAntenna;
+import net.smart.rfid.tunnel.db.entity.ConfReader;
+import net.smart.rfid.tunnel.db.entity.Dispositivo;
+import net.smart.rfid.tunnel.db.entity.ReaderStream;
+import net.smart.rfid.tunnel.db.entity.ScannerStream;
+import net.smart.rfid.tunnel.db.entity.Tipologica;
+import net.smart.rfid.tunnel.db.entity.Tunnel;
+import net.smart.rfid.tunnel.db.repository.ConfAntennaRepository;
+import net.smart.rfid.tunnel.db.repository.ConfPortRepository;
+import net.smart.rfid.tunnel.db.repository.ConfReaderRepository;
+import net.smart.rfid.tunnel.db.repository.DispositivoRepository;
+import net.smart.rfid.tunnel.db.repository.ReaderStreamAttesoRepository;
+import net.smart.rfid.tunnel.db.repository.ReaderStreamRepository;
+import net.smart.rfid.tunnel.db.repository.ScannerStreamRepository;
+import net.smart.rfid.tunnel.db.repository.TipologicaRepository;
+import net.smart.rfid.tunnel.db.repository.TunnelRepository;
+import net.smart.rfid.tunnel.db.repository.ReaderStreamAttesoRepository.StreamBarcodeDifference;
+import net.smart.rfid.tunnel.db.repository.ReaderStreamAttesoRepository.StreamEPCDifference;
+import net.smart.rfid.tunnel.db.repository.ReaderStreamAttesoRepository.StreamTIDDifference;
+import net.smart.rfid.tunnel.db.repository.ReaderStreamAttesoRepository.StreamUserDifference;
+import net.smart.rfid.tunnel.exception.BusinessException;
+import net.smart.rfid.tunnel.job.JobInterface;
+import net.smart.rfid.tunnel.job.JobRfidImpinj;
+import net.smart.rfid.tunnel.job.JobScannerBarcode;
+import net.smart.rfid.tunnel.model.TunnelDevice;
+import net.smart.rfid.tunnel.util.SGTIN96;
 
 @Service
 public class TunnelService  {

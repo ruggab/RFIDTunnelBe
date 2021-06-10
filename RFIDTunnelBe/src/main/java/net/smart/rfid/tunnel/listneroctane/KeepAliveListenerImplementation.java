@@ -1,4 +1,4 @@
-package net.mcsistemi.rfidtunnel.listneroctane;
+package net.smart.rfid.tunnel.listneroctane;
 
 
 
@@ -8,13 +8,13 @@ import com.impinj.octane.ImpinjReader;
 import com.impinj.octane.KeepaliveEvent;
 import com.impinj.octane.KeepaliveListener;
 
-import net.mcsistemi.rfidtunnel.db.entity.ConfReader;
-import net.mcsistemi.rfidtunnel.db.services.TunnelService;
+import net.smart.rfid.tunnel.db.entity.ConfReader;
+import net.smart.rfid.tunnel.db.services.TunnelService;
 
 public class KeepAliveListenerImplementation implements KeepaliveListener {
 
 	private static final Logger LOGGER = Logger.getLogger(KeepAliveListenerImplementation.class);
-	static net.mcsistemi.rfidtunnel.util.DateFunction myDate;
+	static net.smart.rfid.tunnel.util.DateFunction myDate;
 
 	
 	private ConfReader confReader = null;

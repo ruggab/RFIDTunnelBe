@@ -1,4 +1,4 @@
-package net.mcsistemi.rfidtunnel.controller;
+package net.smart.rfid.tunnel.controller;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.reactive.config.ResourceHandlerRegistry;
@@ -16,7 +16,7 @@ public class SwaggerConfig implements WebFluxConfigurer {
 	public Docket createRestApi() {
 		return new Docket(DocumentationType.SWAGGER_2).apiInfo(new ApiInfoBuilder().description("My Reactive API")
 				.title("My Domain object API").version("1.0.0").build()).enable(true).select()
-				.apis(RequestHandlerSelectors.basePackage("net.mcsistemi.rfidtunnel.controller")).paths(PathSelectors.any()).build();
+				.apis(RequestHandlerSelectors.basePackage("net.smart.rfid.tunnel.controller")).paths(PathSelectors.any()).build();
 
 	}
 

@@ -1,4 +1,4 @@
-package net.mcsistemi.rfidtunnel.util;
+package net.smart.rfid.tunnel.util;
 
 import java.math.BigInteger;
 import java.util.HashMap;

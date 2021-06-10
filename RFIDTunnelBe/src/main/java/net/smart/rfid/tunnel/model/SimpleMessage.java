@@ -1,4 +1,4 @@
-package net.mcsistemi.rfidtunnel.model;
+package net.smart.rfid.tunnel.model;
  
 public class SimpleMessage {
     private String code;

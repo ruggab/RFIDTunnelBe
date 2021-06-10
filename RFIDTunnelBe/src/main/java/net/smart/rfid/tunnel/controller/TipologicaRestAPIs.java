@@ -1,4 +1,4 @@
-package net.mcsistemi.rfidtunnel.controller;
+package net.smart.rfid.tunnel.controller;
 
 import java.util.List;
 
@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import net.mcsistemi.rfidtunnel.db.entity.Tipologica;
-import net.mcsistemi.rfidtunnel.db.services.TipologicaService;
+import net.smart.rfid.tunnel.db.entity.Tipologica;
+import net.smart.rfid.tunnel.db.services.TipologicaService;
 
 @RestController
 @RequestMapping("/api/v1")

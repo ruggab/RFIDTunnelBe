@@ -1,4 +1,4 @@
-package net.mcsistemi.rfidtunnel.db.services;
+package net.smart.rfid.tunnel.db.services;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,8 +6,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import net.mcsistemi.rfidtunnel.db.entity.Tipologica;
-import net.mcsistemi.rfidtunnel.db.repository.TipologicaRepository;
+import net.smart.rfid.tunnel.db.entity.Tipologica;
+import net.smart.rfid.tunnel.db.repository.TipologicaRepository;
 
 @Service
 public class TipologicaService{

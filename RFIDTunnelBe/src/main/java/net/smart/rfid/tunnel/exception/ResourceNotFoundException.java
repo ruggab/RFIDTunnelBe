@@ -1,4 +1,4 @@
-package net.mcsistemi.rfidtunnel.exception;
+package net.smart.rfid.tunnel.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
