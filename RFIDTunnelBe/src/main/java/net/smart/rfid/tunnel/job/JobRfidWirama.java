@@ -7,11 +7,13 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.Hashtable;
 
 import org.apache.log4j.Logger;
 
 import net.smart.rfid.tunnel.db.entity.ConfReader;
 import net.smart.rfid.tunnel.db.services.TunnelService;
+import net.smart.rfid.tunnel.util.SGTIN96;
 
 public class JobRfidWirama implements Runnable, JobInterface {
 
@@ -33,21 +35,25 @@ public class JobRfidWirama implements Runnable, JobInterface {
 		this.tunnelService = tunnelService;
 	}
 
-	public void start() {
-		worker = new Thread(this);
-		worker.start();
-	}
 
 	// @Override
 	public void run() {
 		BufferedReader inBufferReader = null;
 		running = true;
 		try {
+			this.confReader.getDispositivo().setStato(running);
+			this.tunnelService.aggiornaDispositivo(this.confReader.getDispositivo());
+			Hashtable<String, String> aa = new Hashtable<String, String>();
 			inBufferReader = connectReader();
+			
 			while (running) {
 					String line = inBufferReader.readLine().toString();
+					String[] lineArray = line.split("\\ ");
+					String epc = lineArray[1];
+					aa.put(epc, SGTIN96.decodeEpc(epc));
 					//tunnelService.create line,);
-					LOGGER.info("WIRAMA ---->>>>:" + line);
+					LOGGER.info("WIRAMA EPC = " + epc);
+					LOGGER.info("WIRAMA Other = " + lineArray[2]);
 			}
 		} catch (Exception e) {
 			running = false;
@@ -91,6 +97,8 @@ public class JobRfidWirama implements Runnable, JobInterface {
 		LOGGER.info("Stop thread ip: " + confReader.getDispositivo().getIpAdress());
 		try {
 			running = false;
+			this.confReader.getDispositivo().setStato(running);
+			this.tunnelService.aggiornaDispositivo(this.confReader.getDispositivo());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

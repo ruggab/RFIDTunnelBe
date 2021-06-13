@@ -25,10 +25,12 @@ public class JobScannerBarcode implements Runnable, JobInterface {
 	Socket echoSocket = null;
 	boolean running = true;
 
-	public JobScannerBarcode(Tunnel tunnel, TunnelService tunnelSevice, Dispositivo dispositivo) {
+	public JobScannerBarcode(Tunnel tunnel, TunnelService tunnelSevice, Dispositivo dispositivo) throws UnknownHostException, IOException {
 		this.tunnel = tunnel;
 		this.dispositivo = dispositivo;
 		this.tunnelSevice = tunnelSevice;
+		echoSocket = new Socket(this.dispositivo.getIpAdress(), this.dispositivo.getPorta().intValue());
+		echoSocket.close();
 	}
 
 	// @Override

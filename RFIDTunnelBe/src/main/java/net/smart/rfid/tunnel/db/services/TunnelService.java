@@ -42,12 +42,13 @@ import net.smart.rfid.tunnel.db.repository.ReaderStreamAttesoRepository.StreamUs
 import net.smart.rfid.tunnel.exception.BusinessException;
 import net.smart.rfid.tunnel.job.JobInterface;
 import net.smart.rfid.tunnel.job.JobRfidImpinj;
+import net.smart.rfid.tunnel.job.JobRfidWirama;
 import net.smart.rfid.tunnel.job.JobScannerBarcode;
 import net.smart.rfid.tunnel.model.TunnelDevice;
 import net.smart.rfid.tunnel.util.SGTIN96;
 
 @Service
-public class TunnelService  {
+public class TunnelService {
 
 	Logger logger = Logger.getLogger(TunnelService.class);
 
@@ -180,47 +181,68 @@ public class TunnelService  {
 				throw new BusinessException("Tunnel già in esecuzione");
 			}
 			Set<Dispositivo> dispoSet = tunnel.getDispositivi();
+			String errorMessage = "";
 			for (Iterator iterator = dispoSet.iterator(); iterator.hasNext();) {
 				Dispositivo dispositivo = (Dispositivo) iterator.next();
-				// Se il tipo dispositivo è un reader rfid Impinj recuper la configurazione
-				// annessa
+				// Se il tipo dispositivo è un reader rfid INPINJ recuper la configurazione  annessa
 				if (dispositivo.getIdTipoDispositivo() == 1 && dispositivo.getIdModelloReader() == 5) {
 					if (dispositivo.isStato()) {
 						throw new BusinessException("Questo Dispositivo è già attivo");
 					}
-					ConfReader confReader = confReaderRepository.findByIdTunnelAndIdDispositivo(tunnel.getId(), dispositivo.getId()).get(0);
-					confReader.getAntennas().addAll(confAntennaRepository.findByIdReader(confReader.getId()));
-					confReader.getPorts().addAll(confPortRepository.findByIdReader(confReader.getId()));
-					confReader.setDispositivo(dispositivo);
-					confReader.setTunnel(tunnel);
-					JobRfidImpinj jobRfidImpinj = new JobRfidImpinj(this, confReader);
-					jobRfidImpinj.run();
-					mapDispo.put(tunnel.getId() + "|" + dispositivo.getId(), jobRfidImpinj);
+					try {
+
+						ConfReader confReader = confReaderRepository.findByIdTunnelAndIdDispositivo(tunnel.getId(), dispositivo.getId()).get(0);
+						confReader.getAntennas().addAll(confAntennaRepository.findByIdReader(confReader.getId()));
+						confReader.getPorts().addAll(confPortRepository.findByIdReader(confReader.getId()));
+						confReader.setDispositivo(dispositivo);
+						confReader.setTunnel(tunnel);
+						JobRfidImpinj jobRfidImpinj = new JobRfidImpinj(this, confReader);
+						jobRfidImpinj.run();
+						mapDispo.put(tunnel.getId() + "|" + dispositivo.getId(), jobRfidImpinj);
+					} catch (Exception e) {
+						errorMessage = errorMessage + "Start Error Device " + dispositivo.getNome() + " <br> ";
+					}
 
 				}
-				// Se il tipo dispositivo è un reader rfid Wiram recuper la configurazione annessa
+				// Se il tipo dispositivo è un reader rfid WIRAMA recuper la configurazione annessa
 				if (dispositivo.getIdTipoDispositivo() == 1 && dispositivo.getIdModelloReader() == 6) {
 					if (dispositivo.isStato()) {
-						throw new BusinessException("Questo Dispositivo è già attivo");
+						throw new BusinessException("This device is already active: " + dispositivo.getNome());
 					}
-					ConfReader confReader = confReaderRepository.findByIdTunnelAndIdDispositivo(tunnel.getId(), dispositivo.getId()).get(0);
-					confReader.setDispositivo(dispositivo);
-
-					// START WIRAMA DA GESTIRE
+					try {
+						ConfReader confReader = confReaderRepository.findByIdTunnelAndIdDispositivo(tunnel.getId(), dispositivo.getId()).get(0);
+						// confReader.getAntennas().addAll(confAntennaRepository.findByIdReader(confReader.getId()));
+						// confReader.getPorts().addAll(confPortRepository.findByIdReader(confReader.getId()));
+						confReader.setDispositivo(dispositivo);
+						confReader.setTunnel(tunnel);
+						JobRfidWirama jobRfidWirama = new JobRfidWirama(confReader, this);
+						Thread wiramaThread = new Thread(jobRfidWirama);
+						wiramaThread.start();
+						mapDispo.put(tunnel.getId() + "|" + dispositivo.getId(), jobRfidWirama);
+					} catch (Exception e) {
+						errorMessage = errorMessage + "Start Error Device " + dispositivo.getNome() + " <br> ";
+					}
 				}
-				// Se il tipo dispositivo è un Barcode
+				// Se il tipo dispositivo è un PACKAGE BARCODE
 				if (dispositivo.getIdTipoDispositivo() == 2) {
 					if (dispositivo.isStato()) {
-						throw new BusinessException("Questo Dispositivo è già attivo");
+						throw new BusinessException("This device is already active: " + dispositivo.getNome());
 					}
-					JobScannerBarcode scanner = new JobScannerBarcode(tunnel, this, dispositivo);
-					Thread scannerThread = new Thread(scanner);
-					logger.info("Starting Barcode " + dispositivo.getNome() + " ip:" + dispositivo.getIpAdress());
-					// Executor executor = Executors.newSingleThreadExecutor();
-					// executor.execute(scanner);
-					scannerThread.start();
-					mapDispo.put(tunnel.getId() + "|" + dispositivo.getId(), scanner);
+					try {
+						JobScannerBarcode scanner = new JobScannerBarcode(tunnel, this, dispositivo);
+						Thread scannerThread = new Thread(scanner);
+						logger.info("Starting Barcode " + dispositivo.getNome() + " ip:" + dispositivo.getIpAdress());
+						// Executor executor = Executors.newSingleThreadExecutor();
+						// executor.execute(scanner);
+						scannerThread.start();
+						mapDispo.put(tunnel.getId() + "|" + dispositivo.getId(), scanner);
+					} catch (Exception e) {
+						errorMessage = errorMessage + "Start Error Device " + dispositivo.getNome() + " <br> ";
+					}
 				}
+			}
+			if (errorMessage != "") {
+				throw new Exception(errorMessage);
 			}
 			// Ritardo un secondo per esser certi che il bar code sia stato aggiornato
 			Thread.sleep(1000);
@@ -261,9 +283,9 @@ public class TunnelService  {
 		try {
 			// List<JobInterface> lisJob = new ArrayList<JobInterface>(mapDispo.values());
 			for (String key : mapDispo.keySet()) {
-				String[] td = key.split("|");
+				String[] td = key.split("\\|");
 				String idTunnel = td[0];
-				String idDispo = td[2];
+				String idDispo = td[1];
 				if (idTunnel.equals(tunnel.getId() + "")) {
 					JobInterface job = mapDispo.get(idTunnel + "|" + idDispo);
 					job.stop();
@@ -481,7 +503,7 @@ public class TunnelService  {
 	}
 
 	public void createScannerStream(Long tunnelId, String packageData, String dettaglio) throws Exception {
-		
+
 		List<ScannerStream> scannerStreamList = scannerStreamRepository.getScannerNoDetail();
 		if (scannerStreamList.size() > 0) {
 			// Setto ERROR ai precedenti colli
@@ -490,7 +512,7 @@ public class TunnelService  {
 				scannerStream.setDettaglio("ERROR");
 				scannerStreamRepository.save(scannerStream);
 			}
-		} 
+		}
 		ScannerStream ss = new ScannerStream();
 		ss.setIdTunnel(tunnelId);
 		ss.setPackageData(packageData);
@@ -498,13 +520,11 @@ public class TunnelService  {
 		ss.setDettaglio(dettaglio);
 		scannerStreamRepository.save(ss);
 	}
-	
+
 	public List<ScannerStream> getScannerNoDetail() throws Exception {
-	
+
 		return scannerStreamRepository.getScannerNoDetail();
 	}
-	
-	
 
 	public List<TunnelDevice> findAllTunnelDevice() throws Exception {
 		//
@@ -529,9 +549,6 @@ public class TunnelService  {
 
 		return tunnel.isStato();
 	}
-	
-	
-	
 
 	public ScannerStream saveScannerStream(ScannerStream ss) throws Exception {
 
