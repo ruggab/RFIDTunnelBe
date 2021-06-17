@@ -1,7 +1,9 @@
 DROP TABLE IF EXISTS public.package_sent_ws;
 
+
 CREATE TABLE public.package_sent_ws
 (
+    id bigint NOT NULL,
     id_send integer,
     gtinbox character varying COLLATE pg_catalog."default",
     codewo character varying COLLATE pg_catalog."default",
@@ -9,16 +11,14 @@ CREATE TABLE public.package_sent_ws
     nbtu character varying COLLATE pg_catalog."default",
     tid_list character varying COLLATE pg_catalog."default",
     nbarticle integer,
-    sent boolean DEFAULT false
+    sent boolean DEFAULT false,
+    CONSTRAINT package_sent_ws_pkey PRIMARY KEY (id)
 )
-WITH (
-    OIDS = FALSE
-)
+
 TABLESPACE pg_default;
 
 ALTER TABLE public.package_sent_ws
     OWNER to postgres;
-
 
 -- FUNCTION: public.extractcodart(character varying)
 
