@@ -26,7 +26,7 @@ public class ConfReaderRestAPIs {
 	@Autowired
 	private ConfReaderService confReaderService;
 
-
+ 
 	
 	
 	@GetMapping("/confReader/{id}")
