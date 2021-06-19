@@ -1,5 +1,6 @@
 package net.smart.rfid.tunnel.db.entity;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -31,6 +32,8 @@ public class LogTraceWine {
 	private String esitoInvio;
 
 	private String descError;
+	
+	private String dataInvioForm;
 
 	public LogTraceWine() {
 	}
@@ -50,6 +53,27 @@ public class LogTraceWine {
 	public void setId(Long id) {
 		this.id = id;
 	}
+	
+	public String getDataInvioForm() {
+		Date date = new Date();
+		date.setTime(this.dataInvio.getTime());
+		String formattedDate = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(date);
+		return formattedDate;
+	}
+
+	public void setDataInvioForm(String dataForm) {
+		this.dataInvioForm = dataForm;
+	}
+
+	
+
+	public String getDescError() {
+		return descError;
+	}
+
+	public void setDescError(String descError) {
+		this.descError = descError;
+	}
 
 	public Date getDataInvio() {
 		return dataInvio;
@@ -65,14 +89,6 @@ public class LogTraceWine {
 
 	public void setEsitoInvio(String esitoInvio) {
 		this.esitoInvio = esitoInvio;
-	}
-
-	public String getDescError() {
-		return descError;
-	}
-
-	public void setDescError(String descError) {
-		this.descError = descError;
 	}
 
 }
