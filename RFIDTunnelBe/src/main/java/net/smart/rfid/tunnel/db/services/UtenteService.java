@@ -50,7 +50,7 @@ public class UtenteService  {
 			List<ProfiloUtente> listProfiloUtente = profiloUtenteRepository.findByIdUtente(utente.getId());
 			for (Iterator iterator = listProfiloUtente.iterator(); iterator.hasNext();) {
 				ProfiloUtente profiloUtente = (ProfiloUtente) iterator.next();
-				List<FunzioneProfilo> listFunzioneProfilo = funzioneProfiloRepository.findByIdProfilo(profiloUtente.getIdProfilo());
+				List<FunzioneProfilo> listFunzioneProfilo = funzioneProfiloRepository.findByIdProfiloOrderByOrdine(profiloUtente.getIdProfilo());
 				for (Iterator iterator2 = listFunzioneProfilo.iterator(); iterator2.hasNext();) {
 					FunzioneProfilo funzioneProfilo = (FunzioneProfilo) iterator2.next();
 					Funzione funzione  = funzioneRepository.findById(funzioneProfilo.getIdFunzione()).get();

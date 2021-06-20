@@ -11,5 +11,5 @@ import net.smart.rfid.tunnel.db.entity.FunzioneProfilo;
 @Repository
 public interface FunzioneProfiloRepository extends JpaSpecificationExecutor<FunzioneProfilo>, JpaRepository<FunzioneProfilo, Long> {
 
-	public List<FunzioneProfilo> findByIdProfilo(Long IdProfilo);
+	public List<FunzioneProfilo> findByIdProfiloOrderByOrdine(Long IdProfilo);
 }

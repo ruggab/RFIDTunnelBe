@@ -24,7 +24,7 @@ public class FunzioneProfilo {
 	@NotBlank
 	private Long idFunzione;
 	
-	
+	private Long ordine;
 	
 	public FunzioneProfilo() {
 	}
@@ -51,6 +51,14 @@ public class FunzioneProfilo {
 
 	public void setIdFunzione(Long idFunzione) {
 		this.idFunzione = idFunzione;
+	}
+
+	public Long getOrdine() {
+		return ordine;
+	}
+
+	public void setOrdine(Long ordine) {
+		this.ordine = ordine;
 	}
 
 	
