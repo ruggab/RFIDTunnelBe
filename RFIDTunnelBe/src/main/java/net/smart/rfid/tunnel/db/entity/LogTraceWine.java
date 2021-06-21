@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 /**
  * @author Gabriele
@@ -24,15 +25,16 @@ public class LogTraceWine {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	private Long id;
-
 	private Long idSend;
-
 	private Date dataInvio;
-
 	private String esitoInvio;
-
 	private String descError;
-	
+	private String idProduction;
+	private String codeWO;
+	private String codeArticle;
+	private String intNBLigne;
+	private String intNbArticle;
+	@Transient
 	private String dataInvioForm;
 
 	public LogTraceWine() {
@@ -91,4 +93,45 @@ public class LogTraceWine {
 		this.esitoInvio = esitoInvio;
 	}
 
+	public String getIdProduction() {
+		return idProduction;
+	}
+
+	public void setIdProduction(String idProduction) {
+		this.idProduction = idProduction;
+	}
+
+	public String getCodeWO() {
+		return codeWO;
+	}
+
+	public void setCodeWO(String codeWO) {
+		this.codeWO = codeWO;
+	}
+
+	public String getCodeArticle() {
+		return codeArticle;
+	}
+
+	public void setCodeArticle(String codeArticle) {
+		this.codeArticle = codeArticle;
+	}
+
+	public String getIntNBLigne() {
+		return intNBLigne;
+	}
+
+	public void setIntNBLigne(String intNBLigne) {
+		this.intNBLigne = intNBLigne;
+	}
+
+	public String getIntNbArticle() {
+		return intNbArticle;
+	}
+
+	public void setIntNbArticle(String intNbArticle) {
+		this.intNbArticle = intNbArticle;
+	}
+
+	
 }
