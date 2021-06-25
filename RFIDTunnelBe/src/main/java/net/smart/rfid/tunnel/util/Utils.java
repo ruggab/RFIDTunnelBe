@@ -140,5 +140,19 @@ public class Utils {
 		}
 		return ret;
 	}
+	
+	public static String fromHexToInt(String hex) {
+		String ret = hex.substring(18,hex.length());
+		int ret1 = Integer.parseInt(ret, 16);
+		return ret1+"";
+		
+	}
+
+	
+	public static void main(String[] args) {
+		String ret = fromHexToInt("E2801170200013FB54BD08ED");
+		System.out.println(ret);
+
+	}
 
 }

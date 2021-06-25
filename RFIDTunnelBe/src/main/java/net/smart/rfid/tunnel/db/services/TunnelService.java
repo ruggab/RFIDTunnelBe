@@ -46,6 +46,7 @@ import net.smart.rfid.tunnel.job.JobRfidWirama;
 import net.smart.rfid.tunnel.job.JobScannerBarcode;
 import net.smart.rfid.tunnel.model.TunnelDevice;
 import net.smart.rfid.tunnel.util.SGTIN96;
+import net.smart.rfid.tunnel.util.Utils;
 
 @Service
 public class TunnelService {
@@ -200,6 +201,7 @@ public class TunnelService {
 						jobRfidImpinj.run();
 						mapDispo.put(tunnel.getId() + "|" + dispositivo.getId(), jobRfidImpinj);
 					} catch (Exception e) {
+						logger.error(e.getMessage());
 						errorMessage = errorMessage + "Start Error Device " + dispositivo.getNome() + " <br> ";
 					}
 
@@ -220,6 +222,7 @@ public class TunnelService {
 						wiramaThread.start();
 						mapDispo.put(tunnel.getId() + "|" + dispositivo.getId(), jobRfidWirama);
 					} catch (Exception e) {
+						logger.error(e.getMessage());
 						errorMessage = errorMessage + "Start Error Device " + dispositivo.getNome() + " <br> ";
 					}
 				}
@@ -237,6 +240,7 @@ public class TunnelService {
 						scannerThread.start();
 						mapDispo.put(tunnel.getId() + "|" + dispositivo.getId(), scanner);
 					} catch (Exception e) {
+						logger.error(e.getMessage());
 						errorMessage = errorMessage + "Start Error Device " + dispositivo.getNome() + " <br> ";
 					}
 				}
@@ -353,7 +357,7 @@ public class TunnelService {
 
 		readerStream.setEpc(confreader.isEnableEpc() ? tag.getEpc().toHexString() : "");
 
-		readerStream.setTid(confreader.isEnableTid() ? tag.getTid().toHexString() : "");
+		readerStream.setTid(confreader.isEnableTid() ? Utils.fromHexToInt(tag.getTid().toHexString()): "");
 
 		readerStream.setSku(confreader.isEnableSku() ? SGTIN96.decodeEpc(tag.getEpc().toHexString()) : "");
 
