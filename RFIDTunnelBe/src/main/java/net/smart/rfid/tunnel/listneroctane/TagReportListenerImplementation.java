@@ -32,7 +32,7 @@ public class TagReportListenerImplementation implements TagReportListener {
 	public void onTagReported(ImpinjReader impinjReader, TagReport report) {
 		List<Tag> tags = report.getTags();
 		try {
-			ScannerStream scannerStream = this.tunnelService.gestioneStream(confReader, impinjReader, tags);
+			ScannerStream scannerStream = this.tunnelService.gestioneStream(confReader, tags);
 
 			// Gestioen Atteso
 			if (confReader.getTunnel().getIdSceltaGestAtteso() == 7) {

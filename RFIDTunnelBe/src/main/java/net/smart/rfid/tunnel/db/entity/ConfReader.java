@@ -63,7 +63,8 @@ public class ConfReader {
 	private boolean enableEpc;
 	private boolean enableSku;
 	
-
+	public ConfReader() {
+	}
 	public Integer getSearchMode() {
 		return searchMode;
 	}
@@ -72,8 +73,7 @@ public class ConfReader {
 		this.searchMode = searchMode;
 	}
 
-	public ConfReader() {
-	}
+	
 
 	public Integer getAutoStartMode() {
 		return autoStartMode;

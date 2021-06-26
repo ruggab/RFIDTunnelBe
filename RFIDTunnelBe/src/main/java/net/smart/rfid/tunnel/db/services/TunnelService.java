@@ -44,6 +44,7 @@ import net.smart.rfid.tunnel.job.JobInterface;
 import net.smart.rfid.tunnel.job.JobRfidImpinj;
 import net.smart.rfid.tunnel.job.JobRfidWirama;
 import net.smart.rfid.tunnel.job.JobScannerBarcode;
+import net.smart.rfid.tunnel.model.TagWirama;
 import net.smart.rfid.tunnel.model.TunnelDevice;
 import net.smart.rfid.tunnel.util.SGTIN96;
 import net.smart.rfid.tunnel.util.Utils;
@@ -202,7 +203,7 @@ public class TunnelService {
 						mapDispo.put(tunnel.getId() + "|" + dispositivo.getId(), jobRfidImpinj);
 					} catch (Exception e) {
 						logger.error(e.getMessage());
-						errorMessage = errorMessage + "Start Error Device " + dispositivo.getNome() + " <br> ";
+						errorMessage = errorMessage + "Start Error Device " + dispositivo.getNome() + "  \n  ";
 					}
 
 				}
@@ -212,18 +213,13 @@ public class TunnelService {
 						throw new BusinessException("This device is already active: " + dispositivo.getNome());
 					}
 					try {
-						ConfReader confReader = confReaderRepository.findByIdTunnelAndIdDispositivo(tunnel.getId(), dispositivo.getId()).get(0);
-						// confReader.getAntennas().addAll(confAntennaRepository.findByIdReader(confReader.getId()));
-						// confReader.getPorts().addAll(confPortRepository.findByIdReader(confReader.getId()));
-						confReader.setDispositivo(dispositivo);
-						confReader.setTunnel(tunnel);
-						JobRfidWirama jobRfidWirama = new JobRfidWirama(confReader, this);
+						JobRfidWirama jobRfidWirama = new JobRfidWirama(dispositivo, tunnel,this);
 						Thread wiramaThread = new Thread(jobRfidWirama);
 						wiramaThread.start();
 						mapDispo.put(tunnel.getId() + "|" + dispositivo.getId(), jobRfidWirama);
 					} catch (Exception e) {
 						logger.error(e.getMessage());
-						errorMessage = errorMessage + "Start Error Device " + dispositivo.getNome() + " <br> ";
+						errorMessage = errorMessage + "Start Error Device " + dispositivo.getNome() + " \n  ";
 					}
 				}
 				// Se il tipo dispositivo è un PACKAGE BARCODE
@@ -241,7 +237,7 @@ public class TunnelService {
 						mapDispo.put(tunnel.getId() + "|" + dispositivo.getId(), scanner);
 					} catch (Exception e) {
 						logger.error(e.getMessage());
-						errorMessage = errorMessage + "Start Error Device " + dispositivo.getNome() + " <br> ";
+						errorMessage = errorMessage + "Start Error Device " + dispositivo.getNome() + " \n ";
 					}
 				}
 			}
@@ -310,7 +306,7 @@ public class TunnelService {
 	}
 
 	@Transactional
-	public ScannerStream gestioneStream(ConfReader confReader, ImpinjReader reader, List<Tag> tags) throws Exception {
+	public ScannerStream gestioneStream(ConfReader confReader,  List<Tag> tags) throws Exception {
 		// Carico tutti i colli che non hanno reader (dettaglio) associati
 		ScannerStream lastScannerStream = null;
 		List<ScannerStream> scannerStreamList = scannerStreamRepository.getScannerNoDetail();
@@ -357,7 +353,7 @@ public class TunnelService {
 
 		readerStream.setEpc(confreader.isEnableEpc() ? tag.getEpc().toHexString() : "");
 
-		readerStream.setTid(confreader.isEnableTid() ? Utils.fromHexToInt(tag.getTid().toHexString()): "");
+		readerStream.setTid(confreader.isEnableTid() ? tag.getTid().toHexString(): "");
 
 		readerStream.setSku(confreader.isEnableSku() ? SGTIN96.decodeEpc(tag.getEpc().toHexString()) : "");
 
@@ -378,6 +374,54 @@ public class TunnelService {
 		readerStream.setLastSeenTime(tag.getLastSeenTime() + "");
 		readerStreamRepository.save(readerStream);
 
+	}
+	
+	
+	@Transactional
+	public ScannerStream gestioneStreamWirama(Long idTunnel,String ipAddtress,  List<TagWirama> tags) throws Exception {
+		// Carico tutti i colli che non hanno reader (dettaglio) associati
+		ScannerStream lastScannerStream = null;
+		List<ScannerStream> scannerStreamList = scannerStreamRepository.getScannerNoDetail();
+		if (scannerStreamList.size() > 0) {
+			// Recupero l'ultimo collo letto (la query era desc) e gli associo il dettaglio
+			lastScannerStream = scannerStreamList.get(0);
+			logger.info("Package: " + lastScannerStream.getPackageData());
+			lastScannerStream.setDettaglio("Y");
+			lastScannerStream = scannerStreamRepository.save(lastScannerStream);
+			// Setto ERROR ai precedenti colli
+			for (int i = 1; i < scannerStreamList.size(); i++) {
+				ScannerStream scannerStream = scannerStreamList.get(i);
+				scannerStream.setDettaglio("ERROR");
+				scannerStream = scannerStreamRepository.save(scannerStream);
+			}
+		} else {
+			// Se sono in questa funzione senza colli letti associa a questi un collo di tipo NO_BARCODE con seq
+			lastScannerStream = new ScannerStream();
+			String packageData = "NO_BARCODE-" + tunnelRepository.getSeqNextVal();
+			lastScannerStream.setIdTunnel(idTunnel);
+			lastScannerStream.setPackageData(packageData);
+			lastScannerStream.setDettaglio("Y");
+			lastScannerStream.setTimeStamp(new Date());
+			lastScannerStream = scannerStreamRepository.save(lastScannerStream);
+			logger.info("Package: " + lastScannerStream.getPackageData());
+		}
+		// Leggo i readers e li associo all'ultimo collo arrivato
+		for (TagWirama t : tags) {
+			this.createReadStreamWirama(idTunnel, ipAddtress, lastScannerStream, t);
+		}
+		return lastScannerStream;
+	}
+
+	private void createReadStreamWirama(Long idTunnel, String ipAddres, ScannerStream ss, TagWirama tag) throws Exception {
+		ReaderStream readerStream = new ReaderStream();
+		readerStream.setIdTunnel(idTunnel);
+		readerStream.setTimeStamp(new Timestamp(System.currentTimeMillis()));
+		readerStream.setEpc(tag.getEpc());
+		readerStream.setSku(tag.getSku());
+		readerStream.setIpAdress(ipAddres);
+		readerStream.setPackId(ss.getId());
+		readerStream.setPackageData(ss.getPackageData());
+		readerStreamRepository.save(readerStream);
 	}
 
 	public Integer getSeqNextVal() throws Exception {
