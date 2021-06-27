@@ -213,7 +213,10 @@ public class TunnelService {
 						throw new BusinessException("This device is already active: " + dispositivo.getNome());
 					}
 					try {
-						JobRfidWirama jobRfidWirama = new JobRfidWirama(dispositivo, tunnel,this);
+						ConfReader confReader = confReaderRepository.findByIdTunnelAndIdDispositivo(tunnel.getId(), dispositivo.getId()).get(0);
+						confReader.setDispositivo(dispositivo);
+						confReader.setTunnel(tunnel);
+						JobRfidWirama jobRfidWirama = new JobRfidWirama(confReader,this);
 						Thread wiramaThread = new Thread(jobRfidWirama);
 						wiramaThread.start();
 						mapDispo.put(tunnel.getId() + "|" + dispositivo.getId(), jobRfidWirama);
@@ -378,7 +381,7 @@ public class TunnelService {
 	
 	
 	@Transactional
-	public ScannerStream gestioneStreamWirama(Long idTunnel,String ipAddtress,  List<TagWirama> tags) throws Exception {
+	public ScannerStream gestioneStreamWirama(ConfReader confReader,  List<TagWirama> tags) throws Exception {
 		// Carico tutti i colli che non hanno reader (dettaglio) associati
 		ScannerStream lastScannerStream = null;
 		List<ScannerStream> scannerStreamList = scannerStreamRepository.getScannerNoDetail();
@@ -398,7 +401,7 @@ public class TunnelService {
 			// Se sono in questa funzione senza colli letti associa a questi un collo di tipo NO_BARCODE con seq
 			lastScannerStream = new ScannerStream();
 			String packageData = "NO_BARCODE-" + tunnelRepository.getSeqNextVal();
-			lastScannerStream.setIdTunnel(idTunnel);
+			lastScannerStream.setIdTunnel(confReader.getTunnel().getId());
 			lastScannerStream.setPackageData(packageData);
 			lastScannerStream.setDettaglio("Y");
 			lastScannerStream.setTimeStamp(new Date());
@@ -407,18 +410,18 @@ public class TunnelService {
 		}
 		// Leggo i readers e li associo all'ultimo collo arrivato
 		for (TagWirama t : tags) {
-			this.createReadStreamWirama(idTunnel, ipAddtress, lastScannerStream, t);
+			this.createReadStreamWirama(confReader, lastScannerStream, t);
 		}
 		return lastScannerStream;
 	}
 
-	private void createReadStreamWirama(Long idTunnel, String ipAddres, ScannerStream ss, TagWirama tag) throws Exception {
+	private void createReadStreamWirama(ConfReader confReader, ScannerStream ss, TagWirama tag) throws Exception {
 		ReaderStream readerStream = new ReaderStream();
-		readerStream.setIdTunnel(idTunnel);
+		readerStream.setIdTunnel(confReader.getTunnel().getId());
 		readerStream.setTimeStamp(new Timestamp(System.currentTimeMillis()));
 		readerStream.setEpc(tag.getEpc());
 		readerStream.setSku(tag.getSku());
-		readerStream.setIpAdress(ipAddres);
+		readerStream.setIpAdress(confReader.getDispositivo().getIpAdress());
 		readerStream.setPackId(ss.getId());
 		readerStream.setPackageData(ss.getPackageData());
 		readerStreamRepository.save(readerStream);

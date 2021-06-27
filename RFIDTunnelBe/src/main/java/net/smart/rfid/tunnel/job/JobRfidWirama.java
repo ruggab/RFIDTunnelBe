@@ -24,9 +24,7 @@ import net.smart.rfid.tunnel.util.SGTIN96;
 
 public class JobRfidWirama implements Runnable, JobInterface {
 
-	private Thread worker;
-	
-	private Dispositivo dispositivo;
+	private ConfReader confReader;
 	private Tunnel tunnel;
 
 	Socket socketReader = null;
@@ -38,45 +36,72 @@ public class JobRfidWirama implements Runnable, JobInterface {
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
 	TunnelService tunnelService = null;
 
-	public JobRfidWirama(Dispositivo dispositivo,Tunnel tunnel, TunnelService tunnelService) {
-		this.tunnel = tunnel;
-		this.dispositivo = dispositivo;
+	public JobRfidWirama(ConfReader confreader, TunnelService tunnelService) {
+		this.confReader = confreader;
 		this.tunnelService = tunnelService;
 	}
-
 
 	// @Override
 	public void run() {
 		BufferedReader inBufferReader = null;
 		running = true;
 		try {
-			this.dispositivo.setStato(running);
-			this.tunnelService.aggiornaDispositivo(this.dispositivo);
+			confReader.getDispositivo().setStato(running);
+			this.tunnelService.aggiornaDispositivo(confReader.getDispositivo());
 			inBufferReader = connectReader();
 			List<TagWirama> tags = null;
 			while (running) {
-					String line = inBufferReader.readLine().toString();
+				String line = inBufferReader.readLine().toString();
+				//NEW
+				if (confReader.isEnableNew()) {
 					LOGGER.info("WIRAMA EPC = " + line);
 					if (line.contains("GPIO_i 40")) {
-						 tags = new ArrayList<TagWirama>();
+						tags = new ArrayList<TagWirama>();
 					}
 					if (line.contains("NEW")) {
 						TagWirama tag = new TagWirama();
 						String[] lineArray = line.split("\\ ");
 						String epc = lineArray[2];
-						String sku = SGTIN96.decodeEpc(epc);
-						//aa.put(epc, SGTIN96.decodeEpc(epc));
-						//tunnelService.create line,);
+						String sku = "";
+						if (confReader.isEnableSku()) {
+							sku = SGTIN96.decodeEpc(epc);
+						}
 						LOGGER.info("WIRAMA EPC = " + epc);
 						LOGGER.info("WIRAMA SKU = " + sku);
-						tag.setEpc(epc);
+						tag.setEpc(confReader.isEnableEpc() ? epc : "");
 						tag.setSku(sku);
 						tags.add(tag);
-						//LOGGER.info("WIRAMA Other = " + lineArray[2]);
+						// LOGGER.info("WIRAMA Other = " + lineArray[2]);
 					}
 					if (line.contains("GPIO_i 04")) {
-						this.tunnelService.gestioneStreamWirama(tunnel.getId(), this.dispositivo.getIpAdress(), tags);
+						this.tunnelService.gestioneStreamWirama(confReader, tags);
 					}
+				}
+				//ROW
+				if (confReader.isEnableRow()) {
+					LOGGER.info("WIRAMA EPC = " + line);
+					if (line.contains("GPIO_i 40")) {
+						tags = new ArrayList<TagWirama>();
+					}
+					if (line.contains("NEW")) {
+						TagWirama tag = new TagWirama();
+						String[] lineArray = line.split("\\ ");
+						String epc = lineArray[2];
+						String sku = "";
+						if (confReader.isEnableSku()) {
+							sku = SGTIN96.decodeEpc(epc);
+						}
+						LOGGER.info("WIRAMA EPC = " + epc);
+						LOGGER.info("WIRAMA SKU = " + sku);
+						tag.setEpc(confReader.isEnableEpc() ? epc : "");
+						tag.setSku(sku);
+						tags.add(tag);
+						// LOGGER.info("WIRAMA Other = " + lineArray[2]);
+					}
+					if (line.contains("GPIO_i 04")) {
+						this.tunnelService.gestioneStreamWirama(confReader, tags);
+					}
+				}
 			}
 		} catch (Exception e) {
 			running = false;
@@ -85,12 +110,12 @@ public class JobRfidWirama implements Runnable, JobInterface {
 				if (inBufferReader != null) {
 					inBufferReader.close();
 				}
-				System.out.println("disconnecting from: " + dispositivo.getIpAdress() + ":" + dispositivo.getPorta());
+				LOGGER.info("disconnecting from: " + confReader.getDispositivo().getIpAdress() + ":" + confReader.getDispositivo().getPorta());
 				if (socketReader != null) {
 					socketReader.close();
 				}
-				this.dispositivo.setStato(running);
-				this.tunnelService.aggiornaDispositivo(dispositivo);
+				confReader.getDispositivo().setStato(running);
+				this.tunnelService.aggiornaDispositivo(confReader.getDispositivo());
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -101,12 +126,12 @@ public class JobRfidWirama implements Runnable, JobInterface {
 	public BufferedReader connectReader() throws Exception {
 		BufferedReader in = null;
 		// connect
-		LOGGER.info("Connecting to Reader Wirama: " + dispositivo.getIpAdress()  + ":" + dispositivo.getPorta());
+		LOGGER.info("Connecting to Reader Wirama: " + confReader.getDispositivo().getIpAdress() + ":" + confReader.getDispositivo().getPorta());
 		try {
-			socketReader = new Socket(dispositivo.getIpAdress() ,  dispositivo.getPorta().intValue());
+			socketReader = new Socket(confReader.getDispositivo().getIpAdress(), confReader.getDispositivo().getPorta().intValue());
 			in = new BufferedReader(new InputStreamReader(socketReader.getInputStream()));
 		} catch (UnknownHostException e) {
-			LOGGER.error("Unknown host: " + dispositivo.getIpAdress() );
+			LOGGER.error("Unknown host: " + confReader.getDispositivo().getIpAdress());
 			throw e;
 		} catch (IOException e) {
 			LOGGER.error("Unable to get streams from Wirama");
@@ -117,11 +142,11 @@ public class JobRfidWirama implements Runnable, JobInterface {
 
 	public void stop() {
 
-		LOGGER.info("Stop thread ip: " + dispositivo.getIpAdress());
+		LOGGER.info("Stop thread ip: " + confReader.getDispositivo().getIpAdress());
 		try {
 			running = false;
-			this.dispositivo.setStato(running);
-			this.tunnelService.aggiornaDispositivo(dispositivo);
+			this.confReader.getDispositivo().setStato(running);
+			this.tunnelService.aggiornaDispositivo(confReader.getDispositivo());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

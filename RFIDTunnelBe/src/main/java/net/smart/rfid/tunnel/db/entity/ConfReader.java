@@ -59,6 +59,8 @@ public class ConfReader {
 
 	//
 	private boolean enableUser;
+	private boolean enableNew;
+	private boolean enableRow;
 	private boolean enableTid;
 	private boolean enableEpc;
 	private boolean enableSku;
@@ -99,13 +101,7 @@ public class ConfReader {
 		this.readerMode = readerMode;
 	}
 
-	public boolean isEnableUser() {
-		return enableUser;
-	}
-
-	public void setEnableUser(boolean enableUser) {
-		this.enableUser = enableUser;
-	}
+	
 
 	public boolean isEnableTid() {
 		return enableTid;
@@ -273,6 +269,24 @@ public class ConfReader {
 
 	public void setEnableSku(boolean enableSku) {
 		this.enableSku = enableSku;
+	}
+	public boolean isEnableNew() {
+		return enableNew;
+	}
+	public void setEnableNew(boolean enableNew) {
+		this.enableNew = enableNew;
+	}
+	public boolean isEnableRow() {
+		return enableRow;
+	}
+	public void setEnableRow(boolean enableRow) {
+		this.enableRow = enableRow;
+	}
+	public boolean isEnableUser() {
+		return enableUser;
+	}
+	public void setEnableUser(boolean enableUser) {
+		this.enableUser = enableUser;
 	}
 	
 	
