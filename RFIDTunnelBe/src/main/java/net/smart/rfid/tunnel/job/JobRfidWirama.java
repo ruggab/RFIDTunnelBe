@@ -8,8 +8,11 @@ import java.net.UnknownHostException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -50,11 +53,12 @@ public class JobRfidWirama implements Runnable, JobInterface {
 			this.tunnelService.aggiornaDispositivo(confReader.getDispositivo());
 			inBufferReader = connectReader();
 			List<TagWirama> tags = null;
+			HashMap<String, String> aa = null;
 			while (running) {
 				String line = inBufferReader.readLine().toString();
-				//NEW
+				// NEW
 				if (confReader.isEnableNew()) {
-					LOGGER.info("WIRAMA EPC = " + line);
+					LOGGER.info("LINE = " + line);
 					if (line.contains("GPIO_i 40")) {
 						tags = new ArrayList<TagWirama>();
 					}
@@ -77,28 +81,28 @@ public class JobRfidWirama implements Runnable, JobInterface {
 						this.tunnelService.gestioneStreamWirama(confReader, tags);
 					}
 				}
-				//ROW
-				if (confReader.isEnableRow()) {
-					LOGGER.info("WIRAMA EPC = " + line);
+				// ROW
+				if (confReader.isEnableRaw()) {
+					LOGGER.info("LINE = " + line);
 					if (line.contains("GPIO_i 40")) {
 						tags = new ArrayList<TagWirama>();
+						aa = new HashMap<String, String>();
 					}
-					if (line.contains("NEW")) {
+					if (line.contains("raw")) {
 						TagWirama tag = new TagWirama();
 						String[] lineArray = line.split("\\ ");
-						String epc = lineArray[2];
-						String sku = "";
-						if (confReader.isEnableSku()) {
-							sku = SGTIN96.decodeEpc(epc);
-						}
-						LOGGER.info("WIRAMA EPC = " + epc);
-						LOGGER.info("WIRAMA SKU = " + sku);
-						tag.setEpc(confReader.isEnableEpc() ? epc : "");
-						tag.setSku(sku);
-						tags.add(tag);
-						// LOGGER.info("WIRAMA Other = " + lineArray[2]);
+						String epc = lineArray[1];
+						aa.put(epc, SGTIN96.decodeEpc(epc));
 					}
 					if (line.contains("GPIO_i 04")) {
+						for (Map.Entry<String, String> entry : aa.entrySet()) {
+							TagWirama tag = new TagWirama();
+							tag.setEpc(confReader.isEnableEpc() ? entry.getKey() : "");
+							tag.setSku(confReader.isEnableSku() ? entry.getValue() : "");
+							LOGGER.info("WIRAMA EPC = " + tag.getEpc());
+							LOGGER.info("WIRAMA SKU = " + tag.getSku());
+							tags.add(tag);
+						}
 						this.tunnelService.gestioneStreamWirama(confReader, tags);
 					}
 				}
