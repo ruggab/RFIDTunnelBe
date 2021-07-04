@@ -8,6 +8,7 @@ import java.net.UnknownHostException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -51,6 +52,12 @@ public class JobRfidWirama implements Runnable, JobInterface {
 		try {
 			confReader.getDispositivo().setStato(running);
 			this.tunnelService.aggiornaDispositivo(confReader.getDispositivo());
+			String START = "GPIO_i 40";
+			String STOP = "GPIO_i 04";
+			if (confReader.isEnableLotsep()) {
+				START = "LOT_start";
+				STOP = "LOT_stop";
+			}
 			inBufferReader = connectReader();
 			List<TagWirama> tags = null;
 			HashMap<String, String> aa = null;
@@ -59,13 +66,14 @@ public class JobRfidWirama implements Runnable, JobInterface {
 				// NEW
 				if (confReader.isEnableNew()) {
 					LOGGER.info("LINE = " + line);
-					if (line.contains("GPIO_i 40")) {
+					if (line.indexOf(START)!=-1) {
 						tags = new ArrayList<TagWirama>();
 					}
-					if (line.contains("NEW")) {
+					if (line.indexOf("new")!=-1) {
 						TagWirama tag = new TagWirama();
 						String[] lineArray = line.split("\\ ");
-						String epc = lineArray[2];
+						int indNew = Arrays.asList(lineArray).indexOf("new");
+						String epc = lineArray[indNew+1];
 						String sku = "";
 						if (confReader.isEnableSku()) {
 							sku = SGTIN96.decodeEpc(epc);
@@ -77,24 +85,24 @@ public class JobRfidWirama implements Runnable, JobInterface {
 						tags.add(tag);
 						// LOGGER.info("WIRAMA Other = " + lineArray[2]);
 					}
-					if (line.contains("GPIO_i 04")) {
+					if (line.indexOf(STOP)!=-1) {
 						this.tunnelService.gestioneStreamWirama(confReader, tags);
 					}
 				}
 				// ROW
 				if (confReader.isEnableRaw()) {
 					LOGGER.info("LINE = " + line);
-					if (line.contains("GPIO_i 40")) {
+					if (line.indexOf(START)!=-1) {
 						tags = new ArrayList<TagWirama>();
 						aa = new HashMap<String, String>();
 					}
-					if (line.contains("raw")) {
-						TagWirama tag = new TagWirama();
+					if (line.indexOf("raw")!=-1) {
 						String[] lineArray = line.split("\\ ");
-						String epc = lineArray[1];
+						int indRaw = Arrays.asList(lineArray).indexOf("raw");
+						String epc = lineArray[indRaw+1];
 						aa.put(epc, SGTIN96.decodeEpc(epc));
 					}
-					if (line.contains("GPIO_i 04")) {
+					if (line.indexOf(STOP)!=-1) {
 						for (Map.Entry<String, String> entry : aa.entrySet()) {
 							TagWirama tag = new TagWirama();
 							tag.setEpc(confReader.isEnableEpc() ? entry.getKey() : "");

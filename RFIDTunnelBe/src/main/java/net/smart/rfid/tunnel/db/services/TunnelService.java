@@ -110,10 +110,25 @@ public class TunnelService {
 	public List<Tunnel> getAllTunnel() throws Exception {
 		//
 		List<Tunnel> tunnelList = tunnelRepository.findAll();
-		for (Iterator iterator = tunnelList.iterator(); iterator.hasNext();) {
-			Tunnel tunnel = (Tunnel) iterator.next();
-			setDescrizioniInTunnel(tunnel);
+		for (Iterator iterator1 = tunnelList.iterator(); iterator1.hasNext();) {
+			Tunnel tunnel = (Tunnel) iterator1.next();
 		}
+		
+		for (Iterator iterator1 = tunnelList.iterator(); iterator1.hasNext();) {
+			boolean statoTunnel = true;
+			Tunnel tunnel = (Tunnel) iterator1.next();
+			Set<Dispositivo> dispoSet = tunnel.getDispositivi();
+			for (Iterator iterator2 = dispoSet.iterator(); iterator2.hasNext();) {
+				Dispositivo dispositivo = (Dispositivo) iterator2.next();
+				if (!dispositivo.isStato()) {
+					statoTunnel = false;
+					break;
+				}
+			}
+			tunnel.setStato(statoTunnel);
+			tunnelRepository.save(tunnel);
+		}
+		
 		return tunnelList;
 	}
 

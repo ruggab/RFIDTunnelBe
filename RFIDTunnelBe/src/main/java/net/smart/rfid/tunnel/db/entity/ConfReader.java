@@ -64,7 +64,14 @@ public class ConfReader {
 	private boolean enableTid;
 	private boolean enableEpc;
 	private boolean enableSku;
+	private boolean enableLotsep;
 	
+	public boolean isEnableLotsep() {
+		return enableLotsep;
+	}
+	public void setEnableLotsep(boolean enableLotsep) {
+		this.enableLotsep = enableLotsep;
+	}
 	public ConfReader() {
 	}
 	public Integer getSearchMode() {
@@ -289,6 +296,7 @@ public class ConfReader {
 	public void setEnableRaw(boolean enableRaw) {
 		this.enableRaw = enableRaw;
 	}
+	
 	
 	
 
