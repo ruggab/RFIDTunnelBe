@@ -8,6 +8,7 @@ import java.net.UnknownHostException;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.hamcrest.number.IsCloseTo;
 
 import net.smart.rfid.tunnel.db.entity.Dispositivo;
 import net.smart.rfid.tunnel.db.entity.ScannerStream;
@@ -35,10 +36,8 @@ public class JobScannerBarcode implements Runnable, JobInterface {
 
 	// @Override
 	public void run() {
-
 		BufferedReader in = null;
 		running = true;
-
 		try {
 			in = connect();
 			String packageData = "";
@@ -47,24 +46,17 @@ public class JobScannerBarcode implements Runnable, JobInterface {
 			dispositivo.setStato(running);
 			tunnelSevice.aggiornaDispositivo(dispositivo);
 			while (running) {
-
 				try {
 					stream = in.readLine().toString();
-
 				} catch (NullPointerException e) {
-					// e.printStackTrace();
-
 					logger.info("Waiting for JobScannerBarcode streams ... ");
 					Thread.sleep(1000);
 					in = connect();
 					continue;
 				}
-
 				packageData = packageData + stream;
 				if (packageData.contains(tunnel.getMsgEnd())) {
-
 					packageData = packageData.substring(0, packageData.indexOf(tunnel.getMsgEnd()));
-
 					logger.info("****************");
 					logger.info(packageData);
 					logger.info("****************");
@@ -78,29 +70,20 @@ public class JobScannerBarcode implements Runnable, JobInterface {
 				} else {
 					continue;
 				}
-
 				logger.info("STREAM received " + stream);
-
 			}
-			// Stop BARCODE
-			// dispositivo.setStato(false);
-			// tunnelSevice.aggiornaDispositivo(dispositivo);
 		} catch (Exception e) {
-			running = false;
-		} finally {
 			try {
-				if (in != null)
+				running = false;
+				if (in != null) {
 					in.close();
-				logger.info("disconnecting from: " + this.dispositivo.getIpAdress() + ":" + this.dispositivo.getPorta());
-
-				try {
-					if (echoSocket != null)
-						echoSocket.close();
-				} catch (Exception e) {
-					logger.error(e.toString() + " - " + e.getMessage());
+					logger.info("disconnecting from: " + this.dispositivo.getIpAdress() + ":" + this.dispositivo.getPorta());
 				}
-			} catch (IOException e) {
-				logger.error(e.toString() + " - " + e.getMessage());
+				if (echoSocket != null && !echoSocket.isClosed()) {
+					echoSocket.close();
+				}
+			} catch (IOException e1) {
+				logger.error(e1.toString() + " - " + e1.getMessage());
 			}
 		}
 	}
@@ -131,12 +114,15 @@ public class JobScannerBarcode implements Runnable, JobInterface {
 
 	@Override
 	public void stop() {
-		logger.info("Try to close Socket...");
+		
 		try {
 			running = false;
-			if (echoSocket != null) echoSocket.close();
+			if (echoSocket != null && !echoSocket.isClosed()) {
+				logger.info("Closed  Socket Scannere Barcode");
+				echoSocket.close();
+			}
 			dispositivo.setStato(running);
-			tunnelSevice.aggiornaDispositivo(dispositivo);;
+			tunnelSevice.aggiornaDispositivo(dispositivo);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

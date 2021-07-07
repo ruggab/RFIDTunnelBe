@@ -13,6 +13,7 @@ import javax.transaction.Transactional;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -112,23 +113,8 @@ public class TunnelService {
 		List<Tunnel> tunnelList = tunnelRepository.findAll();
 		for (Iterator iterator1 = tunnelList.iterator(); iterator1.hasNext();) {
 			Tunnel tunnel = (Tunnel) iterator1.next();
+			setDescrizioniInTunnel(tunnel);
 		}
-		
-		for (Iterator iterator1 = tunnelList.iterator(); iterator1.hasNext();) {
-			boolean statoTunnel = true;
-			Tunnel tunnel = (Tunnel) iterator1.next();
-			Set<Dispositivo> dispoSet = tunnel.getDispositivi();
-			for (Iterator iterator2 = dispoSet.iterator(); iterator2.hasNext();) {
-				Dispositivo dispositivo = (Dispositivo) iterator2.next();
-				if (!dispositivo.isStato()) {
-					statoTunnel = false;
-					break;
-				}
-			}
-			tunnel.setStato(statoTunnel);
-			tunnelRepository.save(tunnel);
-		}
-		
 		return tunnelList;
 	}
 
@@ -309,6 +295,7 @@ public class TunnelService {
 					job.stop();
 				}
 			}
+			
 
 		} catch (Exception ex) {
 			logger.error(ex.getMessage());
@@ -321,6 +308,30 @@ public class TunnelService {
 		}
 		return listTunnel;
 
+	}
+	
+	public List<Tunnel> stopOther(Tunnel tunnel, Dispositivo dispositivoExC) throws Exception {
+		List<Tunnel> listTunnel = null;
+		try {
+			// List<JobInterface> lisJob = new ArrayList<JobInterface>(mapDispo.values());
+			for (String key : mapDispo.keySet()) {
+				String[] td = key.split("\\|");
+				String idTunnel = td[0];
+				String idDispo = td[1];
+				if (idTunnel.equals(tunnel.getId() + "") && !idDispo.equals(dispositivoExC.getId()+"")) {
+					JobInterface job = mapDispo.get(idTunnel + "|" + idDispo);
+					job.stop();
+				}
+			}
+		} catch (Exception ex) {
+			logger.error(ex.getMessage());
+			throw ex;
+		} finally {
+			tunnel.setStato(false);
+			tunnelRepository.save(tunnel);
+			listTunnel = tunnelRepository.findAll();
+		}
+		return listTunnel;
 	}
 
 	@Transactional
@@ -598,9 +609,8 @@ public class TunnelService {
 		List<Tunnel> tunnels = tunnelRepository.findAll();
 		for (Iterator iterator = tunnels.iterator(); iterator.hasNext();) {
 			Tunnel tunnel = (Tunnel) iterator.next();
-			Set<Dispositivo> dispoSet = tunnel.getDispositivi();
-			for (Iterator iterator2 = dispoSet.iterator(); iterator2.hasNext();) {
-				Dispositivo dispositivo = (Dispositivo) iterator2.next();
+			List<Dispositivo> dispoList = dispositivoRepository.findDispositiviByTunnel(tunnel.getId());
+			for (Dispositivo dispositivo : dispoList) {
 				TunnelDevice tunnelDevice = new TunnelDevice();
 				tunnelDevice.setDispositivo(dispositivo);
 				tunnelDevice.setTunnel(tunnel);

@@ -29,16 +29,12 @@ import net.smart.rfid.tunnel.util.SGTIN96;
 public class JobRfidWirama implements Runnable, JobInterface {
 
 	private ConfReader confReader;
-	private Tunnel tunnel;
-
+	private TunnelService tunnelService;
+	
 	Socket socketReader = null;
-
 	boolean running = true;
-
 	private static final Logger LOGGER = Logger.getLogger(JobRfidWirama.class);
-
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
-	TunnelService tunnelService = null;
 
 	public JobRfidWirama(ConfReader confreader, TunnelService tunnelService) {
 		this.confReader = confreader;
@@ -116,9 +112,8 @@ public class JobRfidWirama implements Runnable, JobInterface {
 				}
 			}
 		} catch (Exception e) {
-			running = false;
-		} finally {
 			try {
+				running = false;
 				if (inBufferReader != null) {
 					inBufferReader.close();
 				}
@@ -126,11 +121,9 @@ public class JobRfidWirama implements Runnable, JobInterface {
 				if (socketReader != null) {
 					socketReader.close();
 				}
-				confReader.getDispositivo().setStato(running);
-				this.tunnelService.aggiornaDispositivo(confReader.getDispositivo());
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				stop();
+			} catch (Exception e1) {
+				LOGGER.error(e1.getMessage());
 			}
 		}
 	}
@@ -153,14 +146,20 @@ public class JobRfidWirama implements Runnable, JobInterface {
 	}
 
 	public void stop() {
-
-		LOGGER.info("Stop thread ip: " + confReader.getDispositivo().getIpAdress());
+		
 		try {
 			running = false;
+			if (socketReader != null && !socketReader.isClosed()) {
+				LOGGER.info("Closed  Socket Reader Wirama ip: " + confReader.getDispositivo().getIpAdress());
+				socketReader.close();
+			}
 			this.confReader.getDispositivo().setStato(running);
 			this.tunnelService.aggiornaDispositivo(confReader.getDispositivo());
+			//this.tunnelService.stopOther(confReader.getTunnel(), confReader.getDispositivo());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		
 	}
 }

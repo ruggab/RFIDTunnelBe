@@ -21,5 +21,8 @@ public interface DispositivoRepository extends JpaSpecificationExecutor<Disposit
 	@Query(value = "select a.*, b.tunnel_id  from dispositivo a, tunnel_dispositivi b where b.dispositivi_id = a.id", nativeQuery=true )
 	List<Dispositivo> findAllDispositivi();
 	
+	@Query(value = "select a.* from dispositivo a, tunnel_dispositivi b where b.dispositivi_id = a.id and b.tunnel_id = ?1 order by a.nome", nativeQuery=true )
+	List<Dispositivo> findDispositiviByTunnel(Long idTunnel);
+	
 
 }
