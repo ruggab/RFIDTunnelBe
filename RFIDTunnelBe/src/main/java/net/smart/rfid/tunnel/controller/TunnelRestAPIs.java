@@ -151,5 +151,28 @@ public class TunnelRestAPIs {
 			throw e;
 		}
 	}
+	
+	@PostMapping("/startTunnel2000")
+	public void  start2000() throws Exception, ResourceNotFoundException {
+		try {
+			tunnelService.start2000();
+			System.out.println();
+			
+		} catch (Exception e) {
+			throw e;
+		}
+
+	}
+	
+	@PostMapping("/stopTunnel2000")
+	public void stop2000() throws Exception, ResourceNotFoundException {
+		try {
+			tunnelService.stop2000();
+			System.out.println();
+			
+		} catch (Exception e) {
+			throw e;
+		}
+	}
 
 }

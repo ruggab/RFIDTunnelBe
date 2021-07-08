@@ -131,12 +131,12 @@ public class JobRfidWirama implements Runnable, JobInterface {
 	public BufferedReader connectReader() throws Exception {
 		BufferedReader in = null;
 		// connect
-		LOGGER.info("Connecting to Reader Wirama: " + confReader.getDispositivo().getIpAdress() + ":" + confReader.getDispositivo().getPorta());
+		
 		try {
-			socketReader = new Socket(confReader.getDispositivo().getIpAdress(), confReader.getDispositivo().getPorta().intValue());
+			socketReader = new Socket("xxx.xxx.xxx.xxx", 7240);
 			in = new BufferedReader(new InputStreamReader(socketReader.getInputStream()));
 		} catch (UnknownHostException e) {
-			LOGGER.error("Unknown host: " + confReader.getDispositivo().getIpAdress());
+			LOGGER.error("Unknown host: xxx.xxx.xxx.xxx");
 			throw e;
 		} catch (IOException e) {
 			LOGGER.error("Unable to get streams from Wirama");
@@ -150,16 +150,65 @@ public class JobRfidWirama implements Runnable, JobInterface {
 		try {
 			running = false;
 			if (socketReader != null && !socketReader.isClosed()) {
-				LOGGER.info("Closed  Socket Reader Wirama ip: " + confReader.getDispositivo().getIpAdress());
+				LOGGER.info("Closed  Socket Reader Wirama ip: xxx.xxx.xxx.xxx");
 				socketReader.close();
 			}
-			this.confReader.getDispositivo().setStato(running);
-			this.tunnelService.aggiornaDispositivo(confReader.getDispositivo());
-			//this.tunnelService.stopOther(confReader.getTunnel(), confReader.getDispositivo());
+		
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		
+	}
+	
+	
+	public void run1() {
+		BufferedReader inBufferReader = null;
+		running = true;
+		try {
+			
+			String START = "inventory Started";
+			String STOP = "inventory Started";
+			
+			inBufferReader = connectReader();
+			List<TagWirama> tags = null;
+			HashMap<String, String> aa = null;
+			while (running) {
+				String line = inBufferReader.readLine().toString();
+				// NEW
+				LOGGER.info("LINE = " + line);
+				if (line.indexOf(START)!=-1) {
+					tags = new ArrayList<TagWirama>();
+				}
+				if (line.indexOf("new")!=-1) {
+					TagWirama tag = new TagWirama();
+					String[] lineArray = line.split("\\ ");
+					int indNew = Arrays.asList(lineArray).indexOf("new");
+					String epc = lineArray[indNew+1];
+					LOGGER.info("WIRAMA EPC = " + epc);
+					
+					tag.setEpc(confReader.isEnableEpc() ? epc : "");
+					
+					tags.add(tag);
+					// LOGGER.info("WIRAMA Other = " + lineArray[2]);
+				}
+				if (line.indexOf(STOP)!=-1) {
+					this.tunnelService.gestioneStreamWirama(confReader, tags);
+				}
+				
+			}
+		} catch (Exception e) {
+			try {
+				running = false;
+				if (inBufferReader != null) {
+					inBufferReader.close();
+				}
+				LOGGER.info("disconnecting from reader");
+				if (socketReader != null) {
+					socketReader.close();
+				}
+				stop();
+			} catch (Exception e1) {
+				LOGGER.error(e1.getMessage());
+			}
+		}
 	}
 }

@@ -44,6 +44,7 @@ import net.smart.rfid.tunnel.exception.BusinessException;
 import net.smart.rfid.tunnel.job.JobInterface;
 import net.smart.rfid.tunnel.job.JobRfidImpinj;
 import net.smart.rfid.tunnel.job.JobRfidWirama;
+import net.smart.rfid.tunnel.job.JobRfidWirama2000;
 import net.smart.rfid.tunnel.job.JobScannerBarcode;
 import net.smart.rfid.tunnel.model.TagWirama;
 import net.smart.rfid.tunnel.model.TunnelDevice;
@@ -83,6 +84,8 @@ public class TunnelService {
 	private ReaderStreamAttesoRepository readerStreamAttesoRepository;
 
 	private Hashtable<String, JobInterface> mapDispo = new Hashtable<String, JobInterface>();
+
+	private Hashtable<String, Runnable> mapW = new Hashtable<String, Runnable>();
 
 	public Tunnel getTunnelById(Long id) throws Exception {
 		Optional<Tunnel> tunnel = tunnelRepository.findById(id);
@@ -187,7 +190,7 @@ public class TunnelService {
 			String errorMessage = "";
 			for (Iterator iterator = dispoSet.iterator(); iterator.hasNext();) {
 				Dispositivo dispositivo = (Dispositivo) iterator.next();
-				// Se il tipo dispositivo è un reader rfid INPINJ recuper la configurazione  annessa
+				// Se il tipo dispositivo è un reader rfid INPINJ recuper la configurazione annessa
 				if (dispositivo.getIdTipoDispositivo() == 1 && dispositivo.getIdModelloReader() == 5) {
 					if (dispositivo.isStato()) {
 						throw new BusinessException("Questo Dispositivo è già attivo");
@@ -217,7 +220,7 @@ public class TunnelService {
 						ConfReader confReader = confReaderRepository.findByIdTunnelAndIdDispositivo(tunnel.getId(), dispositivo.getId()).get(0);
 						confReader.setDispositivo(dispositivo);
 						confReader.setTunnel(tunnel);
-						JobRfidWirama jobRfidWirama = new JobRfidWirama(confReader,this);
+						JobRfidWirama jobRfidWirama = new JobRfidWirama(confReader, this);
 						Thread wiramaThread = new Thread(jobRfidWirama);
 						wiramaThread.start();
 						mapDispo.put(tunnel.getId() + "|" + dispositivo.getId(), jobRfidWirama);
@@ -295,7 +298,6 @@ public class TunnelService {
 					job.stop();
 				}
 			}
-			
 
 		} catch (Exception ex) {
 			logger.error(ex.getMessage());
@@ -309,7 +311,7 @@ public class TunnelService {
 		return listTunnel;
 
 	}
-	
+
 	public List<Tunnel> stopOther(Tunnel tunnel, Dispositivo dispositivoExC) throws Exception {
 		List<Tunnel> listTunnel = null;
 		try {
@@ -318,7 +320,7 @@ public class TunnelService {
 				String[] td = key.split("\\|");
 				String idTunnel = td[0];
 				String idDispo = td[1];
-				if (idTunnel.equals(tunnel.getId() + "") && !idDispo.equals(dispositivoExC.getId()+"")) {
+				if (idTunnel.equals(tunnel.getId() + "") && !idDispo.equals(dispositivoExC.getId() + "")) {
 					JobInterface job = mapDispo.get(idTunnel + "|" + idDispo);
 					job.stop();
 				}
@@ -335,7 +337,7 @@ public class TunnelService {
 	}
 
 	@Transactional
-	public ScannerStream gestioneStream(ConfReader confReader,  List<Tag> tags) throws Exception {
+	public ScannerStream gestioneStream(ConfReader confReader, List<Tag> tags) throws Exception {
 		// Carico tutti i colli che non hanno reader (dettaglio) associati
 		ScannerStream lastScannerStream = null;
 		List<ScannerStream> scannerStreamList = scannerStreamRepository.getScannerNoDetail();
@@ -382,7 +384,7 @@ public class TunnelService {
 
 		readerStream.setEpc(confreader.isEnableEpc() ? tag.getEpc().toHexString() : "");
 
-		readerStream.setTid(confreader.isEnableTid() ? tag.getTid().toHexString(): "");
+		readerStream.setTid(confreader.isEnableTid() ? tag.getTid().toHexString() : "");
 
 		readerStream.setSku(confreader.isEnableSku() ? SGTIN96.decodeEpc(tag.getEpc().toHexString()) : "");
 
@@ -404,10 +406,9 @@ public class TunnelService {
 		readerStreamRepository.save(readerStream);
 
 	}
-	
-	
+
 	@Transactional
-	public ScannerStream gestioneStreamWirama(ConfReader confReader,  List<TagWirama> tags) throws Exception {
+	public ScannerStream gestioneStreamWirama(ConfReader confReader, List<TagWirama> tags) throws Exception {
 		// Carico tutti i colli che non hanno reader (dettaglio) associati
 		ScannerStream lastScannerStream = null;
 		List<ScannerStream> scannerStreamList = scannerStreamRepository.getScannerNoDetail();
@@ -629,6 +630,37 @@ public class TunnelService {
 	public ScannerStream saveScannerStream(ScannerStream ss) throws Exception {
 
 		return scannerStreamRepository.save(ss);
+	}
+	
+	
+
+	public void start2000() throws Exception {
+
+		try {
+
+			JobRfidWirama2000 jobRfidWirama = new JobRfidWirama2000("192.168.51.41",7240);
+			mapW.put("W2000", jobRfidWirama);
+			Thread wiramaThread = new Thread(jobRfidWirama);
+			wiramaThread.start();
+
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+
+		}
+	}
+
+	public void stop2000() throws Exception {
+		try {
+
+			JobRfidWirama2000 jobRfidWirama = (JobRfidWirama2000) mapW.get("W2000");
+			jobRfidWirama.stop();
+
+		} catch (Exception ex) {
+			logger.error(ex.getMessage());
+			throw ex;
+		}
+		
+
 	}
 
 }
