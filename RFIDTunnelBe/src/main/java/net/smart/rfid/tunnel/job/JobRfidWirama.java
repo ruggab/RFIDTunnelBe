@@ -48,27 +48,29 @@ public class JobRfidWirama implements Runnable, JobInterface {
 		try {
 			confReader.getDispositivo().setStato(running);
 			this.tunnelService.aggiornaDispositivo(confReader.getDispositivo());
-			String START = "GPIO_i 40";
-			String STOP = "GPIO_i 04";
-			if (confReader.isEnableLotsep()) {
-				START = "LOT_start";
-				STOP = "LOT_stop";
+			String START = "Inventory Started".toUpperCase();
+			String STOP = "Inventory Stopped".toUpperCase();
+			if (confReader.getDispositivo().getIdTipoDispositivo() == 16) {
+				START = "LOT_start".toUpperCase();
+				STOP = "LOT_stop".toUpperCase();
 			}
 			inBufferReader = connectReader();
 			List<TagWirama> tags = null;
 			HashMap<String, String> aa = null;
 			while (running) {
-				String line = inBufferReader.readLine().toString();
+				String line = inBufferReader.readLine().toString().toUpperCase();
 				// NEW
+				String newRow = "";
 				if (confReader.isEnableNew()) {
+					newRow = "NEW";
 					LOGGER.info("LINE = " + line);
 					if (line.indexOf(START)!=-1) {
 						tags = new ArrayList<TagWirama>();
 					}
-					if (line.indexOf("new")!=-1) {
+					if (line.indexOf(newRow)!=-1) {
 						TagWirama tag = new TagWirama();
 						String[] lineArray = line.split("\\ ");
-						int indNew = Arrays.asList(lineArray).indexOf("new");
+						int indNew = Arrays.asList(lineArray).indexOf(newRow);
 						String epc = lineArray[indNew+1];
 						String sku = "";
 						if (confReader.isEnableSku()) {
@@ -87,6 +89,7 @@ public class JobRfidWirama implements Runnable, JobInterface {
 				}
 				// ROW
 				if (confReader.isEnableRaw()) {
+					newRow = "ROW";
 					LOGGER.info("LINE = " + line);
 					if (line.indexOf(START)!=-1) {
 						tags = new ArrayList<TagWirama>();
@@ -94,7 +97,7 @@ public class JobRfidWirama implements Runnable, JobInterface {
 					}
 					if (line.indexOf("raw")!=-1) {
 						String[] lineArray = line.split("\\ ");
-						int indRaw = Arrays.asList(lineArray).indexOf("raw");
+						int indRaw = Arrays.asList(lineArray).indexOf(newRow);
 						String epc = lineArray[indRaw+1];
 						aa.put(epc, SGTIN96.decodeEpc(epc));
 					}
@@ -160,55 +163,5 @@ public class JobRfidWirama implements Runnable, JobInterface {
 	}
 	
 	
-	public void run1() {
-		BufferedReader inBufferReader = null;
-		running = true;
-		try {
-			
-			String START = "inventory Started";
-			String STOP = "inventory Started";
-			
-			inBufferReader = connectReader();
-			List<TagWirama> tags = null;
-			HashMap<String, String> aa = null;
-			while (running) {
-				String line = inBufferReader.readLine().toString();
-				// NEW
-				LOGGER.info("LINE = " + line);
-				if (line.indexOf(START)!=-1) {
-					tags = new ArrayList<TagWirama>();
-				}
-				if (line.indexOf("new")!=-1) {
-					TagWirama tag = new TagWirama();
-					String[] lineArray = line.split("\\ ");
-					int indNew = Arrays.asList(lineArray).indexOf("new");
-					String epc = lineArray[indNew+1];
-					LOGGER.info("WIRAMA EPC = " + epc);
-					
-					tag.setEpc(confReader.isEnableEpc() ? epc : "");
-					
-					tags.add(tag);
-					// LOGGER.info("WIRAMA Other = " + lineArray[2]);
-				}
-				if (line.indexOf(STOP)!=-1) {
-					this.tunnelService.gestioneStreamWirama(confReader, tags);
-				}
-				
-			}
-		} catch (Exception e) {
-			try {
-				running = false;
-				if (inBufferReader != null) {
-					inBufferReader.close();
-				}
-				LOGGER.info("disconnecting from reader");
-				if (socketReader != null) {
-					socketReader.close();
-				}
-				stop();
-			} catch (Exception e1) {
-				LOGGER.error(e1.getMessage());
-			}
-		}
-	}
+	
 }
