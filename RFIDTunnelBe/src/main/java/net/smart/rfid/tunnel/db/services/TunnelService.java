@@ -49,6 +49,7 @@ import net.smart.rfid.tunnel.job.JobScannerBarcode;
 import net.smart.rfid.tunnel.model.TagWirama;
 import net.smart.rfid.tunnel.model.TunnelDevice;
 import net.smart.rfid.tunnel.util.SGTIN96;
+import net.smart.rfid.tunnel.util.SSCC96;
 import net.smart.rfid.tunnel.util.Utils;
 
 @Service
@@ -337,7 +338,52 @@ public class TunnelService {
 	}
 
 	@Transactional
-	public ScannerStream gestioneStream(ConfReader confReader, List<Tag> tags) throws Exception {
+	public ScannerStream gestioneStreamRFID(ConfReader confReader, List<Tag> tags) throws Exception {
+		// Carico tutti i colli che non hanno reader (dettaglio) associati
+		
+		List<Tag> newListTag = new ArrayList<Tag>();
+		String barcode = "";
+		for (Tag t : tags) {
+			String epc = t.getEpc().toString();
+			String appo = SSCC96.decodeSSCC96(epc);
+			if (barcode.isEmpty()) {
+				newListTag.add(t);
+			} else {
+				barcode = appo;
+			}
+			
+		}
+		
+		
+			// Se sono in questa funzione senza colli letti associa a questi un collo di tipo NO_BARCODE con seq
+	ScannerStream lastScannerStream  = new ScannerStream();
+			String packageData = "NO_BARCODE-" + tunnelRepository.getSeqNextVal();
+			lastScannerStream.setIdTunnel(confReader.getIdTunnel());
+			lastScannerStream.setPackageData(packageData);
+			lastScannerStream.setDettaglio("Y");
+			lastScannerStream.setTimeStamp(new Date());
+			lastScannerStream = scannerStreamRepository.save(lastScannerStream);
+			logger.info("Package: " + lastScannerStream.getPackageData());
+		
+		// Leggo tutti i tag e li converto per recuperare il barcode
+		List<Tag> newListTag = new ArrayList<Tag>();
+		String barcode = "";
+		for (Tag t : tags) {
+			String epc = t.getEpc().toString();
+			String appo = SSCC96.decodeSSCC96(epc);
+			if (barcode.isEmpty()) {
+				newListTag.add(t);
+			} else {
+				barcode = appo;
+			}
+			this.createReadStream(confReader, lastScannerStream, t);
+		}
+		return lastScannerStream;
+	}
+	
+	
+	@Transactional
+	public ScannerStream gestioneStreamBARCODE(ConfReader confReader, List<Tag> tags) throws Exception {
 		// Carico tutti i colli che non hanno reader (dettaglio) associati
 		ScannerStream lastScannerStream = null;
 		List<ScannerStream> scannerStreamList = scannerStreamRepository.getScannerNoDetail();

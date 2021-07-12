@@ -17,7 +17,7 @@ import net.smart.rfid.tunnel.db.services.TunnelService;
 public class TagReportListenerImplementation implements TagReportListener {
 
 	Logger logger = Logger.getLogger(TagReportListenerImplementation.class);
-
+	
 	private TunnelService tunnelService;
 	private ConfReader confReader;
 
@@ -32,8 +32,16 @@ public class TagReportListenerImplementation implements TagReportListener {
 	public void onTagReported(ImpinjReader impinjReader, TagReport report) {
 		List<Tag> tags = report.getTags();
 		try {
-			ScannerStream scannerStream = this.tunnelService.gestioneStream(confReader, tags);
+			ScannerStream scannerStream = null;
+			//Se tipo collo è RFID
+			if (confReader.getTunnel().getIdSceltaTipoColli() == 10) {
+				 scannerStream = this.tunnelService.gestioneStreamRFID(confReader, tags);
+			} else {
+				 scannerStream = this.tunnelService.gestioneStreamBARCODE(confReader, tags);
+			}
+			
 
+			
 			// Gestioen Atteso
 			if (confReader.getTunnel().getIdSceltaGestAtteso() == 7) {
 				int result = this.tunnelService.compareByPackage(scannerStream, 
