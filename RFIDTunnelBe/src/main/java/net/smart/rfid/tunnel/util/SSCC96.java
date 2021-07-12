@@ -14,7 +14,7 @@ public class SSCC96 {
 		logger.info("SSCC-96 Barcode: " + barcode);
 	}
 
-	public static String decodeSSCC96 (String epc) {
+	public static String decodeSSCC96(String epc) {
 		
 		String barcode = "";
 		

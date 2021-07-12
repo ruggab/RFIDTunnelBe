@@ -15,24 +15,7 @@ public class SGTIN96 {
     private final static Integer sgtin96_length_bits = 96;
     private final static Integer sgtin96_length_hex = 24;
     private static HashMap<Integer, int[]> sgtin96_company_prefix_len_partitions;
-    
-    
-    /*
-    static {
-        // Table 7. SGTIN-96 Partitions. page 28.
-        // Column order: (L), P, M, N Nd
-        sgtin96_company_prefix_len_partitions = new HashMap<Integer, int[]>();
-        sgtin96_company_prefix_len_partitions.put(12, new int[]{0, 40, 4, 1});
-        sgtin96_company_prefix_len_partitions.put(11, new int[]{1, 37, 7, 2});
-        sgtin96_company_prefix_len_partitions.put(10, new int[]{2, 34, 10, 3});
-        sgtin96_company_prefix_len_partitions.put(9, new int[]{3, 30, 14, 4});
-        sgtin96_company_prefix_len_partitions.put(8, new int[]{4, 27, 17, 5});
-        sgtin96_company_prefix_len_partitions.put(7, new int[]{5, 24, 20, 6});
-        sgtin96_company_prefix_len_partitions.put(6, new int[]{6, 20, 24, 7});
-    }
-    */
-	
-    
+   
     
     private static int[] getPartitionsByCompanyPrefixLengthInDigits(int company_prefix_length) {
         // column 3 (L)
