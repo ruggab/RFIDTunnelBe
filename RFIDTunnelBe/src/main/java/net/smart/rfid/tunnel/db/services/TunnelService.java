@@ -344,7 +344,7 @@ public class TunnelService {
 		String packageData = "";
 		for (Tag t : tags) {
 			String epc = t.getEpc().toString();
-			String appo = SSCC96.decodeSSCC96(epc);
+			String appo = SSCC96.decodeSSCC96(epc, confReader.getTunnel().getFormatoEPC());
 			if (packageData.isEmpty()) {
 				newListTag.add(t);
 			} else {
