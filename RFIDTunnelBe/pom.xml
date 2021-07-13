@@ -94,7 +94,11 @@
 			<groupId>com.mcsistemi</groupId>
 			<artifactId>OctaneSDKJava</artifactId>
 			<version>3.0.0.0</version>
-
+		</dependency>
+			<dependency>
+			<groupId>com.mcsistemi</groupId>
+			<artifactId>epctagcoder</artifactId>
+			<version>0.0.8</version>
 		</dependency>
 
 		<!-- dependency> <groupId>com.google.code.gson</groupId> <artifactId>gson</artifactId> 
