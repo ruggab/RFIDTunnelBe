@@ -338,7 +338,7 @@ public class TunnelService {
 	}
 
 	@Transactional
-	public ScannerStream gestioneStreamRFID(ConfReader confReader, List<Tag> tags) throws Exception {
+	public ScannerStream gestioneStreamInpinjRFID(ConfReader confReader, List<Tag> tags) throws Exception {
 		// Carico tutti i colli che non hanno reader (dettaglio) associati
 		List<Tag> newListTag = new ArrayList<Tag>();
 		String packageData = "";
@@ -368,9 +368,41 @@ public class TunnelService {
 		}
 		return lastScannerStream;
 	}
+	
+	@Transactional
+	public ScannerStream gestioneStreamWiramaRFID(ConfReader confReader, List<TagWirama> tags) throws Exception {
+		// Carico tutti i colli che non hanno reader (dettaglio) associati
+		List<TagWirama> newListTag = new ArrayList<TagWirama>();
+		String packageData = "";
+		for (TagWirama t : tags) {
+			String epc = t.getEpc().toString();
+			String appo = SSCC96.decodeSSCC96(epc, confReader.getTunnel().getFormatoEPC());
+			if (packageData.isEmpty()) {
+				newListTag.add(t);
+			} else {
+				packageData = appo;
+			}
+		}
+		//Se alla fine del ciclo il barcode è ancora vuoto
+		if (packageData.isEmpty()) {
+			packageData = "NO_BARCODE-" + tunnelRepository.getSeqNextVal();
+		}
+		// Se sono in questa funzione senza colli letti associa a questi un collo di tipo NO_BARCODE con seq
+		ScannerStream lastScannerStream = new ScannerStream();
+		lastScannerStream.setIdTunnel(confReader.getIdTunnel());
+		lastScannerStream.setPackageData(packageData);
+		lastScannerStream.setDettaglio("Y");
+		lastScannerStream.setTimeStamp(new Date());
+		lastScannerStream = scannerStreamRepository.save(lastScannerStream);
+		logger.info("Package: " + lastScannerStream.getPackageData());
+		for (TagWirama t : newListTag) {
+			this.createReadStreamWirama(confReader, lastScannerStream, t);
+		}
+		return lastScannerStream;
+	}
 
 	@Transactional
-	public ScannerStream gestioneStreamBARCODE(ConfReader confReader, List<Tag> tags) throws Exception {
+	public ScannerStream gestioneStreamInpinjBARCODE(ConfReader confReader, List<Tag> tags) throws Exception {
 		// Carico tutti i colli che non hanno reader (dettaglio) associati
 		ScannerStream lastScannerStream = null;
 		List<ScannerStream> scannerStreamList = scannerStreamRepository.getScannerNoDetail();
@@ -399,12 +431,6 @@ public class TunnelService {
 		}
 		// Leggo i readers e li associo all'ultimo collo arrivato
 		for (Tag t : tags) {
-			if (confReader.isEnableEpc()) {
-				logger.info("IMPINJ ---->>>> EPC: " + t.getEpc().toString());
-			}
-			if (confReader.isEnableTid()) {
-				logger.info("IMPINJ ---->>>> TID: " + t.getTid().toString());
-			}
 			this.createReadStream(confReader, lastScannerStream, t);
 		}
 		return lastScannerStream;
@@ -441,7 +467,7 @@ public class TunnelService {
 	}
 
 	@Transactional
-	public ScannerStream gestioneStreamWirama(ConfReader confReader, List<TagWirama> tags) throws Exception {
+	public ScannerStream gestioneStreamWiramaBARCODE(ConfReader confReader, List<TagWirama> tags) throws Exception {
 		// Carico tutti i colli che non hanno reader (dettaglio) associati
 		ScannerStream lastScannerStream = null;
 		List<ScannerStream> scannerStreamList = scannerStreamRepository.getScannerNoDetail();

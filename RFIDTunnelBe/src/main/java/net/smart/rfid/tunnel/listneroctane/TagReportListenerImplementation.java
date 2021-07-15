@@ -35,13 +35,10 @@ public class TagReportListenerImplementation implements TagReportListener {
 			ScannerStream scannerStream = null;
 			//Se tipo collo è RFID
 			if (confReader.getTunnel().getIdSceltaTipoColli() == 10) {
-				 scannerStream = this.tunnelService.gestioneStreamRFID(confReader, tags);
+				 scannerStream = this.tunnelService.gestioneStreamInpinjRFID(confReader, tags);
 			} else {
-				 scannerStream = this.tunnelService.gestioneStreamBARCODE(confReader, tags);
+				 scannerStream = this.tunnelService.gestioneStreamInpinjBARCODE(confReader, tags);
 			}
-			
-
-			
 			// Gestioen Atteso
 			if (confReader.getTunnel().getIdSceltaGestAtteso() == 7) {
 				int result = this.tunnelService.compareByPackage(scannerStream, 

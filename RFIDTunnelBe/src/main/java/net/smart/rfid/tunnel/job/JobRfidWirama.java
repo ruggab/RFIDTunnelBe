@@ -21,6 +21,7 @@ import com.impinj.octane.Tag;
 
 import net.smart.rfid.tunnel.db.entity.ConfReader;
 import net.smart.rfid.tunnel.db.entity.Dispositivo;
+import net.smart.rfid.tunnel.db.entity.ScannerStream;
 import net.smart.rfid.tunnel.db.entity.Tunnel;
 import net.smart.rfid.tunnel.db.services.TunnelService;
 import net.smart.rfid.tunnel.model.TagWirama;
@@ -84,7 +85,14 @@ public class JobRfidWirama implements Runnable, JobInterface {
 						// LOGGER.info("WIRAMA Other = " + lineArray[2]);
 					}
 					if (line.indexOf(STOP)!=-1) {
-						this.tunnelService.gestioneStreamWirama(confReader, tags);
+						ScannerStream scannerStream = null;
+						//Se tipo collo è RFID
+						if (confReader.getTunnel().getIdSceltaTipoColli() == 9) {
+							 scannerStream = this.tunnelService.gestioneStreamWiramaRFID(confReader, tags);
+						} else {
+							 scannerStream = this.tunnelService.gestioneStreamWiramaBARCODE(confReader, tags);
+						}
+						
 					}
 				}
 				// ROW
@@ -110,7 +118,13 @@ public class JobRfidWirama implements Runnable, JobInterface {
 							LOGGER.info("WIRAMA SKU = " + tag.getSku());
 							tags.add(tag);
 						}
-						this.tunnelService.gestioneStreamWirama(confReader, tags);
+						ScannerStream scannerStream = null;
+						//Se tipo collo è RFID
+						if (confReader.getTunnel().getIdSceltaTipoColli() == 9) {
+							 scannerStream = this.tunnelService.gestioneStreamWiramaRFID(confReader, tags);
+						} else {
+							 scannerStream = this.tunnelService.gestioneStreamWiramaBARCODE(confReader, tags);
+						}
 					}
 				}
 			}
