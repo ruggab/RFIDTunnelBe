@@ -5,13 +5,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.hamcrest.number.IsCloseTo;
 
 import net.smart.rfid.tunnel.db.entity.Dispositivo;
-import net.smart.rfid.tunnel.db.entity.ScannerStream;
 import net.smart.rfid.tunnel.db.entity.Tunnel;
 import net.smart.rfid.tunnel.db.services.TunnelService;
 
