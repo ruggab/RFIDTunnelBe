@@ -13,7 +13,7 @@ public class SSCC96 {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		String barcode = decodeSSCC96("3155EBCD4C000013EC000000");
+		String barcode = decodeSSCC96("3155EBCD4C000013EC000000","");
 		System.out.println("parseSSCC  " + barcode);
 		try {
 			ParseSSCC parseSSCC = ParseSSCC.Builder().withRFIDTag("3055EBCD4C000013EC000000").build();
@@ -43,7 +43,7 @@ public class SSCC96 {
 				String compPrefix = sscc.getCompanyPrefix();
 				barcode = sscc.getSerial();
 			} else {
-				
+				barcode = Utils.getSerialFromMask(maskEpc,epc);
 			}
 
 		} catch (Exception e) {

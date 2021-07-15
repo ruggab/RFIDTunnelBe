@@ -8,7 +8,7 @@ import com.impinj.octane.ReaderMode;
 import com.impinj.octane.SearchMode;
 
 public class Utils {
-	
+
 	public static ReaderMode getReaderMode(Integer idMode) throws OctaneSdkException {
 
 		ReaderMode ret = null;
@@ -92,7 +92,7 @@ public class Utils {
 		}
 		return ret;
 	}
-	
+
 	public static GpoMode getGpoMode(Long idGpoMode) throws OctaneSdkException {
 		GpoMode ret = null;
 
@@ -115,9 +115,7 @@ public class Utils {
 		}
 		return ret;
 	}
-	
-	
-	
+
 	public static SearchMode getSearchMode(Integer idSearchMode) throws OctaneSdkException {
 
 		SearchMode ret = null;
@@ -140,19 +138,43 @@ public class Utils {
 		}
 		return ret;
 	}
-	
+
 	public static String fromHexToInt(String hex) {
-		String ret = hex.substring(18,hex.length());
+		String ret = hex.substring(18, hex.length());
 		int ret1 = Integer.parseInt(ret, 16);
-		return ret1+"";
-		
+		return ret1 + "";
+
 	}
 
-	
 	public static void main(String[] args) {
-		String ret = fromHexToInt("E2801170200013FB54BD08ED");
-		System.out.println(ret);
-
+		//String ret = fromHexToInt("E2801170200013FB54BD08ED");
+		//System.out.println(ret);
+		
+		String aa = getSerialFromMask("XXXXX--XXXXXX","12345678909");
+		
+		System.out.println(aa);
 	}
+
+	public static String getSerialFromMask(String mask, String epc) {
+		char splitter = 'X';
+		char[] maskArr = mask.toCharArray();
+		char[] textArr = epc.toCharArray();
+		int textI = 0;
+		for (int i = 0; i < maskArr.length; i++) {
+			if (maskArr[i] != splitter) {
+
+				if (maskArr[i] == '-' && textI < textArr.length) {
+					maskArr[i] = textArr[textI];
+				}
+				textI++;
+			}
+		}
+		String str = String. valueOf(maskArr);
+		String ret = str.replace("X", "");
+		return ret;
+	}
+	
+	
+    
 
 }

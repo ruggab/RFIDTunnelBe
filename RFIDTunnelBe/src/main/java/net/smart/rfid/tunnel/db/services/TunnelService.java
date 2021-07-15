@@ -213,7 +213,7 @@ public class TunnelService {
 
 				}
 				// Se il tipo dispositivo è un reader rfid WIRAMA recuper la configurazione annessa
-				if (dispositivo.getIdTipoDispositivo() == 1 && dispositivo.getIdModelloReader() == 6) {
+				if (dispositivo.getIdTipoDispositivo() == 1 && (dispositivo.getIdModelloReader() == 6||dispositivo.getIdModelloReader() == 16)) {
 					if (dispositivo.isStato()) {
 						throw new BusinessException("This device is already active: " + dispositivo.getNome());
 					}

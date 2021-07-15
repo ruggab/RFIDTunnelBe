@@ -50,7 +50,7 @@ public class JobRfidWirama implements Runnable, JobInterface {
 			this.tunnelService.aggiornaDispositivo(confReader.getDispositivo());
 			String START = "Inventory Started".toUpperCase();
 			String STOP = "Inventory Stopped".toUpperCase();
-			if (confReader.getDispositivo().getIdTipoDispositivo() == 16) {
+			if (confReader.getDispositivo().getIdModelloReader() == 16) {
 				START = "LOT_start".toUpperCase();
 				STOP = "LOT_stop".toUpperCase();
 			}
@@ -134,12 +134,12 @@ public class JobRfidWirama implements Runnable, JobInterface {
 	public BufferedReader connectReader() throws Exception {
 		BufferedReader in = null;
 		// connect
-		
+		LOGGER.info("Connecting to Reader Wirama: " + confReader.getDispositivo().getIpAdress() + ":" + confReader.getDispositivo().getPorta());
 		try {
-			socketReader = new Socket("xxx.xxx.xxx.xxx", 7240);
+			socketReader = new Socket(confReader.getDispositivo().getIpAdress(), confReader.getDispositivo().getPorta().intValue());
 			in = new BufferedReader(new InputStreamReader(socketReader.getInputStream()));
 		} catch (UnknownHostException e) {
-			LOGGER.error("Unknown host: xxx.xxx.xxx.xxx");
+			LOGGER.error("Unknown host: " + confReader.getDispositivo().getIpAdress());
 			throw e;
 		} catch (IOException e) {
 			LOGGER.error("Unable to get streams from Wirama");
@@ -153,13 +153,17 @@ public class JobRfidWirama implements Runnable, JobInterface {
 		try {
 			running = false;
 			if (socketReader != null && !socketReader.isClosed()) {
-				LOGGER.info("Closed  Socket Reader Wirama ip: xxx.xxx.xxx.xxx");
+				LOGGER.info("Closed  Socket Reader Wirama ip: " + confReader.getDispositivo().getIpAdress());
 				socketReader.close();
 			}
-		
+			this.confReader.getDispositivo().setStato(running);
+			this.tunnelService.aggiornaDispositivo(confReader.getDispositivo());
+			//this.tunnelService.stopOther(confReader.getTunnel(), confReader.getDispositivo());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		
 	}
 	
 	
