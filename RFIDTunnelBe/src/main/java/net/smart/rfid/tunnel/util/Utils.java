@@ -150,11 +150,11 @@ public class Utils {
 		//String ret = fromHexToInt("E2801170200013FB54BD08ED");
 		//System.out.println(ret);
 		
-		String aa = getSerialFromMask("XXXXX--XXXXXX","12345678909");
+		String aa = getSerialFromMask2("FFFA-----","FFFBA12345");
 		
 		System.out.println(aa);
 	}
-
+	//XXXXX----XXXX sostituisce i ----- con i valori corrispondenti
 	public static String getSerialFromMask(String mask, String epc) {
 		char splitter = 'X';
 		char[] maskArr = mask.toCharArray();
@@ -174,6 +174,23 @@ public class Utils {
 		return ret;
 	}
 	
+	//XXXXX----XXXX se la string contiene i valori corrispondenti a X restituisce quelli corrispondenti ai ----
+	public static String getSerialFromMask2(String mask, String epc) {
+		char splitter = '-';
+		char[] maskArr = mask.toCharArray();
+		char[] epcArr = epc.toCharArray();
+		String barcode = "";
+		for (int i = 0; i < maskArr.length; i++) {
+			if (maskArr[i] == splitter ||  maskArr[i] == epcArr[i]) {
+				if (maskArr[i] == '-') {
+					barcode = barcode + epcArr[i];
+				}
+			} else {
+				return "";
+			}
+		}
+		return barcode;
+	}
 	
     
 
