@@ -43,7 +43,7 @@ public class SSCC96 {
 				String compPrefix = sscc.getCompanyPrefix();
 				barcode = sscc.getSerial();
 			} else {
-				barcode = Utils.getSerialFromMask(maskEpc,epc);
+				barcode = Utils.getSerialFromMask2(maskEpc,epc);
 			}
 
 		} catch (Exception e) {
